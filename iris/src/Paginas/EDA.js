@@ -1,10 +1,34 @@
 import { styled } from "@mui/material/styles";
-import { Typography, Grid, Box} from "@mui/material";
+import { Typography, Grid, Box } from "@mui/material";
 
-const TextoBold = styled(Typography)({
+const Titulo = styled(Typography)({
   color: "black",
   fontWeight: "bold",
   fontFamily: "Roboto",
+  fontSize: "30px",
+});
+
+const Subtitulo = styled(Typography)({
+  color: "black",
+  fontWeight: "bold",
+  fontFamily: "Roboto",
+  fontSize: "20px",
+});
+
+const Parrafo = styled(Typography)({
+  textAlign: "justify",
+});
+
+const Contenedor = styled(Box)({
+  padding: 10,
+  border: "1px solid silver",
+});
+
+const Codigo = styled("div")({
+  border: "1px solid lightgray",
+  boxShadow: "60px",
+  backgroundColor: "mintcream",
+  color: "Black",
 });
 
 export default function Home() {
@@ -17,32 +41,32 @@ export default function Home() {
         md={12}
         sx={{
           minHeight: "100vh",
-          backgroundColor: "beige",
+          backgroundColor: "white",
         }}
       >
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
-            <TextoBold variant="h5">EDA</TextoBold>
+          <Contenedor>
+            <Titulo textAlign={"center"}>EDA</Titulo>
 
-            <Typography textAlign={"justify"}>
-              Proyecto de minería
-            </Typography>
+            <Subtitulo>Propósito</Subtitulo>
 
-            <TextoBold variant="h6">Definiciones</TextoBold>
+            <Parrafo>
+              Tener una idea de la estructura del conjunto de datos, identicar
+              la variable objetivo y posibles técnicas de modelado.
+            </Parrafo>
 
-            <Typography textAlign={"justify"}>
-              descripciones
-            </Typography>
+            <Subtitulo>
+              Paso 1: Descripción de la estructura de los datos.
+            </Subtitulo>
 
-
-            <TextoBold variant="h6">Titulo</TextoBold>
-            <Typography textAlign={"justify"}>
-              Texto
-            </Typography>
-          </Box>
+            <Subtitulo>Paso 2: Identificación de datos faltantes.</Subtitulo>
+            <Subtitulo>Paso 3: Detección de valores atípicos.</Subtitulo>
+            <Subtitulo>
+              Paso 4: Identificación de relaciones entre pares variables.
+            </Subtitulo>
+          </Contenedor>
         </Box>
       </Grid>
-
     </Grid>
   );
 }
