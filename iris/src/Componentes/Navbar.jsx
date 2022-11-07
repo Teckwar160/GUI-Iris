@@ -125,7 +125,7 @@ export default function NavBar() {
               aria-label="menu"
               sx={{
                 display: { xs: "flex", md: "none" },
-                mr: "calc(40vh)",
+                mr: "calc(100vh)",
               }}
             >
               <img src={Logo} alt="logo" style={{ height: "50px" }} />
