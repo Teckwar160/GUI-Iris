@@ -1,6 +1,8 @@
 import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box } from "@mui/material";
+import Tabla from "../Componentes/Tabla";
 
+//Estilos
 const Titulo = styled(Typography)({
   color: "black",
   fontWeight: "bold",
@@ -58,6 +60,8 @@ export default function Home() {
             <Subtitulo>
               Paso 1: Descripción de la estructura de los datos.
             </Subtitulo>
+
+            <Tabla/>
 
             <Subtitulo>Paso 2: Identificación de datos faltantes.</Subtitulo>
             <Subtitulo>Paso 3: Detección de valores atípicos.</Subtitulo>
