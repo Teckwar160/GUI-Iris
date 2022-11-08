@@ -10,7 +10,6 @@ export default function FormControl() {
         accept=".csv"
         style={{ display: "none" }}
         id="contained-button-file"
-        onSubmit={"C:\Users\teckw\Desktop\GUI-Iris\iris\src\Componentes"}
       />
       <label htmlFor="contained-button-file">
         <IconButton component="span">

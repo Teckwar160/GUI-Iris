@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box } from "@mui/material";
 import Tabla from "../Componentes/Tabla";
-import FormControl from "../Componentes/FormControl";
+//import FormControl from "../Componentes/FormControl";
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -64,12 +64,16 @@ export default function Home() {
 
             <Tabla/>
 
+
             <Subtitulo>Paso 2: Identificación de datos faltantes.</Subtitulo>
             <Subtitulo>Paso 3: Detección de valores atípicos.</Subtitulo>
             <Subtitulo>
               Paso 4: Identificación de relaciones entre pares variables.
             </Subtitulo>
-            <FormControl/>
+            <Codigo>
+              Esto es un codigo
+            </Codigo>
+            
           </Contenedor>
         </Box>
       </Grid>
