@@ -1,6 +1,7 @@
 import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box } from "@mui/material";
 import Tabla from "../Componentes/Tabla";
+import FormControl from "../Componentes/FormControl";
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -68,6 +69,7 @@ export default function Home() {
             <Subtitulo>
               Paso 4: Identificación de relaciones entre pares variables.
             </Subtitulo>
+            <FormControl/>
           </Contenedor>
         </Box>
       </Grid>
