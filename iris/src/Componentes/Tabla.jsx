@@ -8,27 +8,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 import { dataColumnas, dataFilas } from "../API/datosEDA";
-function creaFilas(columnas, filas) {
-  // console.log(dataColumnas.length) //21
-  var filasRetorno = [];
-  var iterador = dataFilas.length;
-  var j = 0;
-  var tmp = {};
-  while (j < iterador) {
-    for (var i = 0; i < dataColumnas.length; i++) {
-      tmp[dataColumnas[i]] = dataFilas[j];
-      j++;
-    }
-    j++;
-    filasRetorno.push(tmp);
-    tmp = {};
-  }
-  return filasRetorno;
-}
-
-const filas2 = creaFilas(dataColumnas, dataFilas);
-
-console.log(filas2);
 
 export default function Tabla() {
   return (
@@ -42,13 +21,11 @@ export default function Tabla() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {filas2.map((fila, index) => (
-            <TableRow
-              key={fila.Suburb}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell>{fila.Suburb}</TableCell>
-              <TableCell>{fila.Address}</TableCell>
+          {dataFilas.map((fila, index) => (
+            <TableRow>
+              {fila.map((f, i) => (
+                <TableCell>{f}</TableCell>
+              ))}
             </TableRow>
           ))}
         </TableBody>
