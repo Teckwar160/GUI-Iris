@@ -1,7 +1,13 @@
 import { styled } from "@mui/material/styles";
-import { Typography, Grid, Box } from "@mui/material";
+import { Typography, Grid, Box, Button} from "@mui/material";
 import Tabla from "../Componentes/Tabla";
 //import FormControl from "../Componentes/FormControl";
+
+//Iconos
+import TerminalIcon from '@mui/icons-material/Terminal';
+
+//Colores
+import { purple } from '@mui/material/colors';
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -34,6 +40,19 @@ const Codigo = styled("div")({
   color: "Black",
 });
 
+const BotonEjecutar = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(purple[500]),
+  backgroundColor: purple[400],
+  '&:hover': {
+    backgroundColor: purple[600],
+  },
+}));
+
+const TextoBotonEjecutar = styled(Typography)({
+  fontFamily:"Roboto",
+  fontWeight:"bold",
+})
+
 export default function Home() {
   return (
     <Grid container>
@@ -57,6 +76,13 @@ export default function Home() {
               Tener una idea de la estructura del conjunto de datos, identicar
               la variable objetivo y posibles técnicas de modelado.
             </Parrafo>
+
+            <Subtitulo>Previsualización de datos</Subtitulo>
+
+            <BotonEjecutar variant="outlined">
+            <TerminalIcon/>
+              <TextoBotonEjecutar sx={{ml: 1}}>Ejecutar</TextoBotonEjecutar>             
+            </BotonEjecutar>
 
             <Subtitulo>
               Paso 1: Descripción de la estructura de los datos.
