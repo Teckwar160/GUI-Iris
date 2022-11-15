@@ -36,7 +36,9 @@ def vistaPrevia():
     if data != None:
         # Obtenemos las filas y columnas
         columnas = data.columnas#raw.columns.values.tolist()
-        columnas.insert(0,"")
+        # Agregamos una columna vacia para los indices
+        if columnas[0] != "":
+            columnas.insert(0,"")
         filasRaw = data.filas # raw.values.tolist()
 
         # Lista que contendra las filas

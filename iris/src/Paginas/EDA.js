@@ -1,13 +1,16 @@
 import { styled } from "@mui/material/styles";
-import { Typography, Grid, Box, Button} from "@mui/material";
+import { Typography, Grid, Box, Button } from "@mui/material";
 import Tabla from "../Componentes/Tabla";
 //import FormControl from "../Componentes/FormControl";
 
+//Datos
+import { dataColumnas, dataFilas } from "../API/datosEDA";
+
 //Iconos
-import TerminalIcon from '@mui/icons-material/Terminal';
+import TerminalIcon from "@mui/icons-material/Terminal";
 
 //Colores
-import { purple } from '@mui/material/colors';
+import { purple } from "@mui/material/colors";
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -43,15 +46,23 @@ const Codigo = styled("div")({
 const BotonEjecutar = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(purple[500]),
   backgroundColor: purple[400],
-  '&:hover': {
+  "&:hover": {
     backgroundColor: purple[600],
   },
 }));
 
 const TextoBotonEjecutar = styled(Typography)({
-  fontFamily:"Roboto",
-  fontWeight:"bold",
-})
+  fontFamily: "Roboto",
+  fontWeight: "bold",
+});
+
+//Funciones
+function vistaPrevia() {
+  const Http = new XMLHttpRequest();
+  const url = "http://127.0.0.1:8000/vistaPrevia";
+  Http.open("GET", url);
+  Http.send();
+}
 
 export default function Home() {
   return (
@@ -79,27 +90,22 @@ export default function Home() {
 
             <Subtitulo>Previsualización de datos</Subtitulo>
 
-            <BotonEjecutar variant="outlined">
-            <TerminalIcon/>
-              <TextoBotonEjecutar sx={{ml: 1}}>Ejecutar</TextoBotonEjecutar>             
+            <BotonEjecutar variant="outlined" onClick={vistaPrevia}>
+              <TerminalIcon />
+              <TextoBotonEjecutar sx={{ ml: 1 }}>Ejecutar</TextoBotonEjecutar>
             </BotonEjecutar>
+            <Tabla dataColumnas={dataColumnas} dataFilas={dataFilas} />
 
             <Subtitulo>
               Paso 1: Descripción de la estructura de los datos.
             </Subtitulo>
-
-            <Tabla/>
-
 
             <Subtitulo>Paso 2: Identificación de datos faltantes.</Subtitulo>
             <Subtitulo>Paso 3: Detección de valores atípicos.</Subtitulo>
             <Subtitulo>
               Paso 4: Identificación de relaciones entre pares variables.
             </Subtitulo>
-            <Codigo>
-              Esto es un codigo
-            </Codigo>
-            
+            <Codigo>Esto es un codigo</Codigo>
           </Contenedor>
         </Box>
       </Grid>
