@@ -1,10 +1,11 @@
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box, Button } from "@mui/material";
 import Tabla from "../Componentes/Tabla";
 //import FormControl from "../Componentes/FormControl";
 
 //Datos
-import { dataColumnas, dataFilas } from "../API/datosEDA";
+//import { dataColumnas, dataFilas } from "../API/datosEDA";
 
 //Iconos
 import TerminalIcon from "@mui/icons-material/Terminal";
@@ -56,15 +57,33 @@ const TextoBotonEjecutar = styled(Typography)({
   fontWeight: "bold",
 });
 
+
+
+export default function EDA() {
+  const [dataColumnas, setDataColumnas] = useState([]);
+  const [dataFilas, setDataFilas] = useState([]);
+
 //Funciones
 function vistaPrevia() {
-  const Http = new XMLHttpRequest();
-  const url = "http://127.0.0.1:8000/vistaPrevia";
-  Http.open("GET", url);
-  Http.send();
+  var requestOptions = {
+    method: "GET"
+  };
+
+  fetch(
+    "http://127.0.0.1:8000/vistaPrevia",
+    requestOptions
+  )
+    .then((response) => {
+      return response.json();
+    })
+    .then((result) => {
+      setDataColumnas(result[0]);
+      setDataFilas(result[1]);
+    })
+    .catch((error) => console.log("error", error));
 }
 
-export default function Home() {
+
   return (
     <Grid container>
       <Grid

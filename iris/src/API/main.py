@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Form
+from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 
 
@@ -17,6 +18,20 @@ class dataframe:
         self.sizeFilas = len(self.filas)
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+    "localhost:3000"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
 """
 @app.post("/")
 async def init(username: str = Form(...)):
@@ -75,13 +90,9 @@ def vistaPrevia():
         print(columnas)
 
         #Retornamos los elementos
-        with open("datosEDA.js", "w") as file:
-            file.write("export const dataColumnas="+str(columnas) +
-                    "\nexport const dataFilas="+str(filas))
-
-        return "True"
+        return [columnas,filas]
     else:
-        return "False"
+        return [[],[]]
 
 
 
