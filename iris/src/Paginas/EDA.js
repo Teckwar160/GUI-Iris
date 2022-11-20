@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box, Button } from "@mui/material";
 import Tabla from "../Componentes/Tabla";
-//import FormControl from "../Componentes/FormControl";
-
-//Datos
-//import { dataColumnas, dataFilas } from "../API/datosEDA";
 
 //Iconos
 import TerminalIcon from "@mui/icons-material/Terminal";

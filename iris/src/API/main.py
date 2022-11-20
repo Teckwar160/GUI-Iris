@@ -13,7 +13,7 @@ class dataframe:
     def __init__(self,csv):
         self.raw = pd.read_csv(csv)
         self.columnas = self.raw.columns.values.tolist()
-        self.filas = filasRaw = self.raw.values.tolist()
+        self.filas = self.raw.values.tolist()
         self.sizeColumnas = len(self.columnas)
         self.sizeFilas = len(self.filas)
 
@@ -32,12 +32,6 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-"""
-@app.post("/")
-async def init(username: str = Form(...)):
-    return username
-"""
-
 @app.post("/")
 async def init(csv: str = Form(...)):
     global data 
@@ -47,15 +41,17 @@ async def init(csv: str = Form(...)):
 
 @app.get("/vistaPrevia")
 def vistaPrevia():
+    # Dataframe
     global data
+
     if data != None:
-        # Obtenemos las filas y columnas
-        columnas = data.columnas#raw.columns.values.tolist()
+        # Obtenemos columnas
+        columnas = data.columnas
+
         # Agregamos una columna vacia para los indices
         if columnas[0] != "":
             columnas.insert(0,"")
-        filasRaw = data.filas # raw.values.tolist()
-
+        
         # Lista que contendra las filas
         filas = []
 
@@ -63,37 +59,30 @@ def vistaPrevia():
         filasHead = data.raw.head().values.tolist()
         filasTail = data.raw.tail().values.tolist()
 
-        tam = len(filasRaw)
+        # Agregamos los indices
+        tam = len(data.filas)
         for i in range(0,5):
             filasHead[i].insert(0,i)
             filasTail[4-i].insert(0,tam-i+1)
 
+        # Agregamos un separador
         filasSeparador = []
 
-        #Agregamos un separador
         for i in columnas:
             filasSeparador.append("...")
         filasHead.append(filasSeparador)
 
-        #Unimos las listas
+        # Unimos las listas
         filasRaw = filasHead+filasTail
 
-        #Convertimos a string todos los elementos para que sean mostrados
+        # Convertimos a string todos los elementos para que sean mostrados
         for fila in filasRaw:
             f = []
             for i in fila:
                 f.append(str(i))
             filas.append(f)
 
-        print(filas)
-        print("\n")
-        print(columnas)
-
-        #Retornamos los elementos
+        # Retornamos los elementos
         return [columnas,filas]
     else:
         return [[],[]]
-
-
-
-#generaFilasColumnas()
