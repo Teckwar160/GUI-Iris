@@ -93,4 +93,4 @@ async def uploadDataframe(file: UploadFile):
     global data
     data = conjuntoDatos(pd.read_csv(file.file))
 
-    return {"filename": file.filename}
+    return {"Archivo cargado": file.filename}

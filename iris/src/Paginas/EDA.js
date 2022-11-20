@@ -1,7 +1,11 @@
+//Bibliotecas
 import React, { useState} from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box, Button } from "@mui/material";
+
+//Componentes
 import Tabla from "../Componentes/Tabla";
+import InputWithIcon from "../Componentes/FormControl";
 
 //Iconos
 import TerminalIcon from "@mui/icons-material/Terminal";
@@ -40,7 +44,7 @@ const Codigo = styled("div")({
   color: "Black",
 });
 
-const BotonEjecutar = styled(Button)(({ theme }) => ({
+const Boton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(purple[500]),
   backgroundColor: purple[400],
   "&:hover": {
@@ -48,7 +52,7 @@ const BotonEjecutar = styled(Button)(({ theme }) => ({
   },
 }));
 
-const TextoBotonEjecutar = styled(Typography)({
+const TextoBoton = styled(Typography)({
   fontFamily: "Roboto",
   fontWeight: "bold",
 });
@@ -105,10 +109,13 @@ function vistaPrevia() {
 
             <Subtitulo>Previsualización de datos</Subtitulo>
 
-            <BotonEjecutar variant="outlined" onClick={vistaPrevia}>
+            <Boton variant="outlined" onClick={vistaPrevia}>
               <TerminalIcon />
-              <TextoBotonEjecutar sx={{ ml: 1 }}>Ejecutar</TextoBotonEjecutar>
-            </BotonEjecutar>
+              <TextoBoton sx={{ ml: 1 }}>Ejecutar</TextoBoton>
+            </Boton>
+
+            <InputWithIcon/>
+
             <Tabla dataColumnas={dataColumnas} dataFilas={dataFilas} />
 
             <Subtitulo>
