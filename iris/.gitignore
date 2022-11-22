@@ -14,6 +14,9 @@
 # Cache Python
 /src/API/__pycache__/
 
+#Base de datos
+/src/API/iris.db
+
 # misc
 .DS_Store
 .env.local
