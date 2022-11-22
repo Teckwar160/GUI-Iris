@@ -41,9 +41,53 @@ def insertarFila(nombre, datos, descripcion):
     baseIris.commit()
     baseIris.close()
 
+def leerFilas():
+    baseIris = sql.connect("iris.db")
 
-if __name__ == "__main__":
-    #crearBase()
-    #crearTabla()
-    insertarFila("Proyecto2","http:www.google.com","Es un proyecto de prueba")
-    
+    cursor = baseIris.cursor()
+
+    instruccion = f"SELECT * FROM Proyectos"
+
+    cursor.execute(instruccion)
+
+    datos = cursor.fetchall()
+
+    baseIris.commit()
+    baseIris.close()
+    print(datos)
+
+def actualizarNombre(Id,Nombre):
+    baseIris = sql.connect("iris.db")
+
+    cursor = baseIris.cursor()
+
+    instruccion = f"UPDATE Proyectos SET Nombre='{Nombre}' WHERE Id={Id}"
+
+    cursor.execute(instruccion)
+
+    baseIris.commit()
+    baseIris.close()
+
+def actualizarDescripcion(Id,Descripcion):
+    baseIris = sql.connect("iris.db")
+
+    cursor = baseIris.cursor()
+
+    instruccion = f"UPDATE Proyectos SET Descripción='{Descripcion}' WHERE Id={Id}"
+
+    cursor.execute(instruccion)
+
+    baseIris.commit()
+    baseIris.close()
+
+def eliminarFila(Id):
+    baseIris = sql.connect("iris.db")
+
+    cursor = baseIris.cursor()
+
+    instruccion = f"DELETE FROM Proyectos WHERE Id={Id}"
+
+    cursor.execute(instruccion)
+
+    baseIris.commit()
+    baseIris.close()
