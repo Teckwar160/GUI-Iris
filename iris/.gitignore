@@ -16,6 +16,7 @@
 
 #Base de datos
 /src/API/iris.db
+/src/API/Proyectos
 
 # misc
 .DS_Store

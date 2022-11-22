@@ -2,6 +2,8 @@ from fastapi import FastAPI, Form, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 
+import controlBaseDeDatos as bd
+
 # Variable global que contendra los conjuntos de datos
 data = None
 
@@ -94,3 +96,25 @@ async def uploadDataframe(file: UploadFile):
     data = conjuntoDatos(pd.read_csv(file.file))
 
     return {"Archivo cargado": file.filename}
+
+@app.post("/create/Proyecto")
+async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), descripcion: str = Form(...)):
+
+    # Creamos un dataframe
+    data = pd.read_csv(file.file)
+
+    # Ruta de guardado
+    ruta = "Proyectos/"+nombre+"_"+file.filename
+
+    # Guardamos el archivo
+    with open(ruta,"w") as archivo:
+        data.to_csv(archivo)
+
+    #Ingresamos los datos a la base de datos
+    bd.insertarFila(nombre,ruta,descripcion)
+    
+
+    return True
+    
+
+

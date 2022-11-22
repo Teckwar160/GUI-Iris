@@ -54,7 +54,8 @@ def leerFilas():
 
     baseIris.commit()
     baseIris.close()
-    print(datos)
+    
+    return datos
 
 def actualizarNombre(Id,Nombre):
     baseIris = sql.connect("iris.db")
