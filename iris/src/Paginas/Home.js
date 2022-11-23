@@ -1,5 +1,8 @@
 import { styled } from "@mui/material/styles";
-import { Typography, Grid, Box} from "@mui/material";
+import { Typography, Grid, Box } from "@mui/material";
+
+//Componentes
+import IngresarDataFrame from "../Componentes/IngresarDataFrame";
 
 const TextoBold = styled(Typography)({
   color: "black",
@@ -10,6 +13,7 @@ const TextoBold = styled(Typography)({
 export default function Home() {
   return (
     <Grid container>
+      {/*Creación de proyectos*/}
       <Grid
         item
         xs={12}
@@ -17,32 +21,26 @@ export default function Home() {
         md={12}
         sx={{
           minHeight: "100vh",
-          backgroundColor: "beige",
+          backgroundColor: "white",
         }}
       >
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed silver" }}>
-            <TextoBold variant="h5">Home</TextoBold>
+            <TextoBold variant="h5">Crear proyecto</TextoBold>
 
             <Typography textAlign={"justify"}>
-              Proyecto de minería
-            </Typography>
-
-            <TextoBold variant="h6">Definiciones</TextoBold>
-
-            <Typography textAlign={"justify"}>
-              descripciones
-            </Typography>
-
-
-            <TextoBold variant="h6">Titulo</TextoBold>
-            <Typography textAlign={"justify"}>
-              Texto
+              Ingresa los datos requeridos para crear un proyecto o inicia uno
+              que se encuentre almacenado.
             </Typography>
           </Box>
         </Box>
-      </Grid>
 
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+            <IngresarDataFrame />
+          </Box>
+        </Box>
+      </Grid>
     </Grid>
   );
 }

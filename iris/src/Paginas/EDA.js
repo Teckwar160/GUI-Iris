@@ -1,11 +1,10 @@
 //Bibliotecas
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box, Button } from "@mui/material";
 
 //Componentes
 import Tabla from "../Componentes/Tabla";
-import InputWithIcon from "../Componentes/FormControl";
 
 //Iconos
 import TerminalIcon from "@mui/icons-material/Terminal";
@@ -32,11 +31,6 @@ const Parrafo = styled(Typography)({
   textAlign: "justify",
 });
 
-const Contenedor = styled(Box)({
-  padding: 10,
-  border: "1px solid silver",
-});
-
 const Codigo = styled("div")({
   border: "1px solid lightgray",
   boxShadow: "60px",
@@ -57,32 +51,26 @@ const TextoBoton = styled(Typography)({
   fontWeight: "bold",
 });
 
-
-
 export default function EDA() {
   const [dataColumnas, setDataColumnas] = useState([]);
   const [dataFilas, setDataFilas] = useState([]);
 
-//Funciones
-function vistaPrevia() {
-  var requestOptions = {
-    method: "GET"
-  };
+  //Funciones
+  function vistaPrevia() {
+    var requestOptions = {
+      method: "GET",
+    };
 
-  fetch(
-    "http://127.0.0.1:8000/vistaPrevia",
-    requestOptions
-  )
-    .then((response) => {
-      return response.json();
-    })
-    .then((result) => {
-      setDataColumnas(result[0]);
-      setDataFilas(result[1]);
-    })
-    .catch((error) => console.log("error", error));
-}
-
+    fetch("http://127.0.0.1:8000/vistaPrevia", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setDataColumnas(result[0]);
+        setDataFilas(result[1]);
+      })
+      .catch((error) => console.log("error", error));
+  }
 
   return (
     <Grid container>
@@ -97,7 +85,7 @@ function vistaPrevia() {
         }}
       >
         <Box sx={{ padding: 2 }}>
-          <Contenedor>
+          <Box sx={{ p: 2, border: "5px dashed silver" }}>
             <Titulo textAlign={"center"}>EDA</Titulo>
 
             <Subtitulo>Propósito</Subtitulo>
@@ -114,8 +102,6 @@ function vistaPrevia() {
               <TextoBoton sx={{ ml: 1 }}>Ejecutar</TextoBoton>
             </Boton>
 
-            <InputWithIcon/>
-
             <Tabla dataColumnas={dataColumnas} dataFilas={dataFilas} />
 
             <Subtitulo>
@@ -128,7 +114,7 @@ function vistaPrevia() {
               Paso 4: Identificación de relaciones entre pares variables.
             </Subtitulo>
             <Codigo>Esto es un codigo</Codigo>
-          </Contenedor>
+          </Box>
         </Box>
       </Grid>
     </Grid>
