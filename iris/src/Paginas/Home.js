@@ -63,14 +63,10 @@ export default function Home() {
             <IngresarDataFrame actualizaProyectos={traeProyectos} />
           </Box>
         </Box>
-
-        {/*Componente para mostrar los proyectos*/}
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
-            <MostrarProyectos proyectos={proyectos} />
-          </Box>
-        </Box>
       </Grid>
+
+      {/*Componente para mostrar los proyectos*/}
+      <MostrarProyectos proyectos={proyectos} />
     </Grid>
   );
 }

@@ -6,6 +6,7 @@ import {
   CardActions,
   Card,
   Box,
+  Grid,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -31,28 +32,32 @@ const TextoBoton = styled(Typography)({
 
 export default function MostrarProyectos(Props) {
   return Props.proyectos.map((proyecto, index) => (
-    <Box sx={{ padding: 2 }}>
-      <Card variant="outlined">
-        <React.Fragment>
-          <CardContent>
-            <Typography sx={{ fontSize: 14 }} color="text.secondary">
-              ID: {proyecto[0]}
-            </Typography>
+    <Grid item xs={6} sm={6} md={6}>
+      <Box sx={{ padding: 2 }}>
+        <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Card variant="outlined">
+            <React.Fragment>
+              <CardContent>
+                <Typography sx={{ fontSize: 14 }} color="text.secondary">
+                  ID: {proyecto[0]}
+                </Typography>
 
-            <Typography variant="h6" fontWeight="bold">
-              Nombre: {proyecto[1]}
-            </Typography>
-            <Typography color="text.secondary">Descripción</Typography>
-            <Typography sx={{ fontSize: 14 }}>{proyecto[3]}</Typography>
-          </CardContent>
-          <CardActions>
-            <Boton sx={{ mr: 1, ml: 1 }}>
-              <InputIcon />
-              <TextoBoton>Cargar proyecto</TextoBoton>
-            </Boton>
-          </CardActions>
-        </React.Fragment>
-      </Card>
-    </Box>
+                <Typography variant="h6" fontWeight="bold">
+                  Nombre: {proyecto[1]}
+                </Typography>
+                <Typography color="text.secondary">Descripción</Typography>
+                <Typography sx={{ fontSize: 14 }}>{proyecto[3]}</Typography>
+              </CardContent>
+              <CardActions>
+                <Boton sx={{ mr: 1, ml: 1 }}>
+                  <InputIcon />
+                  <TextoBoton>Cargar proyecto</TextoBoton>
+                </Boton>
+              </CardActions>
+            </React.Fragment>
+          </Card>
+        </Box>
+      </Box>
+    </Grid>
   ));
 }
