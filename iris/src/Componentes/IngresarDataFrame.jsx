@@ -30,6 +30,7 @@ const Boton = styled(Button)(({ theme }) => ({
 const TextoBoton = styled(Typography)({
   fontFamily: "Roboto",
   fontWeight: "bold",
+  fontSize: "14px"
 });
 
 export default function IngresarDataFrame(Props) {

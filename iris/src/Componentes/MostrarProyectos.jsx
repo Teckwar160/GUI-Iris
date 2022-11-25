@@ -15,6 +15,8 @@ import { purple } from "@mui/material/colors";
 
 // Iconos
 import InputIcon from "@mui/icons-material/Input";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 // Estilos
 const Boton = styled(Button)(({ theme }) => ({
@@ -28,6 +30,7 @@ const Boton = styled(Button)(({ theme }) => ({
 const TextoBoton = styled(Typography)({
   fontFamily: "Roboto",
   fontWeight: "bold",
+  fontSize: "14px"
 });
 
 export default function MostrarProyectos(Props) {
@@ -52,6 +55,16 @@ export default function MostrarProyectos(Props) {
                 <Boton sx={{ mr: 1, ml: 1 }}>
                   <InputIcon />
                   <TextoBoton>Cargar proyecto</TextoBoton>
+                </Boton>
+
+                <Boton sx={{ mr: 1, ml: 1 }}>
+                  <DeleteIcon />
+                  <TextoBoton>Borrar proyecto</TextoBoton>
+                </Boton>
+
+                <Boton sx={{ mr: 1, ml: 1 }}>
+                  <EditIcon />
+                  <TextoBoton>Editar proyecto</TextoBoton>
                 </Boton>
               </CardActions>
             </React.Fragment>
