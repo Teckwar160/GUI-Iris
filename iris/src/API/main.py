@@ -115,6 +115,10 @@ async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), 
     
 
     return True
+
+@app.get("/trae/Proyectos")
+async def traeProyectos():
+    return bd.leerFilas()
     
 
 

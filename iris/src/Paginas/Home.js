@@ -1,8 +1,10 @@
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box } from "@mui/material";
 
 //Componentes
 import IngresarDataFrame from "../Componentes/IngresarDataFrame";
+import MostrarProyectos from "../Componentes/MostrarProyectos";
 
 const TextoBold = styled(Typography)({
   color: "black",
@@ -11,19 +13,39 @@ const TextoBold = styled(Typography)({
 });
 
 export default function Home() {
+  const [proyectos, setProyectos] = useState([]);
+
+  useEffect(() => {
+    traeProyectos();
+    // eslint-disable-next-line
+  }, []);
+
+  function traeProyectos() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/trae/Proyectos", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setProyectos(result);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
   return (
-    <Grid container>
+    <Grid
+      container
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "white",
+      }}
+    >
       {/*Creación de proyectos*/}
-      <Grid
-        item
-        xs={12}
-        sm={12}
-        md={12}
-        sx={{
-          minHeight: "100vh",
-          backgroundColor: "white",
-        }}
-      >
+      <Grid item xs={12} sm={12} md={12}>
+        {/*Titulo*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed silver" }}>
             <TextoBold variant="h5">Crear proyecto</TextoBold>
@@ -35,9 +57,17 @@ export default function Home() {
           </Box>
         </Box>
 
+        {/*Componente para subir los proyectos*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed silver" }}>
-            <IngresarDataFrame />
+            <IngresarDataFrame actualizaProyectos={traeProyectos} />
+          </Box>
+        </Box>
+
+        {/*Componente para mostrar los proyectos*/}
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+            <MostrarProyectos proyectos={proyectos} />
           </Box>
         </Box>
       </Grid>

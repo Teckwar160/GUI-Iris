@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Input from "@mui/material/Input";
-import FormControl from "@mui/material/FormControl";
 import { styled } from "@mui/material/styles";
 import {
   Typography,
@@ -8,6 +6,8 @@ import {
   Box,
   InputLabel,
   InputAdornment,
+  Input,
+  FormControl,
 } from "@mui/material";
 
 //Iconos
@@ -32,7 +32,7 @@ const TextoBoton = styled(Typography)({
   fontWeight: "bold",
 });
 
-export default function IngresarDataFrame() {
+export default function IngresarDataFrame(Props) {
   const [file, setFile] = useState(null);
   const [nombreProyecto, setNombreProyecto] = useState("");
   const [descripcionProyecto, setDescripcionProyecto] = useState("");
@@ -43,9 +43,7 @@ export default function IngresarDataFrame() {
 
     if (!allowedExtensions.exec(filePath)) {
       alert("Unicamente se permiten archivos de tipo .csv.");
-
     } else {
-
       setFile(e.target.files[0]);
     }
   }
@@ -86,7 +84,11 @@ export default function IngresarDataFrame() {
           return response.json();
         })
         .then((result) => {
+          // Indicamos que todo salio bien
           alert("Se cargo el archivo");
+
+          // Actualizamos la lista de proyectos
+          Props.actualizaProyectos();
         })
         .catch((error) => console.log("error", error));
     }
@@ -129,6 +131,7 @@ export default function IngresarDataFrame() {
             <Input
               id="subirDataFrame"
               type="file"
+              key={file}
               inputProps={{ accept: ".csv" }}
               onChange={cargaDatos}
               style={{ display: "none" }}
