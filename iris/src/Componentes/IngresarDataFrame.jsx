@@ -38,7 +38,16 @@ export default function IngresarDataFrame() {
   const [descripcionProyecto, setDescripcionProyecto] = useState("");
 
   function cargaDatos(e) {
-    setFile(e.target.files[0]);
+    let filePath = e.target.value;
+    let allowedExtensions = /(.csv)$/i;
+
+    if (!allowedExtensions.exec(filePath)) {
+      alert("Unicamente se permiten archivos de tipo .csv.");
+
+    } else {
+
+      setFile(e.target.files[0]);
+    }
   }
 
   function cargaNombreProyecto(e) {
@@ -50,27 +59,37 @@ export default function IngresarDataFrame() {
   }
 
   function envia() {
+    // Verificamos que tengamos los compos completos
     if (!file || nombreProyecto === "" || descripcionProyecto === "") {
       alert("Falta rellenar alguno de los campos");
       return;
+    } else {
+      // Ingresamos los datos
+      const formdata = new FormData();
+      formdata.append("nombre", nombreProyecto);
+      formdata.append("file", file);
+      formdata.append("descripcion", descripcionProyecto);
+
+      // Reseteamos las variables
+      setNombreProyecto("");
+      setFile(null);
+      setDescripcionProyecto("");
+
+      // Realizamos la petición
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+      };
+
+      fetch("http://127.0.0.1:8000/crear/Proyecto", requestOptions)
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          alert("Se cargo el archivo");
+        })
+        .catch((error) => console.log("error", error));
     }
-
-    const formdata = new FormData();
-    formdata.append("file", file);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch("http://127.0.0.1:8000/upload/dataframe", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        alert("Se cargo el archivo");
-      })
-      .catch((error) => console.log("error", error));
   }
   return (
     <Box>
@@ -81,6 +100,7 @@ export default function IngresarDataFrame() {
             <Input
               id="Nombre del proyecto"
               type="text"
+              value={nombreProyecto}
               onChange={cargaNombreProyecto}
               startAdornment={
                 <InputAdornment position="start">
@@ -95,6 +115,7 @@ export default function IngresarDataFrame() {
             <Input
               id="Descripcion del proyecto"
               type="text"
+              value={descripcionProyecto}
               onChange={cargaDescripcionProyecto}
               startAdornment={
                 <InputAdornment position="start">
@@ -108,6 +129,7 @@ export default function IngresarDataFrame() {
             <Input
               id="subirDataFrame"
               type="file"
+              inputProps={{ accept: ".csv" }}
               onChange={cargaDatos}
               style={{ display: "none" }}
             />

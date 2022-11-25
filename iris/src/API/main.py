@@ -97,7 +97,7 @@ async def uploadDataframe(file: UploadFile):
 
     return {"Archivo cargado": file.filename}
 
-@app.post("/create/Proyecto")
+@app.post("/crear/Proyecto")
 async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), descripcion: str = Form(...)):
 
     # Creamos un dataframe
