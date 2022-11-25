@@ -32,7 +32,7 @@ const TextoBoton = styled(Typography)({
 
 export default function MostrarProyectos(Props) {
   return Props.proyectos.map((proyecto, index) => (
-    <Grid item xs={6} sm={6} md={6}>
+    <Grid item xs={12} sm={12} md={6}>
       <Box sx={{ padding: 2 }}>
         <Box sx={{ p: 2, border: "5px dashed silver" }}>
           <Card variant="outlined">
