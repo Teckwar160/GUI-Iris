@@ -69,7 +69,7 @@ export default function Home() {
             />
           </Box>
         </Box>
-        <EditarProyecto visible={visibleEditar} proyectos={proyectos} />
+        <EditarProyecto visible={visibleEditar} proyectos={proyectos} actualizaProyectos={traeProyectos}/>
       </Grid>
 
       {/*Componente para mostrar los proyectos*/}

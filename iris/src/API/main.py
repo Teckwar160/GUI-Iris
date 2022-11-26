@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Form, UploadFile, File
+from fastapi import FastAPI, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+import random
 import pandas as pd
 
 import controlBaseDeDatos as bd
@@ -31,14 +32,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"]
 )
-
-
-@app.post("/")
-async def init(csv: str = Form(...)):
-    global data
-    data = conjuntoDatos(csv)
-    return "done"
-
 
 @app.get("/vistaPrevia")
 async def vistaPrevia():
@@ -88,15 +81,6 @@ async def vistaPrevia():
     else:
         return [[], []]
 
-
-@app.post("/upload/dataframe")
-async def uploadDataframe(file: UploadFile):
-
-    global data
-    data = conjuntoDatos(pd.read_csv(file.file))
-
-    return {"Archivo cargado": file.filename}
-
 @app.post("/crear/Proyecto")
 async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), descripcion: str = Form(...)):
 
@@ -104,7 +88,7 @@ async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), 
     data = pd.read_csv(file.file)
 
     # Ruta de guardado
-    ruta = "Proyectos/"+nombre+"_"+file.filename
+    ruta = "Proyectos/"+str(random.randint(0, 9999))+"_"+file.filename
 
     # Guardamos el archivo
     with open(ruta,"w") as archivo:
@@ -113,12 +97,21 @@ async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), 
     #Ingresamos los datos a la base de datos
     bd.insertarFila(nombre,ruta,descripcion)
     
-
     return True
 
 @app.get("/trae/Proyectos")
 async def traeProyectos():
     return bd.leerFilas()
+
+@app.post("/editar/Proyecto")
+async def createProyecto(id: int = Form(...), nombre: str = Form(...), descripcion: str = Form(...)):
+
+    #Actualizamos los valores
+    bd.actualizarNombre(id,nombre)
+
+    bd.actualizarDescripcion(id,descripcion)
+
+    return True
     
 
 

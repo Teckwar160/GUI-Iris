@@ -2,10 +2,11 @@ import * as React from "react";
 import { Select, FormControl, MenuItem, InputLabel, Box } from "@mui/material";
 
 export default function SelectorDeProyecto(Props) {
-  const [age, setAge] = React.useState("");
+  const [proyecto, setProyecto] = React.useState("");
 
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setProyecto(event.target.value);
+    Props.setId(event.target.value);
   };
 
   return (
@@ -15,7 +16,7 @@ export default function SelectorDeProyecto(Props) {
         <Select
           labelId="Proyectos"
           id="Proyectos"
-          value={age}
+          value={proyecto}
           label="Proyectos"
           onChange={handleChange}
         >

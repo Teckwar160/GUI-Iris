@@ -36,20 +36,9 @@ const TextoBoton = styled(Typography)({
 });
 
 export default function EditarProyecto(Props) {
-  const [file, setFile] = useState(null);
   const [nombreProyecto, setNombreProyecto] = useState("");
   const [descripcionProyecto, setDescripcionProyecto] = useState("");
-
-  function cargaDatos(e) {
-    let filePath = e.target.value;
-    let allowedExtensions = /(.csv)$/i;
-
-    if (!allowedExtensions.exec(filePath)) {
-      alert("Unicamente se permiten archivos de tipo .csv.");
-    } else {
-      setFile(e.target.files[0]);
-    }
-  }
+  const [idProyecto, setIdProyecto] = useState(null);
 
   function cargaNombreProyecto(e) {
     setNombreProyecto(e.target.value);
@@ -61,19 +50,23 @@ export default function EditarProyecto(Props) {
 
   function envia() {
     // Verificamos que tengamos los compos completos
-    if (!file || nombreProyecto === "" || descripcionProyecto === "") {
+    if (
+      idProyecto === null ||
+      nombreProyecto === "" ||
+      descripcionProyecto === ""
+    ) {
       alert("Falta rellenar alguno de los campos");
       return;
     } else {
       // Ingresamos los datos
       const formdata = new FormData();
+      formdata.append("id", idProyecto);
       formdata.append("nombre", nombreProyecto);
-      formdata.append("file", file);
       formdata.append("descripcion", descripcionProyecto);
 
       // Reseteamos las variables
+      setIdProyecto(null);
       setNombreProyecto("");
-      setFile(null);
       setDescripcionProyecto("");
 
       // Realizamos la petición
@@ -82,13 +75,13 @@ export default function EditarProyecto(Props) {
         body: formdata,
       };
 
-      fetch("http://127.0.0.1:8000/crear/Proyecto", requestOptions)
+      fetch("http://127.0.0.1:8000/editar/Proyecto", requestOptions)
         .then((response) => {
           return response.json();
         })
         .then((result) => {
           // Indicamos que todo salio bien
-          alert("Se cargo el archivo");
+          alert("Se actualizo correctamente el proyecto");
 
           // Actualizamos la lista de proyectos
           Props.actualizaProyectos();
@@ -102,9 +95,12 @@ export default function EditarProyecto(Props) {
         <Box sx={{ p: 2, border: "5px dashed silver" }}>
           <div align="center">
             <Box sx={{ padding: 2 }}>
-            <FormControl sx={{ padding: 2 }}>
-            <SelectorDeProyecto proyectos={Props.proyectos}/>
-            </FormControl>
+              <FormControl sx={{ padding: 2 }}>
+                <SelectorDeProyecto
+                  proyectos={Props.proyectos}
+                  setId={setIdProyecto}
+                />
+              </FormControl>
               <FormControl sx={{ padding: 2 }}>
                 <InputLabel>Nombre del proyecto</InputLabel>
                 <Input
