@@ -92,3 +92,19 @@ def eliminarFila(Id):
 
     baseIris.commit()
     baseIris.close()
+
+def buscarFila(Id):
+    baseIris = sql.connect("iris.db")
+
+    cursor = baseIris.cursor()
+
+    instruccion = f"SELECT * FROM Proyectos WHERE Id={Id}"
+
+    cursor.execute(instruccion)
+
+    datos = cursor.fetchall()
+
+    baseIris.commit()
+    baseIris.close()
+    
+    return datos

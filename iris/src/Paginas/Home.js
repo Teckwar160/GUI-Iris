@@ -7,6 +7,7 @@ import IngresarDataFrame from "../Componentes/IngresarDataFrame";
 import MostrarProyectos from "../Componentes/MostrarProyectos";
 import EditarProyecto from "../Componentes/EditarProyecto";
 import EliminarProyecto from "../Componentes/EliminarProyecto";
+import CargarProyecto from "../Componentes/CargarProyecto";
 
 const TextoBold = styled(Typography)({
   color: "black",
@@ -18,6 +19,7 @@ export default function Home() {
   const [proyectos, setProyectos] = useState([]);
   const [visibleEditar, setVisibleEditar] = useState(false);
   const [visibleEliminar, setVisibleEliminar] = useState(false);
+  const [visibleCargar, setVisibleCargar] = useState(false);
 
   useEffect(() => {
     traeProyectos();
@@ -70,11 +72,14 @@ export default function Home() {
               funcionEditar={setVisibleEditar}
               visibleEliminar={visibleEliminar}
               funcionEliminar={setVisibleEliminar}
+              visibleCargar={visibleCargar}
+              funcionCargar={setVisibleCargar}
             />
           </Box>
         </Box>
         <EditarProyecto visible={visibleEditar} proyectos={proyectos} actualizaProyectos={traeProyectos}/>
         <EliminarProyecto visible={visibleEliminar} proyectos={proyectos} actualizaProyectos={traeProyectos}/>
+        <CargarProyecto visible={visibleCargar} proyectos={proyectos} actualizaProyectos={traeProyectos}/>
       </Grid>
 
       {/*Componente para mostrar los proyectos*/}

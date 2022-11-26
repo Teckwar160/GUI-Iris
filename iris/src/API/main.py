@@ -94,7 +94,7 @@ async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), 
     with open(ruta,"w") as archivo:
         data.to_csv(archivo)
 
-    #Ingresamos los datos a la base de datos
+    # Ingresamos los datos a la base de datos
     bd.insertarFila(nombre,ruta,descripcion)
     
     return True
@@ -106,7 +106,7 @@ async def traeProyectos():
 @app.post("/editar/Proyecto")
 async def createProyecto(id: int = Form(...), nombre: str = Form(...), descripcion: str = Form(...)):
 
-    #Actualizamos los valores
+    # Actualizamos los valores
     bd.actualizarNombre(id,nombre)
 
     bd.actualizarDescripcion(id,descripcion)
@@ -116,9 +116,21 @@ async def createProyecto(id: int = Form(...), nombre: str = Form(...), descripci
 @app.post("/eliminar/Proyecto")
 async def createProyecto(id: int = Form(...)):
 
-    #Actualizamos los valores
+    # Eliminamos el proyecto
     bd.eliminarFila(id)
 
+    return True
+
+@app.post("/cargar/Proyecto")
+async def createProyecto(id: int = Form(...)):
+    global data
+
+    # Buscamos el proyecto
+    fila = bd.buscarFila(id)
+
+    # Cargamos el proyecto
+    data = conjuntoDatos(pd.read_csv(str(fila[0][2])))
+    
     return True
     
 

@@ -6,7 +6,7 @@ import { Typography, Button, Box, FormControl } from "@mui/material";
 import SelectorDeProyecto from "./SelectorDeProyecto";
 
 //Iconos
-import DeleteIcon from "@mui/icons-material/Delete";
+import InputIcon from "@mui/icons-material/Input";
 
 //Colores
 import { purple } from "@mui/material/colors";
@@ -26,10 +26,10 @@ const TextoBoton = styled(Typography)({
   fontSize: "14px",
 });
 
-export default function EliminarProyecto(Props) {
+export default function CargarProyecto(Props) {
   const [idProyecto, setIdProyecto] = useState(null);
 
-  function eliminarProyecto() {
+  function cargarProyecto() {
     if (idProyecto === null) {
       alert("Selecciona un proyecto");
     } else {
@@ -43,13 +43,13 @@ export default function EliminarProyecto(Props) {
         body: formdata,
       };
 
-      fetch("http://127.0.0.1:8000/eliminar/Proyecto", requestOptions)
+      fetch("http://127.0.0.1:8000/cargar/Proyecto", requestOptions)
         .then((response) => {
           return response.json();
         })
         .then((result) => {
           // Indicamos que todo salio bien
-          alert("Se elimino correctamente el proyecto");
+          alert("Se cargo correctamente el proyecto");
 
           // Actualizamos la lista de proyectos
           Props.actualizaProyectos();
@@ -71,9 +71,9 @@ export default function EliminarProyecto(Props) {
                 />
               </FormControl>
               <FormControl variant="standard" sx={{ padding: 2 }}>
-                <Boton sx={{ mr: 1, ml: 1 }} onClick={eliminarProyecto}>
-                  <DeleteIcon />
-                  <TextoBoton>Eliminar proyecto</TextoBoton>
+                <Boton sx={{ mr: 1, ml: 1 }} onClick={cargarProyecto}>
+                  <InputIcon/>
+                  <TextoBoton>Cargar proyecto</TextoBoton>
                 </Boton>
               </FormControl>
             </Box>

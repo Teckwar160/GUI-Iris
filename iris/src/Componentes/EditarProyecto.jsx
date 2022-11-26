@@ -14,7 +14,7 @@ import {
 import SelectorDeProyecto from "./SelectorDeProyecto";
 
 //Iconos
-import SendIcon from "@mui/icons-material/Send";
+import EditIcon from "@mui/icons-material/Edit";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 
 //Colores
@@ -133,7 +133,7 @@ export default function EditarProyecto(Props) {
 
               <FormControl variant="standard" sx={{ padding: 2 }}>
                 <Boton sx={{ mr: 1, ml: 1 }} onClick={envia}>
-                  <SendIcon />
+                  <EditIcon />
                   <TextoBoton>Actualizar proyecto</TextoBoton>
                 </Boton>
               </FormControl>
