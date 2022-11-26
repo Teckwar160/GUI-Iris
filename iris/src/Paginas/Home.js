@@ -5,6 +5,7 @@ import { Typography, Grid, Box } from "@mui/material";
 //Componentes
 import IngresarDataFrame from "../Componentes/IngresarDataFrame";
 import MostrarProyectos from "../Componentes/MostrarProyectos";
+import EditarProyecto from "../Componentes/EditarProyecto";
 
 const TextoBold = styled(Typography)({
   color: "black",
@@ -14,6 +15,7 @@ const TextoBold = styled(Typography)({
 
 export default function Home() {
   const [proyectos, setProyectos] = useState([]);
+  const [visibleEditar, setVisibleEditar] = useState(false);
 
   useEffect(() => {
     traeProyectos();
@@ -60,9 +62,14 @@ export default function Home() {
         {/*Componente para subir los proyectos*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed silver" }}>
-            <IngresarDataFrame actualizaProyectos={traeProyectos} />
+            <IngresarDataFrame
+              actualizaProyectos={traeProyectos}
+              visibleEditar={visibleEditar}
+              funcionEditar={setVisibleEditar}
+            />
           </Box>
         </Box>
+        <EditarProyecto visible={visibleEditar} proyectos={proyectos} />
       </Grid>
 
       {/*Componente para mostrar los proyectos*/}

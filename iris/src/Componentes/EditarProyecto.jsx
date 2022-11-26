@@ -10,11 +10,12 @@ import {
   FormControl,
 } from "@mui/material";
 
+//Componentes
+import SelectorDeProyecto from "./SelectorDeProyecto";
+
 //Iconos
-import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SendIcon from "@mui/icons-material/Send";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
-import EditIcon from "@mui/icons-material/Edit";
 
 //Colores
 import { purple } from "@mui/material/colors";
@@ -34,14 +35,10 @@ const TextoBoton = styled(Typography)({
   fontSize: "14px",
 });
 
-export default function IngresarDataFrame(Props) {
+export default function EditarProyecto(Props) {
   const [file, setFile] = useState(null);
   const [nombreProyecto, setNombreProyecto] = useState("");
   const [descripcionProyecto, setDescripcionProyecto] = useState("");
-
-  function mostrarEditar() {
-    Props.funcionEditar(!Props.visibleEditar);
-  }
 
   function cargaDatos(e) {
     let filePath = e.target.value;
@@ -99,66 +96,57 @@ export default function IngresarDataFrame(Props) {
         .catch((error) => console.log("error", error));
     }
   }
-  return (
-    <Box>
-      <div align="center">
-        <Box sx={{ padding: 2 }}>
-          <FormControl sx={{ padding: 2 }}>
-            <InputLabel>Nombre del proyecto</InputLabel>
-            <Input
-              id="Nombre del proyecto"
-              type="text"
-              value={nombreProyecto}
-              onChange={cargaNombreProyecto}
-              startAdornment={
-                <InputAdornment position="start">
-                  <DriveFileRenameOutlineIcon />
-                </InputAdornment>
-              }
-            />
-          </FormControl>
+  if (Props.visible) {
+    return (
+      <Box sx={{ padding: 2 }}>
+        <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <div align="center">
+            <Box sx={{ padding: 2 }}>
+            <FormControl sx={{ padding: 2 }}>
+            <SelectorDeProyecto proyectos={Props.proyectos}/>
+            </FormControl>
+              <FormControl sx={{ padding: 2 }}>
+                <InputLabel>Nombre del proyecto</InputLabel>
+                <Input
+                  id="Nombre del proyecto"
+                  type="text"
+                  value={nombreProyecto}
+                  onChange={cargaNombreProyecto}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <DriveFileRenameOutlineIcon />
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
 
-          <FormControl sx={{ padding: 2 }}>
-            <InputLabel>Descripción del proyecto</InputLabel>
-            <Input
-              id="Descripcion del proyecto"
-              type="text"
-              value={descripcionProyecto}
-              onChange={cargaDescripcionProyecto}
-              startAdornment={
-                <InputAdornment position="start">
-                  <DriveFileRenameOutlineIcon />
-                </InputAdornment>
-              }
-            />
-          </FormControl>
+              <FormControl sx={{ padding: 2 }}>
+                <InputLabel>Descripción del proyecto</InputLabel>
+                <Input
+                  id="Descripcion del proyecto"
+                  type="text"
+                  value={descripcionProyecto}
+                  onChange={cargaDescripcionProyecto}
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <DriveFileRenameOutlineIcon />
+                    </InputAdornment>
+                  }
+                />
+              </FormControl>
 
-          <FormControl variant="standard" sx={{ padding: 2 }}>
-            <Input
-              id="subirDataFrame"
-              type="file"
-              key={file}
-              inputProps={{ accept: ".csv" }}
-              onChange={cargaDatos}
-              style={{ display: "none" }}
-            />
-            <label htmlFor="subirDataFrame">
-              <Boton component="span" sx={{ mr: 1, ml: 1 }}>
-                <UploadFileIcon />
-                <TextoBoton>Subir DataFrame</TextoBoton>
-              </Boton>
-              <Boton sx={{ mr: 1, ml: 1 }} onClick={envia}>
-                <SendIcon />
-                <TextoBoton>Enviar</TextoBoton>
-              </Boton>
-            </label>
-          </FormControl>
+              <FormControl variant="standard" sx={{ padding: 2 }}>
+                <Boton sx={{ mr: 1, ml: 1 }} onClick={envia}>
+                  <SendIcon />
+                  <TextoBoton>Actualizar Dataframe</TextoBoton>
+                </Boton>
+              </FormControl>
+            </Box>
+          </div>
         </Box>
-        <Boton sx={{ mr: 1, ml: 1 }} onClick={mostrarEditar}>
-          <EditIcon />
-          <TextoBoton>Editar proyecto</TextoBoton>
-        </Boton>
-      </div>
-    </Box>
-  );
+      </Box>
+    );
+  } else {
+    return null;
+  }
 }
