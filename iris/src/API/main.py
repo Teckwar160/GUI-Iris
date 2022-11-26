@@ -8,7 +8,9 @@ import controlBaseDeDatos as bd
 # Variable global que contendra los conjuntos de datos
 data = None
 
-# Clase que nos 
+# Clase que nos
+
+
 class conjuntoDatos:
     def __init__(self, csv):
         self.raw = csv
@@ -33,6 +35,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+
 @app.get("/vistaPrevia")
 async def vistaPrevia():
     # Dataframe
@@ -42,9 +45,8 @@ async def vistaPrevia():
         # Obtenemos columnas
         columnas = data.columnas
 
-        # Agregamos una columna vacia para los indices
-        if columnas[0] != "":
-            columnas.insert(0, "")
+        # Cambiamos el nombre de la primer columna
+        columnas[0] = ""
 
         # Lista que contendra las filas
         filas = []
@@ -52,12 +54,6 @@ async def vistaPrevia():
         # Obtenemos los primeros y ultimos 5 elementos del dataframe
         filasHead = data.raw.head().values.tolist()
         filasTail = data.raw.tail().values.tolist()
-
-        # Agregamos los indices
-        tam = len(data.filas)
-        for i in range(0, 5):
-            filasHead[i].insert(0, i)
-            filasTail[4-i].insert(0, tam-i+1)
 
         # Agregamos un separador
         filasSeparador = []
@@ -81,6 +77,7 @@ async def vistaPrevia():
     else:
         return [[], []]
 
+
 @app.post("/crear/Proyecto")
 async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), descripcion: str = Form(...)):
 
@@ -91,27 +88,30 @@ async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), 
     ruta = "Proyectos/"+str(random.randint(0, 9999))+"_"+file.filename
 
     # Guardamos el archivo
-    with open(ruta,"w") as archivo:
+    with open(ruta, "w") as archivo:
         data.to_csv(archivo)
 
     # Ingresamos los datos a la base de datos
-    bd.insertarFila(nombre,ruta,descripcion)
-    
+    bd.insertarFila(nombre, ruta, descripcion)
+
     return True
+
 
 @app.get("/trae/Proyectos")
 async def traeProyectos():
     return bd.leerFilas()
 
+
 @app.post("/editar/Proyecto")
 async def createProyecto(id: int = Form(...), nombre: str = Form(...), descripcion: str = Form(...)):
 
     # Actualizamos los valores
-    bd.actualizarNombre(id,nombre)
+    bd.actualizarNombre(id, nombre)
 
-    bd.actualizarDescripcion(id,descripcion)
+    bd.actualizarDescripcion(id, descripcion)
 
     return True
+
 
 @app.post("/eliminar/Proyecto")
 async def createProyecto(id: int = Form(...)):
@@ -121,6 +121,7 @@ async def createProyecto(id: int = Form(...)):
 
     return True
 
+
 @app.post("/cargar/Proyecto")
 async def createProyecto(id: int = Form(...)):
     global data
@@ -129,9 +130,6 @@ async def createProyecto(id: int = Form(...)):
     fila = bd.buscarFila(id)
 
     # Cargamos el proyecto
-    data = conjuntoDatos(pd.read_csv(str(fila[0][2])))
-    
+    data = conjuntoDatos(pd.read_csv(fila[0][2]))
+
     return True
-    
-
-
