@@ -112,6 +112,14 @@ async def createProyecto(id: int = Form(...), nombre: str = Form(...), descripci
     bd.actualizarDescripcion(id,descripcion)
 
     return True
+
+@app.post("/eliminar/Proyecto")
+async def createProyecto(id: int = Form(...)):
+
+    #Actualizamos los valores
+    bd.eliminarFila(id)
+
+    return True
     
 
 

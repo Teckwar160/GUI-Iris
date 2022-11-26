@@ -134,7 +134,7 @@ export default function EditarProyecto(Props) {
               <FormControl variant="standard" sx={{ padding: 2 }}>
                 <Boton sx={{ mr: 1, ml: 1 }} onClick={envia}>
                   <SendIcon />
-                  <TextoBoton>Actualizar Dataframe</TextoBoton>
+                  <TextoBoton>Actualizar proyecto</TextoBoton>
                 </Boton>
               </FormControl>
             </Box>

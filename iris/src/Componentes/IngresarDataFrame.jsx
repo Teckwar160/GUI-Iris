@@ -15,6 +15,7 @@ import UploadFileIcon from "@mui/icons-material/UploadFile";
 import SendIcon from "@mui/icons-material/Send";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 //Colores
 import { purple } from "@mui/material/colors";
@@ -41,6 +42,10 @@ export default function IngresarDataFrame(Props) {
 
   function mostrarEditar() {
     Props.funcionEditar(!Props.visibleEditar);
+  }
+
+  function mostrarEliminar() {
+    Props.funcionEliminar(!Props.visibleEliminar);
   }
 
   function cargaDatos(e) {
@@ -157,6 +162,11 @@ export default function IngresarDataFrame(Props) {
         <Boton sx={{ mr: 1, ml: 1 }} onClick={mostrarEditar}>
           <EditIcon />
           <TextoBoton>Editar proyecto</TextoBoton>
+        </Boton>
+
+        <Boton sx={{ mr: 1, ml: 1 }} onClick={mostrarEliminar}>
+          <DeleteIcon />
+          <TextoBoton>Eliminar proyecto</TextoBoton>
         </Boton>
       </div>
     </Box>
