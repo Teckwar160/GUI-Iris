@@ -2,7 +2,7 @@ from fastapi import FastAPI, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import random
 import pandas as pd
-
+from os import remove
 import controlBaseDeDatos as bd
 
 # Variable global que contendra los conjuntos de datos
@@ -92,7 +92,7 @@ async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), 
         data.to_csv(archivo)
 
     # Ingresamos los datos a la base de datos
-    bd.insertarFila(nombre, ruta, descripcion)
+    bd.insertarFila(nombre, ruta,file.filename, descripcion)
 
     return True
 
@@ -116,8 +116,16 @@ async def createProyecto(id: int = Form(...), nombre: str = Form(...), descripci
 @app.post("/eliminar/Proyecto")
 async def createProyecto(id: int = Form(...)):
 
+    # Buscamos el proyecto
+    fila = bd.buscarFila(id)
+
     # Eliminamos el proyecto
     bd.eliminarFila(id)
+
+    # Eliminamos el archivo
+    remove(fila[0][2])
+
+
 
     return True
 

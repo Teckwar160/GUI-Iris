@@ -23,7 +23,7 @@ export default function MostrarProyectos(Props) {
                   Nombre: {proyecto[1]}
                 </Typography>
                 <Typography color="text.secondary">Descripción</Typography>
-                <Typography sx={{ fontSize: 14 }}>{proyecto[3]}</Typography>
+                <Typography sx={{ fontSize: 14 }}>{proyecto[4]}</Typography>
               </CardContent>
             </React.Fragment>
           </Card>

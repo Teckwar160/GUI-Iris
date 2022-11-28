@@ -20,6 +20,7 @@ def crearTabla():
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
                 Nombre VARCHAR(100),
                 Datos VARCHAR(300),
+                NombreCSV VARCHAR(300),
                 Descripción VARCHAR(200)
             )
         """
@@ -29,12 +30,12 @@ def crearTabla():
     baseIris.close()
 
 
-def insertarFila(nombre, datos, descripcion):
+def insertarFila(nombre, datos, nombreCSV, descripcion):
     baseIris = sql.connect("iris.db")
 
     cursor = baseIris.cursor()
 
-    instruccion = f"INSERT INTO Proyectos(Nombre, Datos, Descripción) VALUES('{nombre}','{datos}','{descripcion}')"
+    instruccion = f"INSERT INTO Proyectos(Nombre, Datos, NombreCSV, Descripción) VALUES('{nombre}','{datos}','{nombreCSV}','{descripcion}')"
 
     cursor.execute(instruccion)
 
