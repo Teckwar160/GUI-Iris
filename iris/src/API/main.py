@@ -8,9 +8,7 @@ import controlBaseDeDatos as bd
 # Variable global que contendra los conjuntos de datos
 data = None
 
-# Clase que nos
-
-
+# Clase que nos ayuda a manipular los datos
 class conjuntoDatos:
     def __init__(self, csv):
         self.raw = csv
