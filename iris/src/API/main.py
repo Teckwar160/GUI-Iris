@@ -5,10 +5,17 @@ import pandas as pd
 from os import remove
 import controlBaseDeDatos as bd
 
+import numpy as np                # Para crear vectores y matrices n dimensionales
+import matplotlib.pyplot as plt   # Para la generación de gráficas a partir de los datos
+import seaborn as sns             # Para la visualización de datos basado en matplotlib
+    
+
 # Variable global que contendra los conjuntos de datos
-data = None
+data = pd.DataFrame()
 
 # Clase que nos ayuda a manipular los datos
+
+
 class conjuntoDatos:
     def __init__(self, csv):
         self.raw = csv
@@ -34,14 +41,16 @@ app.add_middleware(
 )
 
 # Funciones de EDA
+
+
 @app.get("/vistaPrevia")
 async def vistaPrevia():
     # Dataframe
     global data
 
-    if data != None:
+    if not data.empty:
         # Obtenemos columnas
-        columnas = data.columnas
+        columnas = data.columns.values.tolist()
 
         # Cambiamos el nombre de la primer columna
         columnas[0] = ""
@@ -50,8 +59,8 @@ async def vistaPrevia():
         filas = []
 
         # Obtenemos los primeros y ultimos 5 elementos del dataframe
-        filasHead = data.raw.head().values.tolist()
-        filasTail = data.raw.tail().values.tolist()
+        filasHead = data.head().values.tolist()
+        filasTail = data.tail().values.tolist()
 
         # Agregamos un separador
         filasSeparador = []
@@ -75,40 +84,121 @@ async def vistaPrevia():
     else:
         return [[], []]
 
+
 @app.get("/Forma")
 async def forma():
     # Dataframe
     global data
 
-    if data != None:
-        return data.raw.shape
+    if not data.empty:
+        return data.shape
     else:
-        return [] 
+        return False
+
 
 @app.get("/TiposDeDatos")
 async def tiposDeDatos():
     # Dataframe
     global data
 
-    if data != None:
+    if not data.empty:
         # Definimos las columnas
-        columnas = ['Variable','Tipo']
+        columnas = ['Variable', 'Tipo']
 
         # Creamos las filas
-        filas =[]
+        filas = []
 
-        for (k,v) in data.raw.dtypes.items():
-            filas.append((k,str(v)))
-        
+        for (k, v) in data.dtypes.items():
+            filas.append((k, str(v)))
+
         # ELiminamos el primer elemento que es irrelevante
         filas.pop(0)
 
         # Retornamos el valor
-        return [columnas,filas]
+        return [columnas, filas]
     else:
-        return [[],[]] 
+        return [[], []]
+
+
+@app.get("/DatosFaltantesNull")
+async def datosFaltantesNul():
+    # Dataframe
+    global data
+
+    if not data.empty:
+        # Definimos las columnas
+        columnas = ['Variable', 'Cuenta']
+
+        # Creamos las filas
+        filas = list(data.isnull().sum().items())
+
+         # ELiminamos el primer elemento que es irrelevante
+        filas.pop(0)
+
+        # Retornamos el valor
+        return [columnas, filas]
+    else:
+        return [[], []]
+
+@app.get("/DataHistogramas")
+async def dataHistograma():
+    global data
+
+    histogramas = []       
+    tipos=[]
+
+    for (k,v) in data.dtypes.items():
+        if(str(v) != 'object'):
+            tipos.append(k)
+
+    # Borramos el primer elemento que es irrelevante
+    tipos.pop(0)
+
+    print(tipos)
+
+    for t in tipos:
+        print(t)
+        hist = data[t].hist()
+        ax = plt.gca()
+        p = ax.patches
+
+        # Alto de las barras (y)
+        altoBarras=[]
+
+        for i in range(len(p)):
+            altoBarras.append(p[i].get_height())
+
+        # Inicio de las barras (x)
+        inicioBarras=[]
+
+        for i in range(len(p)):
+            inicioBarras.append(p[i].get_x())
+            
+        diferencia = (p[1].get_x() - p[0].get_x()) /2
+
+        mitadBarras = []
+
+        for i in inicioBarras:
+            mitadBarras.append(round(diferencia+i,1))
+
+        valores =[]
+
+        for (x,y) in zip(altoBarras,mitadBarras):
+            valores.append({"id":x,"value":y})
+            
+        histogramas.append(
+            {
+                'data':valores,
+                'title':t
+            }
+        )
+        plt.clf()
+
+    return histogramas
 
 # Funciones de control
+
+
 @app.post("/crear/Proyecto")
 async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), descripcion: str = Form(...)):
 
@@ -123,7 +213,7 @@ async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), 
         data.to_csv(archivo)
 
     # Ingresamos los datos a la base de datos
-    bd.insertarFila(nombre, ruta,file.filename, descripcion)
+    bd.insertarFila(nombre, ruta, file.filename, descripcion)
 
     return True
 
@@ -156,8 +246,6 @@ async def createProyecto(id: int = Form(...)):
     # Eliminamos el archivo
     remove(fila[0][2])
 
-
-
     return True
 
 
@@ -169,6 +257,6 @@ async def createProyecto(id: int = Form(...)):
     fila = bd.buscarFila(id)
 
     # Cargamos el proyecto
-    data = conjuntoDatos(pd.read_csv(fila[0][2]))
+    data = pd.read_csv(fila[0][2])
 
     return True
