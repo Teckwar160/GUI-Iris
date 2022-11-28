@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box, Button } from "@mui/material";
 
 //Componentes
-import Tabla from "../Componentes/Tabla";
+import Tabla from "../Componentes/EDA/Tabla";
 
 //Iconos
 import TerminalIcon from "@mui/icons-material/Terminal";
