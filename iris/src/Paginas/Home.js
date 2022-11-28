@@ -3,11 +3,11 @@ import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box } from "@mui/material";
 
 //Componentes
-import IngresarDataFrame from "../Componentes/IngresarDataFrame";
-import MostrarProyectos from "../Componentes/MostrarProyectos";
-import EditarProyecto from "../Componentes/EditarProyecto";
-import EliminarProyecto from "../Componentes/EliminarProyecto";
-import CargarProyecto from "../Componentes/CargarProyecto";
+import CrearProyecto from "../Componentes/Home/CrearProyecto";
+import MostrarProyectos from "../Componentes/Home/MostrarProyectos";
+import EditarProyecto from "../Componentes/Home/EditarProyecto";
+import EliminarProyecto from "../Componentes/Home/EliminarProyecto";
+import CargarProyecto from "../Componentes/Home/CargarProyecto";
 
 const TextoBold = styled(Typography)({
   color: "black",
@@ -66,7 +66,7 @@ export default function Home() {
         {/*Componente para subir los proyectos*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed silver" }}>
-            <IngresarDataFrame
+            <CrearProyecto
               actualizaProyectos={traeProyectos}
               visibleEditar={visibleEditar}
               funcionEditar={setVisibleEditar}

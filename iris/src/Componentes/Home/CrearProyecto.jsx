@@ -36,7 +36,7 @@ const TextoBoton = styled(Typography)({
   fontSize: "14px",
 });
 
-export default function IngresarDataFrame(Props) {
+export default function CrearProyecto(Props) {
   const [file, setFile] = useState(null);
   const [nombreProyecto, setNombreProyecto] = useState("");
   const [descripcionProyecto, setDescripcionProyecto] = useState("");
