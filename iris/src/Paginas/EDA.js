@@ -1,7 +1,7 @@
 //Bibliotecas
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Typography, Grid, Box, tableFooterClasses } from "@mui/material";
+import { Typography, Grid, Box} from "@mui/material";
 
 //Componentes
 import Tabla from "../Componentes/EDA/Tabla";
@@ -42,11 +42,6 @@ export default function EDA() {
 
   // Paso 3
   const [dataHistograma, setDataHistograma] = useState([]);
-
-  // Control de EDA
-  const [value, setValue] = React.useState(
-    "DatosMelbourne = pd.read_csv('Datos/melb_data.csv')\nDatosMelbourne"
-  );
 
   //Funciones
   function vistaPrevia() {
@@ -158,7 +153,7 @@ export default function EDA() {
 
             <CodigoBoton
               ejecutar={vistaPrevia}
-              codigo={value}
+              codigo={""}
               visible={false}
             />
 
