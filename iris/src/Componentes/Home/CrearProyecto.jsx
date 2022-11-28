@@ -173,8 +173,8 @@ export default function CrearProyecto(Props) {
           <DeleteIcon />
           <TextoBoton>Eliminar proyecto</TextoBoton>
         </Boton>
-        <Box sx={{ padding: 2 }} onClick={mostrarCargar}>
-          <Boton sx={{ mr: 1, ml: 1 }}>
+        <Box sx={{ padding: 2 }}>
+          <Boton sx={{ mr: 1, ml: 1 }} onClick={mostrarCargar}>
             <InputIcon />
             <TextoBoton>Cargar proyecto</TextoBoton>
           </Boton>

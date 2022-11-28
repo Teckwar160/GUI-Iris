@@ -1,16 +1,11 @@
 //Bibliotecas
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Typography, Grid, Box, Button } from "@mui/material";
+import { Typography, Grid, Box } from "@mui/material";
 
 //Componentes
 import Tabla from "../Componentes/EDA/Tabla";
-
-//Iconos
-import TerminalIcon from "@mui/icons-material/Terminal";
-
-//Colores
-import { purple } from "@mui/material/colors";
+import CodigoBoton from "../Componentes/EDA/CodigoBoton";
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -31,29 +26,12 @@ const Parrafo = styled(Typography)({
   textAlign: "justify",
 });
 
-const Codigo = styled("div")({
-  border: "1px solid lightgray",
-  boxShadow: "60px",
-  backgroundColor: "mintcream",
-  color: "Black",
-});
-
-const Boton = styled(Button)(({ theme }) => ({
-  color: theme.palette.getContrastText(purple[500]),
-  backgroundColor: purple[400],
-  "&:hover": {
-    backgroundColor: purple[600],
-  },
-}));
-
-const TextoBoton = styled(Typography)({
-  fontFamily: "Roboto",
-  fontWeight: "bold",
-});
-
 export default function EDA() {
   const [dataColumnas, setDataColumnas] = useState([]);
   const [dataFilas, setDataFilas] = useState([]);
+  const [value, setValue] = React.useState(
+    "DatosMelbourne = pd.read_csv('Datos/melb_data.csv')\nDatosMelbourne"
+  );
 
   //Funciones
   function vistaPrevia() {
@@ -97,10 +75,7 @@ export default function EDA() {
 
             <Subtitulo>Previsualización de datos</Subtitulo>
 
-            <Boton variant="outlined" onClick={vistaPrevia}>
-              <TerminalIcon />
-              <TextoBoton sx={{ ml: 1 }}>Ejecutar</TextoBoton>
-            </Boton>
+            <CodigoBoton ejecutar={vistaPrevia} codigo={value} />
 
             <Tabla dataColumnas={dataColumnas} dataFilas={dataFilas} />
 
@@ -113,7 +88,6 @@ export default function EDA() {
             <Subtitulo>
               Paso 4: Identificación de relaciones entre pares variables.
             </Subtitulo>
-            <Codigo>Esto es un codigo</Codigo>
           </Box>
         </Box>
       </Grid>
