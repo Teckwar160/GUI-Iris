@@ -154,10 +154,7 @@ async def dataHistograma():
     # Borramos el primer elemento que es irrelevante
     tipos.pop(0)
 
-    print(tipos)
-
     for t in tipos:
-        print(t)
         hist = data[t].hist()
         ax = plt.gca()
         p = ax.patches
