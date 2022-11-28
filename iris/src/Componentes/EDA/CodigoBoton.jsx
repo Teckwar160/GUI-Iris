@@ -30,22 +30,33 @@ const Codigo = styled("div")({
 });
 
 export default function CodigoBoton(Props) {
-  return (
-    <Box>
-      <Box sx={{ padding: 1 }}>
-        <Codigo>
-          <Typography sx={{ ml: 2 }}>
-            <pre style={{ fontFamily: "inherit" }}>{Props.codigo}</pre>
-          </Typography>
-        </Codigo>
-      </Box>
-
+  if (Props.visible === false) {
+    return (
       <Box sx={{ padding: 1 }}>
         <Boton variant="outlined" onClick={Props.ejecutar}>
           <TerminalIcon />
           <TextoBoton sx={{ ml: 1 }}>Ejecutar</TextoBoton>
         </Boton>
       </Box>
-    </Box>
-  );
+    );
+  } else {
+    return (
+      <Box>
+        <Box sx={{ padding: 1 }}>
+          <Codigo>
+            <Typography sx={{ ml: 2 }}>
+              <pre style={{ fontFamily: "inherit" }}>{Props.codigo}</pre>
+            </Typography>
+          </Codigo>
+        </Box>
+
+        <Box sx={{ padding: 1 }}>
+          <Boton variant="outlined" onClick={Props.ejecutar}>
+            <TerminalIcon />
+            <TextoBoton sx={{ ml: 1 }}>Ejecutar</TextoBoton>
+          </Boton>
+        </Box>
+      </Box>
+    );
+  }
 }

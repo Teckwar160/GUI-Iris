@@ -33,7 +33,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-
+# Funciones de EDA
 @app.get("/vistaPrevia")
 async def vistaPrevia():
     # Dataframe
@@ -75,7 +75,40 @@ async def vistaPrevia():
     else:
         return [[], []]
 
+@app.get("/Forma")
+async def forma():
+    # Dataframe
+    global data
 
+    if data != None:
+        return data.raw.shape
+    else:
+        return [] 
+
+@app.get("/TiposDeDatos")
+async def tiposDeDatos():
+    # Dataframe
+    global data
+
+    if data != None:
+        # Definimos las columnas
+        columnas = ['Variable','Tipo']
+
+        # Creamos las filas
+        filas =[]
+
+        for (k,v) in data.raw.dtypes.items():
+            filas.append((k,str(v)))
+        
+        # ELiminamos el primer elemento que es irrelevante
+        filas.pop(0)
+
+        # Retornamos el valor
+        return [columnas,filas]
+    else:
+        return [[],[]] 
+
+# Funciones de control
 @app.post("/crear/Proyecto")
 async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), descripcion: str = Form(...)):
 

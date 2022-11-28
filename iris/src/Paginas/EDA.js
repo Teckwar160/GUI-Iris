@@ -1,7 +1,7 @@
 //Bibliotecas
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Typography, Grid, Box } from "@mui/material";
+import { Typography, Grid, Box, tableFooterClasses } from "@mui/material";
 
 //Componentes
 import Tabla from "../Componentes/EDA/Tabla";
@@ -27,8 +27,17 @@ const Parrafo = styled(Typography)({
 });
 
 export default function EDA() {
+  // Comandos de EDA
   const [dataColumnas, setDataColumnas] = useState([]);
   const [dataFilas, setDataFilas] = useState([]);
+
+  // Paso 1
+  const [forma, setForma] = useState(["",""]);
+  const [visibleForma, setVisibleForma] = useState(false);
+
+  const [tiposDatos, setTiposDatos] = useState([[],[]]);
+
+  // Control de EDA
   const [value, setValue] = React.useState(
     "DatosMelbourne = pd.read_csv('Datos/melb_data.csv')\nDatosMelbourne"
   );
@@ -46,6 +55,37 @@ export default function EDA() {
       .then((result) => {
         setDataColumnas(result[0]);
         setDataFilas(result[1]);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getForma() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/Forma", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setForma([result[0],result[1]]);
+        setVisibleForma(true);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getTiposDeDatos() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/TiposDeDatos", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setTiposDatos([result[0],result[1]]);
       })
       .catch((error) => console.log("error", error));
   }
@@ -73,15 +113,31 @@ export default function EDA() {
               la variable objetivo y posibles técnicas de modelado.
             </Parrafo>
 
+            {/*Previsualización de datos*/}
             <Subtitulo>Previsualización de datos</Subtitulo>
-
-            <CodigoBoton ejecutar={vistaPrevia} codigo={value} />
 
             <Tabla dataColumnas={dataColumnas} dataFilas={dataFilas} />
 
+            <CodigoBoton ejecutar={vistaPrevia} codigo={value} visible={false}/>
+
+            
+
+            {/*Paso 1*/}
             <Subtitulo>
               Paso 1: Descripción de la estructura de los datos.
             </Subtitulo>
+
+            <Parrafo>a) Forma (dimensiones) del DataFrame.</Parrafo>
+
+            <CodigoBoton ejecutar={getForma} codigo={"("+forma[0]+","+forma[1]+")"} visible={visibleForma}/>
+
+            <Parrafo>b) Tipos de datos (variables).</Parrafo>
+
+            <Tabla dataColumnas={tiposDatos[0]} dataFilas={tiposDatos[1]} />
+
+            <CodigoBoton ejecutar={getTiposDeDatos}  visible={false}/>
+
+
 
             <Subtitulo>Paso 2: Identificación de datos faltantes.</Subtitulo>
             <Subtitulo>Paso 3: Detección de valores atípicos.</Subtitulo>

@@ -25,7 +25,7 @@ export default function Tabla(props) {
             {props.dataFilas.map((fila, index) => (
               <TableRow>
                 {fila.map((f, i) => (
-                  <TableCell>{f}</TableCell>
+                  <TableCell align="center">{f}</TableCell>
                 ))}
               </TableRow>
             ))}
