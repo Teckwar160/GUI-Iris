@@ -1,11 +1,14 @@
 //Bibliotecas
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Typography, Grid, Box} from "@mui/material";
+import { Typography, Grid, Box } from "@mui/material";
 
 //Componentes
 import Tabla from "../Componentes/EDA/Tabla";
 import CodigoBoton from "../Componentes/EDA/CodigoBoton";
+
+//Graficas
+import Barra from "../Graficas/Barra";
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -145,19 +148,23 @@ export default function EDA() {
               Tener una idea de la estructura del conjunto de datos, identicar
               la variable objetivo y posibles técnicas de modelado.
             </Parrafo>
+          </Box>
+        </Box>
 
-            {/*Previsualización de datos*/}
+        {/*Previsualización de datos*/}
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed silver" }}>
             <Subtitulo>Previsualización de datos</Subtitulo>
 
             <Tabla dataColumnas={dataColumnas} dataFilas={dataFilas} />
 
-            <CodigoBoton
-              ejecutar={vistaPrevia}
-              codigo={""}
-              visible={false}
-            />
+            <CodigoBoton ejecutar={vistaPrevia} codigo={""} visible={false} />
+          </Box>
+        </Box>
 
-            {/*Paso 1*/}
+        {/*Paso 1*/}
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed silver" }}>
             <Subtitulo>
               Paso 1: Descripción de la estructura de los datos.
             </Subtitulo>
@@ -175,8 +182,12 @@ export default function EDA() {
             <Tabla dataColumnas={tiposDatos[0]} dataFilas={tiposDatos[1]} />
 
             <CodigoBoton ejecutar={getTiposDeDatos} visible={false} />
+          </Box>
+        </Box>
 
-            {/*Paso 2*/}
+        {/*Paso 2*/}
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed silver" }}>
             <Subtitulo>Paso 2: Identificación de datos faltantes.</Subtitulo>
             <Parrafo>
               Una función útil de pandas es .isnull().sum() que regresa la suma
@@ -189,22 +200,45 @@ export default function EDA() {
             />
 
             <CodigoBoton ejecutar={getdatosFaltantesNull} visible={false} />
+          </Box>
+        </Box>
+      </Grid>
+      {/*Paso 3*/}
+      <Box sx={{ padding: 2 }}>
+        <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Subtitulo>Paso 3: Detección de valores atípicos.</Subtitulo>
+          <Parrafo>
+            Se pueden utilizar gráficos para tener una idea general de las
+            distribuciones de los datos, y se sacan estadísticas para resumir
+            los datos. Estas dos estrategias son recomendables y se
+            complementan. La distribución se refiere a cómo se distribuyen los
+            valores en una variable o con qué frecuencia ocurren. Para las
+            variables numéricas, se observa cuántas veces aparecen grupos de
+            números en una columna. Mientras que para las variables categóricas,
+            son las clases de cada columna y su frecuencia.
+          </Parrafo>
+          <CodigoBoton ejecutar={getDataHistogramas} visible={false} />
+        </Box>
+      </Box>
 
-            {/*Paso 3*/}
-            <Subtitulo>Paso 3: Detección de valores atípicos.</Subtitulo>
-            <Parrafo>
-              Se pueden utilizar gráficos para tener una idea general de las
-              distribuciones de los datos, y se sacan estadísticas para resumir
-              los datos. Estas dos estrategias son recomendables y se
-              complementan. La distribución se refiere a cómo se distribuyen los
-              valores en una variable o con qué frecuencia ocurren. Para las
-              variables numéricas, se observa cuántas veces aparecen grupos de
-              números en una columna. Mientras que para las variables
-              categóricas, son las clases de cada columna y su frecuencia.
-            </Parrafo>
+      {dataHistograma.map((d, index) => (
+        <Grid item xs={12} sm={6} md={4}>
+          <Box sx={{ padding: 2 }}>
+            <Box sx={{ p: 2, border: "5px dashed silver" }}>
+              <Barra
+                keys={["id"]}
+                data={d.data}
+                indexBy={"value"}
+                title={d.title}
+              />
+            </Box>
+          </Box>
+        </Grid>
+      ))}
 
-            <CodigoBoton ejecutar={getDataHistogramas} visible={false} />
-
+      <Grid item xs={12} sm={12} md={12}>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed silver" }}>
             <Subtitulo>
               Paso 4: Identificación de relaciones entre pares variables.
             </Subtitulo>
