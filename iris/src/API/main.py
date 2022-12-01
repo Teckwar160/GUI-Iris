@@ -6,13 +6,13 @@ from os import remove
 import controlBaseDeDatos as bd
 
 # Para crear vectores y matrices n dimensionales
-import numpy as np            
+import numpy as np
 
 # Para la generación de gráficas a partir de los datos
 import matplotlib.pyplot as plt
 
 # Para la visualización de datos basado en matplotlib
-import seaborn as sns             
+import seaborn as sns
 
 
 # Variable global que contendra los conjuntos de datos
@@ -45,8 +45,21 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# Funciones de EDA
+# Funciones de apoyo
 
+def convierteNAN(data):
+    lista=[]
+
+    for i in data:
+        if pd.isna(i):
+            lista.append(str(i))
+        else:
+            lista.append(i)
+
+    return lista
+
+
+# Funciones de EDA
 
 @app.get("/vistaPrevia")
 async def vistaPrevia():
@@ -147,9 +160,9 @@ async def dataHistograma():
     histogramas = []
     tipos = []
 
-    for (k, v) in data.dtypes.items():
-        if (str(v) != 'object'):
-            tipos.append(k)
+    for (key, value) in data.dtypes.items():
+        if (str(value) != 'object'):
+            tipos.append(key)
 
     for t in tipos:
         hist = data[t].hist()
@@ -166,12 +179,12 @@ async def dataHistograma():
         inicioBarras = []
 
         for i in range(len(p)):
-            inicioBarras.append(round(p[i].get_x(),2))
+            inicioBarras.append(round(p[i].get_x(), 2))
 
         # Emparejamos los valores
         valores = []
 
-        for (x, y) in zip(inicioBarras,altoBarras):
+        for (x, y) in zip(inicioBarras, altoBarras):
             valores.append({"id": x, "value": y})
 
         # Guardamos la información
@@ -213,6 +226,33 @@ async def dataDescribe():
         return [columnas, filas]
     else:
         return [[], []]
+
+
+@app.get("/EDA/Box")
+async def dataBox():
+    global data
+
+    if not data.empty:
+        # Obtenemos los tipos de los datos
+        tipos = []
+
+        for (key, value) in data.dtypes.items():
+            if (str(value) != 'object'):
+                tipos.append(key)
+
+        #Cajas
+        cajas = []
+
+        for t in tipos:
+            cajas.append({
+                'nombre': t,
+                'value': convierteNAN(data[t].tolist())
+            })
+        
+        # Retornamos la información
+        return cajas
+    else:
+        return []
 
 # Funciones de control
 

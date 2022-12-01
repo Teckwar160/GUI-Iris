@@ -9,6 +9,8 @@ import CodigoBoton from "../Componentes/EDA/CodigoBoton";
 
 //Graficas
 import Barra from "../Graficas/Barra";
+import Caja from "../Graficas/Caja";
+import Plot from "react-plotly.js";
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -45,7 +47,8 @@ export default function EDA() {
 
   // Paso 3
   const [dataHistograma, setDataHistograma] = useState([]);
-  const [dataDescribe, setDataDescribe] = useState([[],[]]);
+  const [dataDescribe, setDataDescribe] = useState([[], []]);
+  const [dataBox, setDataBox] = useState([]);
 
   //Funciones
   function vistaPrevia() {
@@ -138,6 +141,21 @@ export default function EDA() {
       })
       .then((result) => {
         setDataDescribe(result);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getDataBox() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/EDA/Box", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setDataBox(result);
       })
       .catch((error) => console.log("error", error));
   }
@@ -251,17 +269,55 @@ export default function EDA() {
 
             <CodigoBoton ejecutar={getDataDescribe} visible={false} />
 
-            <Tabla
-              dataColumnas={dataDescribe[0]}
-              dataFilas={dataDescribe[1]}
-            />
-
-            
+            <Tabla dataColumnas={dataDescribe[0]} dataFilas={dataDescribe[1]} />
           </Box>
         </Box>
       </Grid>
 
+      <Grid item xs={12} sm={12} md={12}>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+            <Parrafo>
+              c) Diagramas para detectar posibles valores atípicos
+            </Parrafo>
 
+            <CodigoBoton ejecutar={getDataBox} visible={false} />
+          </Box>
+        </Box>
+      </Grid>
+
+      {dataBox.map((d, index) => (
+        <Grid item xs={12} sm={6} md={4}>
+          <Box sx={{ padding: 2 }}>
+            <Box sx={{ p: 2, border: "5px dashed silver" }}>
+              <Caja
+                data={[
+                  {
+                    type: "box",
+                    x: d.value,
+                    name: "",
+                    marker: {
+                      color: "rgb(163,73,164)",
+                    },
+                    boxpoints: "Outliers",
+                  },
+                ]}
+                layout={{
+                  width: 380,
+                  height: 380,
+                  title: d.nombre,
+                  margin: {
+                    t: 40,
+                    b: 40,
+                    l: 0,
+                    r: 0,
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+        </Grid>
+      ))}
 
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>
