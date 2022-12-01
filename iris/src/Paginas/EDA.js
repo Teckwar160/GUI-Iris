@@ -45,6 +45,7 @@ export default function EDA() {
 
   // Paso 3
   const [dataHistograma, setDataHistograma] = useState([]);
+  const [dataDescribe, setDataDescribe] = useState([[],[]]);
 
   //Funciones
   function vistaPrevia() {
@@ -68,7 +69,7 @@ export default function EDA() {
       method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/Forma", requestOptions)
+    fetch("http://127.0.0.1:8000/EDA/Forma", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -86,7 +87,7 @@ export default function EDA() {
       method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/TiposDeDatos", requestOptions)
+    fetch("http://127.0.0.1:8000/EDA/TiposDeDatos", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -101,7 +102,7 @@ export default function EDA() {
       method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/DatosFaltantesNull", requestOptions)
+    fetch("http://127.0.0.1:8000/EDA/DatosFaltantesNull", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -116,12 +117,27 @@ export default function EDA() {
       method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/DataHistogramas", requestOptions)
+    fetch("http://127.0.0.1:8000/EDA/DataHistogramas", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
         setDataHistograma(result);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getDataDescribe() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/EDA/DataDescribe", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setDataDescribe(result);
       })
       .catch((error) => console.log("error", error));
   }
@@ -202,39 +218,50 @@ export default function EDA() {
             <CodigoBoton ejecutar={getdatosFaltantesNull} visible={false} />
           </Box>
         </Box>
-      </Grid>
-      {/*Paso 3*/}
-      <Box sx={{ padding: 2 }}>
-        <Box sx={{ p: 2, border: "5px dashed silver" }}>
-          <Subtitulo>Paso 3: Detección de valores atípicos.</Subtitulo>
-          <Parrafo>
-            Se pueden utilizar gráficos para tener una idea general de las
-            distribuciones de los datos, y se sacan estadísticas para resumir
-            los datos. Estas dos estrategias son recomendables y se
-            complementan. La distribución se refiere a cómo se distribuyen los
-            valores en una variable o con qué frecuencia ocurren. Para las
-            variables numéricas, se observa cuántas veces aparecen grupos de
-            números en una columna. Mientras que para las variables categóricas,
-            son las clases de cada columna y su frecuencia.
-          </Parrafo>
-          <CodigoBoton ejecutar={getDataHistogramas} visible={false} />
+
+        {/*Paso 3*/}
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+            <Subtitulo>Paso 3: Detección de valores atípicos.</Subtitulo>
+            <Parrafo>a) Distribución de variables numéricas</Parrafo>
+            <CodigoBoton ejecutar={getDataHistogramas} visible={false} />
+          </Box>
         </Box>
-      </Box>
+      </Grid>
 
       {dataHistograma.map((d, index) => (
         <Grid item xs={12} sm={6} md={4}>
           <Box sx={{ padding: 2 }}>
             <Box sx={{ p: 2, border: "5px dashed silver" }}>
               <Barra
-                keys={["id"]}
+                keys={["value"]}
                 data={d.data}
-                indexBy={"value"}
+                indexBy={"id"}
                 title={d.title}
               />
             </Box>
           </Box>
         </Grid>
       ))}
+
+      <Grid item xs={12} sm={12} md={12}>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+            <Parrafo>b) Resumen estadístico de variables numéricas</Parrafo>
+
+            <CodigoBoton ejecutar={getDataDescribe} visible={false} />
+
+            <Tabla
+              dataColumnas={dataDescribe[0]}
+              dataFilas={dataDescribe[1]}
+            />
+
+            
+          </Box>
+        </Box>
+      </Grid>
+
+
 
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>

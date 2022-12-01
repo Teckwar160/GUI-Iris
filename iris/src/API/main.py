@@ -5,10 +5,15 @@ import pandas as pd
 from os import remove
 import controlBaseDeDatos as bd
 
-import numpy as np                # Para crear vectores y matrices n dimensionales
-import matplotlib.pyplot as plt   # Para la generación de gráficas a partir de los datos
-import seaborn as sns             # Para la visualización de datos basado en matplotlib
-    
+# Para crear vectores y matrices n dimensionales
+import numpy as np            
+
+# Para la generación de gráficas a partir de los datos
+import matplotlib.pyplot as plt
+
+# Para la visualización de datos basado en matplotlib
+import seaborn as sns             
+
 
 # Variable global que contendra los conjuntos de datos
 data = pd.DataFrame()
@@ -85,7 +90,7 @@ async def vistaPrevia():
         return [[], []]
 
 
-@app.get("/Forma")
+@app.get("/EDA/Forma")
 async def forma():
     # Dataframe
     global data
@@ -96,7 +101,7 @@ async def forma():
         return False
 
 
-@app.get("/TiposDeDatos")
+@app.get("/EDA/TiposDeDatos")
 async def tiposDeDatos():
     # Dataframe
     global data
@@ -111,16 +116,13 @@ async def tiposDeDatos():
         for (k, v) in data.dtypes.items():
             filas.append((k, str(v)))
 
-        # ELiminamos el primer elemento que es irrelevante
-        filas.pop(0)
-
         # Retornamos el valor
         return [columnas, filas]
     else:
         return [[], []]
 
 
-@app.get("/DatosFaltantesNull")
+@app.get("/EDA/DatosFaltantesNull")
 async def datosFaltantesNul():
     # Dataframe
     global data
@@ -132,66 +134,85 @@ async def datosFaltantesNul():
         # Creamos las filas
         filas = list(data.isnull().sum().items())
 
-         # ELiminamos el primer elemento que es irrelevante
-        filas.pop(0)
-
         # Retornamos el valor
         return [columnas, filas]
     else:
         return [[], []]
 
-@app.get("/DataHistogramas")
+
+@app.get("/EDA/DataHistogramas")
 async def dataHistograma():
     global data
 
-    histogramas = []       
-    tipos=[]
+    histogramas = []
+    tipos = []
 
-    for (k,v) in data.dtypes.items():
-        if(str(v) != 'object'):
+    for (k, v) in data.dtypes.items():
+        if (str(v) != 'object'):
             tipos.append(k)
-
-    # Borramos el primer elemento que es irrelevante
-    tipos.pop(0)
 
     for t in tipos:
         hist = data[t].hist()
         ax = plt.gca()
         p = ax.patches
 
-        # Alto de las barras (y)
-        altoBarras=[]
+        # Conseguimos el alto de las barras
+        altoBarras = []
 
         for i in range(len(p)):
             altoBarras.append(p[i].get_height())
 
-        # Inicio de las barras (x)
-        inicioBarras=[]
+        # Conseguimos el identificador de las barras
+        inicioBarras = []
 
         for i in range(len(p)):
-            inicioBarras.append(p[i].get_x())
-            
-        diferencia = (p[1].get_x() - p[0].get_x()) /2
+            inicioBarras.append(round(p[i].get_x(),2))
 
-        mitadBarras = []
+        # Emparejamos los valores
+        valores = []
 
-        for i in inicioBarras:
-            mitadBarras.append(round(diferencia+i,1))
+        for (x, y) in zip(inicioBarras,altoBarras):
+            valores.append({"id": x, "value": y})
 
-        valores =[]
-
-        for (x,y) in zip(altoBarras,mitadBarras):
-            valores.append({"id":x,"value":y})
-            
+        # Guardamos la información
         histogramas.append(
             {
-                'data':valores,
-                'title':t
+                'data': valores,
+                'title': t
             }
         )
         plt.clf()
 
+    # Retornamos los valores
     return histogramas
+
+
+@app.get("/EDA/DataDescribe")
+async def dataDescribe():
+    global data
+
+    if not data.empty:
+        # Obtenemos las columnas
+        columnas = data.describe().columns.tolist()
+
+        # Insertamos una columna de más para las medidas
+        columnas.insert(0, '')
+
+        # Definimos las medidas
+        medidas = ['Cuenta', 'Media', 'Std.',
+                   'Min', '25%', '50%', '75%', 'Max']
+
+        # Obtenemos las filas
+        filas = data.describe().values.tolist()
+
+        # Acomodamos las filas
+        for fila, medida in zip(filas, medidas):
+            fila.insert(0, medida)
+
+        # Retornamos el valor
+        return [columnas, filas]
+    else:
+        return [[], []]
 
 # Funciones de control
 
@@ -207,7 +228,7 @@ async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), 
 
     # Guardamos el archivo
     with open(ruta, "w") as archivo:
-        data.to_csv(archivo)
+        data.to_csv(archivo, index=False)
 
     # Ingresamos los datos a la base de datos
     bd.insertarFila(nombre, ruta, file.filename, descripcion)
