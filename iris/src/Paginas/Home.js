@@ -46,14 +46,14 @@ export default function Home() {
       container
       sx={{
         minHeight: "100vh",
-        backgroundColor: "white",
+        backgroundColor: "whitesmoke",
       }}
     >
       {/*Creación de proyectos*/}
       <Grid item xs={12} sm={12} md={12}>
         {/*Titulo*/}
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
             <TextoBold variant="h5">Crear proyecto</TextoBold>
 
             <Typography textAlign={"justify"}>
@@ -65,7 +65,7 @@ export default function Home() {
 
         {/*Componente para subir los proyectos*/}
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <CrearProyecto
               actualizaProyectos={traeProyectos}
               visibleEditar={visibleEditar}

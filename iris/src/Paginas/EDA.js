@@ -10,7 +10,7 @@ import CodigoBoton from "../Componentes/EDA/CodigoBoton";
 //Graficas
 import Barra from "../Graficas/Barra";
 import Caja from "../Graficas/Caja";
-import Plot from "react-plotly.js";
+
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -33,21 +33,27 @@ const Parrafo = styled(Typography)({
 
 export default function EDA() {
   // Comandos de EDA
+
+  // Vista Previa
   const [dataColumnas, setDataColumnas] = useState([]);
   const [dataFilas, setDataFilas] = useState([]);
+  const [visibleVistaPrevia, setVisibleVistaPrevia] = useState(false);
 
   // Paso 1
   const [forma, setForma] = useState(["", ""]);
   const [visibleForma, setVisibleForma] = useState(false);
 
   const [tiposDatos, setTiposDatos] = useState([[], []]);
+  const [visibleTiposDatos, setVisibleTiposDatos] = useState(false);
 
   // Paso 2
   const [datosFaltantesNull, setDatosFaltantesNull] = useState([[], []]);
+  const [visibleFaltantesNull, setVisibleFaltantesNull] = useState(false);
 
   // Paso 3
   const [dataHistograma, setDataHistograma] = useState([]);
   const [dataDescribe, setDataDescribe] = useState([[], []]);
+  const [visibleDescribe, setVisibleDescribe] = useState(false);
   const [dataBox, setDataBox] = useState([]);
 
   //Funciones
@@ -63,6 +69,9 @@ export default function EDA() {
       .then((result) => {
         setDataColumnas(result[0]);
         setDataFilas(result[1]);
+        if (result !== [[], []]) {
+          setVisibleVistaPrevia(true);
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -96,6 +105,9 @@ export default function EDA() {
       })
       .then((result) => {
         setTiposDatos([result[0], result[1]]);
+        if (result !== [[], []]) {
+          setVisibleTiposDatos(true);
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -111,6 +123,9 @@ export default function EDA() {
       })
       .then((result) => {
         setDatosFaltantesNull([result[0], result[1]]);
+        if (result !== [[], []]) {
+          setVisibleFaltantesNull(true);
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -141,6 +156,9 @@ export default function EDA() {
       })
       .then((result) => {
         setDataDescribe(result);
+        if (result !== [[], []]) {
+          setVisibleDescribe(true);
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -169,11 +187,11 @@ export default function EDA() {
         md={12}
         sx={{
           minHeight: "100vh",
-          backgroundColor: "white",
+          backgroundColor: "whitesmoke",
         }}
       >
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
             <Titulo textAlign={"center"}>EDA</Titulo>
 
             <Subtitulo>Propósito</Subtitulo>
@@ -187,22 +205,28 @@ export default function EDA() {
 
         {/*Previsualización de datos*/}
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Subtitulo>Previsualización de datos</Subtitulo>
-
-            <Tabla dataColumnas={dataColumnas} dataFilas={dataFilas} />
-
             <CodigoBoton ejecutar={vistaPrevia} codigo={""} visible={false} />
           </Box>
         </Box>
 
+        <Tabla
+          dataColumnas={dataColumnas}
+          dataFilas={dataFilas}
+          visible={visibleVistaPrevia}
+        />
+
         {/*Paso 1*/}
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
             <Subtitulo>
               Paso 1: Descripción de la estructura de los datos.
             </Subtitulo>
-
+          </Box>
+        </Box>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>a) Forma (dimensiones) del DataFrame.</Parrafo>
 
             <CodigoBoton
@@ -210,37 +234,52 @@ export default function EDA() {
               codigo={"(" + forma[0] + "," + forma[1] + ")"}
               visible={visibleForma}
             />
-
+          </Box>
+        </Box>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>b) Tipos de datos (variables).</Parrafo>
-
-            <Tabla dataColumnas={tiposDatos[0]} dataFilas={tiposDatos[1]} />
-
             <CodigoBoton ejecutar={getTiposDeDatos} visible={false} />
           </Box>
         </Box>
 
+        <Tabla
+          dataColumnas={tiposDatos[0]}
+          dataFilas={tiposDatos[1]}
+          visible={visibleTiposDatos}
+        />
+
         {/*Paso 2*/}
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
             <Subtitulo>Paso 2: Identificación de datos faltantes.</Subtitulo>
+          </Box>
+        </Box>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>
               Una función útil de pandas es .isnull().sum() que regresa la suma
               de todos los valores nulos en cada variable.
             </Parrafo>
 
-            <Tabla
-              dataColumnas={datosFaltantesNull[0]}
-              dataFilas={datosFaltantesNull[1]}
-            />
-
             <CodigoBoton ejecutar={getdatosFaltantesNull} visible={false} />
           </Box>
         </Box>
 
+        <Tabla
+          dataColumnas={datosFaltantesNull[0]}
+          dataFilas={datosFaltantesNull[1]}
+          visible={visibleFaltantesNull}
+        />
+
         {/*Paso 3*/}
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
             <Subtitulo>Paso 3: Detección de valores atípicos.</Subtitulo>
+          </Box>
+        </Box>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>a) Distribución de variables numéricas</Parrafo>
             <CodigoBoton ejecutar={getDataHistogramas} visible={false} />
           </Box>
@@ -250,7 +289,7 @@ export default function EDA() {
       {dataHistograma.map((d, index) => (
         <Grid item xs={12} sm={6} md={4}>
           <Box sx={{ padding: 2 }}>
-            <Box sx={{ p: 2, border: "5px dashed silver" }}>
+            <Box sx={{ p: 2, border: "5px dashed plum" }}>
               <Barra
                 keys={["value"]}
                 data={d.data}
@@ -264,19 +303,23 @@ export default function EDA() {
 
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>b) Resumen estadístico de variables numéricas</Parrafo>
 
             <CodigoBoton ejecutar={getDataDescribe} visible={false} />
-
-            <Tabla dataColumnas={dataDescribe[0]} dataFilas={dataDescribe[1]} />
           </Box>
         </Box>
       </Grid>
 
+      <Tabla
+        dataColumnas={dataDescribe[0]}
+        dataFilas={dataDescribe[1]}
+        visible={visibleDescribe}
+      />
+
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>
               c) Diagramas para detectar posibles valores atípicos
             </Parrafo>
@@ -289,7 +332,7 @@ export default function EDA() {
       {dataBox.map((d, index) => (
         <Grid item xs={12} sm={6} md={4}>
           <Box sx={{ padding: 2 }}>
-            <Box sx={{ p: 2, border: "5px dashed silver" }}>
+            <Box sx={{ p: 2, border: "5px dashed plum" }}>
               <Caja
                 data={[
                   {
@@ -321,7 +364,7 @@ export default function EDA() {
 
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed silver" }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
             <Subtitulo>
               Paso 4: Identificación de relaciones entre pares variables.
             </Subtitulo>

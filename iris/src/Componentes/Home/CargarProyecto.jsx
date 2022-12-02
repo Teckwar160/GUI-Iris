@@ -61,7 +61,7 @@ export default function CargarProyecto(Props) {
   if (Props.visible) {
     return (
       <Box sx={{ padding: 2 }}>
-        <Box sx={{ p: 2, border: "5px dashed silver" }}>
+        <Box sx={{ p: 2, border: "5px dashed plum" }}>
           <div align="center">
             <Box sx={{ padding: 2 }}>
               <FormControl sx={{ padding: 2 }}>

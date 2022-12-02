@@ -114,10 +114,11 @@ export default function CrearProyecto(Props) {
       <div align="center">
         <Box sx={{ padding: 2 }}>
           <FormControl sx={{ padding: 2 }}>
-            <InputLabel>Nombre del proyecto</InputLabel>
+            <InputLabel color={"secondary"} sx={{color: "black"}}>Nombre del proyecto</InputLabel>
             <Input
               id="Nombre del proyecto"
               type="text"
+              color={"secondary"}
               value={nombreProyecto}
               onChange={cargaNombreProyecto}
               startAdornment={
@@ -129,10 +130,11 @@ export default function CrearProyecto(Props) {
           </FormControl>
 
           <FormControl sx={{ padding: 2 }}>
-            <InputLabel>Descripción del proyecto</InputLabel>
+            <InputLabel color={"secondary"} sx={{color: "black"}}>Descripción del proyecto</InputLabel>
             <Input
               id="Descripcion del proyecto"
               type="text"
+              color={"secondary"}
               value={descripcionProyecto}
               onChange={cargaDescripcionProyecto}
               startAdornment={

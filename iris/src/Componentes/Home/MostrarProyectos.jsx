@@ -1,17 +1,11 @@
 import * as React from "react";
-import {
-  Typography,
-  CardContent,
-  Card,
-  Box,
-  Grid,
-} from "@mui/material";
+import { Typography, CardContent, Card, Box, Grid } from "@mui/material";
 
 export default function MostrarProyectos(Props) {
   return Props.proyectos.map((proyecto, index) => (
     <Grid item xs={12} sm={12} md={6}>
       <Box sx={{ padding: 2 }}>
-        <Box sx={{ p: 2, border: "5px dashed silver" }}>
+        <Box sx={{ p: 2, border: "5px dashed plum" }}>
           <Card variant="outlined">
             <React.Fragment>
               <CardContent>
