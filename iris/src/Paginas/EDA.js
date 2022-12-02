@@ -11,7 +11,6 @@ import CodigoBoton from "../Componentes/EDA/CodigoBoton";
 import Barra from "../Graficas/Barra";
 import Caja from "../Graficas/Caja";
 
-
 //Estilos
 const Titulo = styled(Typography)({
   color: "black",
@@ -27,8 +26,15 @@ const Subtitulo = styled(Typography)({
   fontSize: "20px",
 });
 
+const Bold = styled(Typography)({
+  color: "black",
+  fontWeight: "bold",
+  fontFamily: "Roboto",
+});
+
 const Parrafo = styled(Typography)({
   textAlign: "justify",
+  fontFamily: "Roboto",
 });
 
 export default function EDA() {
@@ -55,8 +61,10 @@ export default function EDA() {
   const [dataDescribe, setDataDescribe] = useState([[], []]);
   const [visibleDescribe, setVisibleDescribe] = useState(false);
   const [dataBox, setDataBox] = useState([]);
+  const [dataDescribeObject, setDataDescribeObject] = useState([[], []]);
+  const [visibleDescribeObject, setVisibleDescribeObject] = useState(false);
 
-  //Funciones
+  // Vista Previa
   function vistaPrevia() {
     var requestOptions = {
       method: "GET",
@@ -76,6 +84,7 @@ export default function EDA() {
       .catch((error) => console.log("error", error));
   }
 
+  // Paso 1
   function getForma() {
     var requestOptions = {
       method: "GET",
@@ -112,6 +121,7 @@ export default function EDA() {
       .catch((error) => console.log("error", error));
   }
 
+  // Paso 2
   function getdatosFaltantesNull() {
     var requestOptions = {
       method: "GET",
@@ -130,6 +140,7 @@ export default function EDA() {
       .catch((error) => console.log("error", error));
   }
 
+  // Paso 3
   function getDataHistogramas() {
     var requestOptions = {
       method: "GET",
@@ -178,8 +189,31 @@ export default function EDA() {
       .catch((error) => console.log("error", error));
   }
 
+  function getDataDescribeObject() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/EDA/DataDescribe/Object", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setDataDescribeObject(result);
+        if (result !== [[], []]) {
+          setVisibleDescribeObject(true);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
   return (
-    <Grid container>
+    <Grid
+      container
+      sx={{
+        backgroundColor: "whitesmoke",
+      }}
+    >
       <Grid
         item
         xs={12}
@@ -187,7 +221,6 @@ export default function EDA() {
         md={12}
         sx={{
           minHeight: "100vh",
-          backgroundColor: "whitesmoke",
         }}
       >
         <Box sx={{ padding: 2 }}>
@@ -227,7 +260,7 @@ export default function EDA() {
         </Box>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>a) Forma (dimensiones) del DataFrame.</Parrafo>
+            <Bold>a) Forma (dimensiones) del DataFrame.</Bold>
 
             <CodigoBoton
               ejecutar={getForma}
@@ -238,7 +271,7 @@ export default function EDA() {
         </Box>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>b) Tipos de datos (variables).</Parrafo>
+            <Bold>b) Tipos de datos (variables).</Bold>
             <CodigoBoton ejecutar={getTiposDeDatos} visible={false} />
           </Box>
         </Box>
@@ -258,8 +291,7 @@ export default function EDA() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>
-              Una función útil de pandas es .isnull().sum() que regresa la suma
-              de todos los valores nulos en cada variable.
+              Suma de todos los valores nulos en cada variable.
             </Parrafo>
 
             <CodigoBoton ejecutar={getdatosFaltantesNull} visible={false} />
@@ -280,7 +312,10 @@ export default function EDA() {
         </Box>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>a) Distribución de variables numéricas</Parrafo>
+            <Bold>a) Distribución de variables numéricas</Bold>
+            <Parrafo>
+              Se utilizan histogramas que agrupan los números en rangos.
+            </Parrafo>
             <CodigoBoton ejecutar={getDataHistogramas} visible={false} />
           </Box>
         </Box>
@@ -304,7 +339,10 @@ export default function EDA() {
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>b) Resumen estadístico de variables numéricas</Parrafo>
+            <Bold>b) Resumen estadístico de variables numéricas</Bold>
+            <Parrafo>
+              Se saca un resumen estadístico de las variables numéricas.
+            </Parrafo>
 
             <CodigoBoton ejecutar={getDataDescribe} visible={false} />
           </Box>
@@ -320,8 +358,9 @@ export default function EDA() {
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>c) Diagramas para detectar posibles valores atípicos</Bold>
             <Parrafo>
-              c) Diagramas para detectar posibles valores atípicos
+              Diagramas de cajas para detectar valores atípicos.
             </Parrafo>
 
             <CodigoBoton ejecutar={getDataBox} visible={false} />
@@ -362,6 +401,29 @@ export default function EDA() {
         </Grid>
       ))}
 
+      <Grid item xs={12} sm={12} md={12}>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>d) Distribución de variables categóricas</Bold>
+            <Parrafo>
+              Se refiere a la observación de las clases de cada columna
+              (variable) y su frecuencia. Aquí, los gráficos ayudan para tener
+              una idea general de las distribuciones, mientras que las
+              estadísticas dan números reales.
+            </Parrafo>
+
+            <CodigoBoton ejecutar={getDataDescribeObject} visible={false} />
+          </Box>
+        </Box>
+      </Grid>
+
+      <Tabla
+        dataColumnas={dataDescribeObject[0]}
+        dataFilas={dataDescribeObject[1]}
+        visible={visibleDescribeObject}
+      />
+
+      {/*Paso 4*/}
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>

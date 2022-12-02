@@ -47,14 +47,11 @@ app.add_middleware(
 
 # Funciones de apoyo
 
-def convierteNAN(data):
+def convierteStr(data):
     lista=[]
 
     for i in data:
-        if pd.isna(i):
-            lista.append(str(i))
-        else:
-            lista.append(i)
+        lista.append(str(i))
 
     return lista
 
@@ -246,13 +243,46 @@ async def dataBox():
         for t in tipos:
             cajas.append({
                 'nombre': t,
-                'value': convierteNAN(data[t].tolist())
+                'value': convierteStr(data[t].tolist())
             })
         
         # Retornamos la información
         return cajas
     else:
         return []
+
+@app.get("/EDA/DataDescribe/Object")
+async def dataDescribeObject():
+    global data
+
+    if not data.empty:
+        # Obtenemos las columnas
+        columnas = data.describe(include='object').columns.tolist()
+
+        # Insertamos una columna de más para las medidas
+        columnas.insert(0, '')
+
+        # Definimos las medidas
+        medidas = ['Cuenta', 'Unico', 'Cima', 'Frecuencia']
+
+        # Obtenemos las filas
+        filas = data.describe(include='object').values.tolist()
+
+        # Convertimos a String
+        tmp=[]
+        for i in filas:
+            tmp.append(convierteStr(i))
+        
+        filas = tmp
+
+        # Acomodamos las filas
+        for fila, medida in zip(filas, medidas):
+            fila.insert(0, medida)
+
+        # Retornamos el valor
+        return [columnas, filas]
+    else:
+        return [[], []]
 
 # Funciones de control
 
