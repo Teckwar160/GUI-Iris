@@ -12,7 +12,7 @@ export default function SelectorDeProyecto(Props) {
   return (
     <Box sx={{ maxWidth: 250, minWidth: 250 }}>
       <FormControl fullWidth>
-        <InputLabel color={"secondary"} id="Proyectos">
+        <InputLabel color={"secondary"} sx={{ color: "black" }} id="Proyectos">
           Proyectos
         </InputLabel>
         <Select
@@ -22,9 +22,6 @@ export default function SelectorDeProyecto(Props) {
           value={proyecto}
           label="Proyectos"
           onChange={handleChange}
-          sx={{
-            backgroundColor: "white",
-          }}
         >
           {Props.proyectos.map((proyecto, index) => (
             <MenuItem value={proyecto[0]}>{proyecto[1]}</MenuItem>
