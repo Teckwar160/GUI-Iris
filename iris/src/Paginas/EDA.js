@@ -467,9 +467,7 @@ export default function EDA() {
             <Bold>d) Distribución de variables categóricas</Bold>
             <Parrafo>
               Se refiere a la observación de las clases de cada columna
-              (variable) y su frecuencia. Aquí, los gráficos ayudan para tener
-              una idea general de las distribuciones, mientras que las
-              estadísticas dan números reales.
+              (variable) y su frecuencia.
             </Parrafo>
 
             <CodigoBoton ejecutar={getDataDescribeObject} visible={false} />
