@@ -4,8 +4,8 @@ import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box } from "@mui/material";
 
 //Componentes
-import Tabla from "../Componentes/EDA/Tabla";
-import CodigoBoton from "../Componentes/EDA/CodigoBoton";
+import Tabla from "../Componentes/Mostrar datos/Tabla";
+import CodigoBoton from "../Componentes/Mostrar datos/CodigoBoton";
 
 //Graficas
 import Barra from "../Graficas/Barra";
@@ -42,8 +42,7 @@ export default function EDA() {
   // Comandos de EDA
 
   // Vista Previa
-  const [dataColumnas, setDataColumnas] = useState([]);
-  const [dataFilas, setDataFilas] = useState([]);
+  const [dataVistaPrevia, setDataVistaPrevia] = useState([[],[]]);
   const [visibleVistaPrevia, setVisibleVistaPrevia] = useState(false);
 
   // Paso 1
@@ -84,8 +83,7 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataColumnas(result[0]);
-        setDataFilas(result[1]);
+        setDataVistaPrevia([result[0],result[1]]);
         if (result !== [[], []]) {
           setVisibleVistaPrevia(true);
         }
@@ -306,8 +304,8 @@ export default function EDA() {
         </Box>
 
         <Tabla
-          dataColumnas={dataColumnas}
-          dataFilas={dataFilas}
+          dataColumnas={dataVistaPrevia[0]}
+          dataFilas={dataVistaPrevia[1]}
           visible={visibleVistaPrevia}
         />
 

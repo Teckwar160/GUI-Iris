@@ -14,9 +14,17 @@ import matplotlib.pyplot as plt
 # Para la visualización de datos basado en matplotlib
 import seaborn as sns
 
+# Para PCA
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
 
 # Variable global que contendra los conjuntos de datos
 data = pd.DataFrame()
+
+# Variables globales de PCA
+MEstandarizada = None
+dataSinObjectNan = None
 
 # Clase que nos ayuda a manipular los datos
 
@@ -48,7 +56,7 @@ app.add_middleware(
 # Funciones de apoyo
 
 def convierteStr(data):
-    lista=[]
+    lista = []
 
     for i in data:
         lista.append(str(i))
@@ -67,12 +75,22 @@ async def vistaPrevia():
         # Obtenemos columnas
         columnas = data.columns.values.tolist()
 
+        # Agregamos una columna vacia para los indices
+        if columnas[0] != "":
+            columnas.insert(0, "")
+
         # Lista que contendra las filas
         filas = []
 
         # Obtenemos los primeros y ultimos 5 elementos del dataframe
         filasHead = data.head().values.tolist()
         filasTail = data.tail().values.tolist()
+
+        # Agregamos los indices
+        tam = len(data.values.tolist())
+        for i in range(0, 5):
+            filasHead[i].insert(0, i)
+            filasTail[4-i].insert(0, tam-i-1)
 
         # Agregamos un separador
         filasSeparador = []
@@ -237,7 +255,7 @@ async def dataBox():
             if (str(value) != 'object'):
                 tipos.append(key)
 
-        #Cajas
+        # Cajas
         cajas = []
 
         for t in tipos:
@@ -245,11 +263,12 @@ async def dataBox():
                 'nombre': t,
                 'value': convierteStr(data[t].tolist())
             })
-        
+
         # Retornamos la información
         return cajas
     else:
         return []
+
 
 @app.get("/EDA/DataDescribe/Object")
 async def dataDescribeObject():
@@ -269,10 +288,10 @@ async def dataDescribeObject():
         filas = data.describe(include='object').values.tolist()
 
         # Convertimos a String
-        tmp=[]
+        tmp = []
         for i in filas:
             tmp.append(convierteStr(i))
-        
+
         filas = tmp
 
         # Acomodamos las filas
@@ -295,7 +314,7 @@ async def dataHistogramaObject():
 
         # Obtenemos los nombres de las variables
         for (key, value) in data.dtypes.items():
-            if (str(value) == 'object' and data[key].nunique() <10):
+            if (str(value) == 'object' and data[key].nunique() < 10):
                 tipos.append(key)
 
         for t in tipos:
@@ -325,6 +344,7 @@ async def dataHistogramaObject():
     else:
         return []
 
+
 @app.get("/EDA/DataCorrelacion")
 async def dataCorrelacion():
     # Dataframe
@@ -349,6 +369,7 @@ async def dataCorrelacion():
     else:
         return [[], []]
 
+
 @app.get("/EDA/DataCorrelacion/Mapa")
 async def dataCorrelacionMapa():
     # Dataframe
@@ -367,18 +388,213 @@ async def dataCorrelacionMapa():
         # Damso formato a los datos
         for columna, fila in zip(columnas, filas):
             tmp = []
-            for x,y in zip(columnas,fila): 
-                tmp.append({ 'x': x, 'y': round(y, 2) })
+            for x, y in zip(columnas, fila):
+                tmp.append({'x': x, 'y': round(y, 2)})
             mapa.append(
                 {
-                    'id':columna,
-                    'data':tmp
+                    'id': columna,
+                    'data': tmp
                 }
             )
         # Retornamos los elementos
         return mapa
     else:
         return []
+
+# Funciones de PCA
+
+@app.get("/PCA/DataCorrelacion")
+async def pcaDataCorrelacion():
+    # Dataframe
+    global data
+
+    if not data.empty:
+        # Obtenemos columnas
+        columnas = data.corr(method='pearson').columns.tolist()
+
+        # Lista que contendra las filas
+        filas = data.corr(method='pearson').values.tolist()
+
+        # Acomodamos las filas
+        for fila, columna in zip(filas, columnas):
+            fila.insert(0, columna)
+
+        # Insertamos una columna de más para las etiquetas
+        columnas.insert(0, '')
+
+        # Retornamos los elementos
+        return [columnas, filas]
+    else:
+        return [[], []]
+
+@app.get("/PCA/DataCorrelacion/Mapa")
+async def pcaDataCorrelacionMapa():
+    # Dataframe
+    global data
+
+    if not data.empty:
+        # Obtenemos columnas
+        columnas = data.corr(method='pearson').columns.tolist()
+
+        # Lista que contendra las filas
+        filas = data.corr(method='pearson').values.tolist()
+
+        # Lista que contendra la matriz de correlaciones
+        mapa = []
+
+        # Damso formato a los datos
+        for columna, fila in zip(columnas, filas):
+            tmp = []
+            for x, y in zip(columnas, fila):
+                tmp.append({'x': x, 'y': round(y, 2)})
+            mapa.append(
+                {
+                    'id': columna,
+                    'data': tmp
+                }
+            )
+        # Retornamos los elementos
+        return mapa
+    else:
+        return []
+
+@app.get("/PCA/Estandar/StandardScaler")
+async def pcaStandardScaler():
+    # Dataframe
+    global data
+    global MEstandarizada
+    global dataSinObjectNan
+
+    if not data.empty:
+
+        # Limpiamos el conjunto de variables categoricas y datos Nan
+        dataTmp = data
+
+        for (key, value) in data.dtypes.items():
+            if (str(value) == 'object'):
+                dataTmp = dataTmp.drop(columns=[key])
+        
+        dataSinObjectNan = dataTmp.dropna()
+
+        # Instanciamos al objeto
+        Estandarizar = StandardScaler()
+
+        # Estandarizamos
+        MEstandarizada = Estandarizar.fit_transform(dataSinObjectNan)
+
+        # Creamos un dataframe temporal para mostrar
+        tmp = pd.DataFrame(MEstandarizada, columns=dataSinObjectNan.columns)
+
+        # Obtenemos columnas
+        columnas = tmp.columns.values.tolist()
+
+        # Agregamos una columna vacia para los indices
+        if columnas[0] != "":
+            columnas.insert(0, "")
+
+        # Lista que contendra las filas
+        filas = []
+
+        # Obtenemos los primeros y ultimos 5 elementos del dataframe
+        filasHead = tmp.head().values.tolist()
+        filasTail = tmp.tail().values.tolist()
+
+        # Agregamos los indices
+        tam = len(data.values.tolist())
+        for i in range(0, 5):
+            filasHead[i].insert(0, i)
+            filasTail[4-i].insert(0, tam-i-1)
+
+        # Agregamos un separador
+        filasSeparador = []
+
+        for i in columnas:
+            filasSeparador.append("...")
+        filasHead.append(filasSeparador)
+
+        # Unimos las listas
+        filasRaw = filasHead+filasTail
+
+        # Convertimos a string todos los elementos para que sean mostrados
+        for fila in filasRaw:
+            f = []
+            for i in fila:
+                f.append(str(i))
+            filas.append(f)
+
+        # Retornamos los elementos
+        return [columnas, filas]
+    else:
+        return [[], []]
+
+@app.get("/PCA/Estandar/MinMaxScaler")
+async def pcaMinMaxScaler():
+    # Dataframe
+    global data
+    global MEstandarizada
+    global dataSinObjectNan
+
+    if not data.empty:
+
+        # Limpiamos el conjunto de variables categoricas y datos Nan
+        dataTmp = data
+
+        for (key, value) in data.dtypes.items():
+            if (str(value) == 'object'):
+                dataTmp = dataTmp.drop(columns=[key])
+        
+        dataSinObjectNan = dataTmp.dropna()
+
+        # Instanciamos al objeto
+        Estandarizar = MinMaxScaler()
+
+        # Estandarizamos
+        MEstandarizada = Estandarizar.fit_transform(dataSinObjectNan)
+
+        # Creamos un dataframe temporal para mostrar
+        tmp = pd.DataFrame(MEstandarizada, columns=dataSinObjectNan.columns)
+
+        # Obtenemos columnas
+        columnas = tmp.columns.values.tolist()
+
+        # Agregamos una columna vacia para los indices
+        if columnas[0] != "":
+            columnas.insert(0, "")
+
+        # Lista que contendra las filas
+        filas = []
+
+        # Obtenemos los primeros y ultimos 5 elementos del dataframe
+        filasHead = tmp.head().values.tolist()
+        filasTail = tmp.tail().values.tolist()
+
+        # Agregamos los indices
+        tam = len(data.values.tolist())
+        for i in range(0, 5):
+            filasHead[i].insert(0, i)
+            filasTail[4-i].insert(0, tam-i-1)
+
+        # Agregamos un separador
+        filasSeparador = []
+
+        for i in columnas:
+            filasSeparador.append("...")
+        filasHead.append(filasSeparador)
+
+        # Unimos las listas
+        filasRaw = filasHead+filasTail
+
+        # Convertimos a string todos los elementos para que sean mostrados
+        for fila in filasRaw:
+            f = []
+            for i in fila:
+                f.append(str(i))
+            filas.append(f)
+
+        # Retornamos los elementos
+        return [columnas, filas]
+    else:
+        return [[], []]
 
 # Funciones de control
 

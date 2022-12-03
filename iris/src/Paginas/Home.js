@@ -10,12 +10,6 @@ import EliminarProyecto from "../Componentes/Home/EliminarProyecto";
 import CargarProyecto from "../Componentes/Home/CargarProyecto";
 
 // Estilos
-const Titulo = styled(Typography)({
-  color: "black",
-  fontWeight: "bold",
-  fontFamily: "Roboto",
-  fontSize: "30px",
-});
 
 const Subtitulo = styled(Typography)({
   color: "black",
