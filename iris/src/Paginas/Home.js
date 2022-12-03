@@ -9,9 +9,23 @@ import EditarProyecto from "../Componentes/Home/EditarProyecto";
 import EliminarProyecto from "../Componentes/Home/EliminarProyecto";
 import CargarProyecto from "../Componentes/Home/CargarProyecto";
 
-const TextoBold = styled(Typography)({
+// Estilos
+const Titulo = styled(Typography)({
   color: "black",
   fontWeight: "bold",
+  fontFamily: "Roboto",
+  fontSize: "30px",
+});
+
+const Subtitulo = styled(Typography)({
+  color: "black",
+  fontWeight: "bold",
+  fontFamily: "Roboto",
+  fontSize: "20px",
+});
+
+const Parrafo = styled(Typography)({
+  textAlign: "justify",
   fontFamily: "Roboto",
 });
 
@@ -54,12 +68,12 @@ export default function Home() {
         {/*Titulo*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
-            <TextoBold variant="h5">Crear proyecto</TextoBold>
+            <Subtitulo>Crear proyecto</Subtitulo>
 
-            <Typography textAlign={"justify"}>
+            <Parrafo>
               Ingresa los datos requeridos para crear un proyecto o inicia uno
               que se encuentre almacenado.
-            </Typography>
+            </Parrafo>
           </Box>
         </Box>
 
@@ -77,9 +91,31 @@ export default function Home() {
             />
           </Box>
         </Box>
-        <EditarProyecto visible={visibleEditar} proyectos={proyectos} actualizaProyectos={traeProyectos}/>
-        <EliminarProyecto visible={visibleEliminar} proyectos={proyectos} actualizaProyectos={traeProyectos}/>
-        <CargarProyecto visible={visibleCargar} proyectos={proyectos} actualizaProyectos={traeProyectos}/>
+        <EditarProyecto
+          visible={visibleEditar}
+          proyectos={proyectos}
+          actualizaProyectos={traeProyectos}
+        />
+        <EliminarProyecto
+          visible={visibleEliminar}
+          proyectos={proyectos}
+          actualizaProyectos={traeProyectos}
+        />
+        <CargarProyecto
+          visible={visibleCargar}
+          proyectos={proyectos}
+          actualizaProyectos={traeProyectos}
+        />
+      </Grid>
+
+      <Grid item xs={12} sm={12} md={12}>
+        {/*Titulo*/}
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
+            <Subtitulo>Proyectos Creados</Subtitulo>
+            <Parrafo>Lista de proyectos creados.</Parrafo>
+          </Box>
+        </Box>
       </Grid>
 
       {/*Componente para mostrar los proyectos*/}
