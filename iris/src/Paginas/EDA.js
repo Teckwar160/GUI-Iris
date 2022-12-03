@@ -63,6 +63,7 @@ export default function EDA() {
   const [dataBox, setDataBox] = useState([]);
   const [dataDescribeObject, setDataDescribeObject] = useState([[], []]);
   const [visibleDescribeObject, setVisibleDescribeObject] = useState(false);
+  const [dataHistogramaObject, setDataHistogramaObject] = useState([]);
 
   // Vista Previa
   function vistaPrevia() {
@@ -207,6 +208,22 @@ export default function EDA() {
       .catch((error) => console.log("error", error));
   }
 
+  function getDataHistogramasObject() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/EDA/DataHistogramas/Object", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setDataHistogramaObject(result);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+
   return (
     <Grid
       container
@@ -290,9 +307,7 @@ export default function EDA() {
         </Box>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>
-              Suma de todos los valores nulos en cada variable.
-            </Parrafo>
+            <Parrafo>Suma de todos los valores nulos en cada variable.</Parrafo>
 
             <CodigoBoton ejecutar={getdatosFaltantesNull} visible={false} />
           </Box>
@@ -330,6 +345,7 @@ export default function EDA() {
                 data={d.data}
                 indexBy={"id"}
                 title={d.title}
+                layout={"vertical"}
               />
             </Box>
           </Box>
@@ -422,6 +438,32 @@ export default function EDA() {
         dataFilas={dataDescribeObject[1]}
         visible={visibleDescribeObject}
       />
+
+      <Grid item xs={12} sm={12} md={12}>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Parrafo>Histograma para variables categóricas.</Parrafo>
+
+            <CodigoBoton ejecutar={getDataHistogramasObject} visible={false} />
+          </Box>
+        </Box>
+      </Grid>
+
+      {dataHistogramaObject.map((d, index) => (
+        <Grid item xs={12} sm={6} md={4}>
+          <Box sx={{ padding: 2 }}>
+            <Box sx={{ p: 2, border: "5px dashed plum" }}>
+              <Barra
+                keys={["value"]}
+                data={d.data}
+                indexBy={"id"}
+                title={d.title}
+                layout={"horizontal"}
+              />
+            </Box>
+          </Box>
+        </Grid>
+      ))}
 
       {/*Paso 4*/}
       <Grid item xs={12} sm={12} md={12}>

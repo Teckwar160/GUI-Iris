@@ -154,47 +154,50 @@ async def datosFaltantesNul():
 async def dataHistograma():
     global data
 
-    histogramas = []
-    tipos = []
+    if not data.empty:
+        histogramas = []
+        tipos = []
 
-    for (key, value) in data.dtypes.items():
-        if (str(value) != 'object'):
-            tipos.append(key)
+        for (key, value) in data.dtypes.items():
+            if (str(value) != 'object'):
+                tipos.append(key)
 
-    for t in tipos:
-        hist = data[t].hist()
-        ax = plt.gca()
-        p = ax.patches
+        for t in tipos:
+            hist = data[t].hist()
+            ax = plt.gca()
+            p = ax.patches
 
-        # Conseguimos el alto de las barras
-        altoBarras = []
+            # Conseguimos el alto de las barras
+            altoBarras = []
 
-        for i in range(len(p)):
-            altoBarras.append(p[i].get_height())
+            for i in range(len(p)):
+                altoBarras.append(p[i].get_height())
 
-        # Conseguimos el identificador de las barras
-        inicioBarras = []
+            # Conseguimos el identificador de las barras
+            inicioBarras = []
 
-        for i in range(len(p)):
-            inicioBarras.append(round(p[i].get_x(), 2))
+            for i in range(len(p)):
+                inicioBarras.append(round(p[i].get_x(), 2))
 
-        # Emparejamos los valores
-        valores = []
+            # Emparejamos los valores
+            valores = []
 
-        for (x, y) in zip(inicioBarras, altoBarras):
-            valores.append({"id": x, "value": y})
+            for (x, y) in zip(inicioBarras, altoBarras):
+                valores.append({"id": x, "value": y})
 
-        # Guardamos la información
-        histogramas.append(
-            {
-                'data': valores,
-                'title': t
-            }
-        )
-        plt.clf()
+            # Guardamos la información
+            histogramas.append(
+                {
+                    'data': valores,
+                    'title': t
+                }
+            )
+            plt.clf()
 
-    # Retornamos los valores
-    return histogramas
+        # Retornamos los valores
+        return histogramas
+    else:
+        return []
 
 
 @app.get("/EDA/DataDescribe")
@@ -283,6 +286,64 @@ async def dataDescribeObject():
         return [columnas, filas]
     else:
         return [[], []]
+
+
+@app.get("/EDA/DataHistogramas/Object")
+async def dataHistogramaObject():
+    global data
+    histogramas = []
+    tipos = []
+    
+    #for col in DatosMelbourne.select_dtypes(include='object'):
+    #    if DatosMelbourne[col].nunique()<10:sns.countplot(y=col, data=DatosMelbourne):
+    #        plt.show()
+    if not data.empty:
+
+        # Obtenemos los nombres de las variables
+        for (key, value) in data.dtypes.items():
+            if (str(value) == 'object' and data[key].nunique() <10):
+                tipos.append(key)
+
+        for t in tipos:
+            if data[t].nunique()<10:
+                sns.countplot(y=t,data=data)
+
+            ax = plt.gca()
+            p = ax.patches
+
+            # Conseguimos el alto de las barras
+            altoBarras = []
+
+            for i in range(len(p)):
+                altoBarras.append(p[i].get_width())
+
+            # Conseguimos el identificador de las barras
+            inicioBarras = []
+
+            for i in range(len(p)):
+                inicioBarras.append(p[i].get_y())
+
+            # Emparejamos los valores
+            valores = []
+
+            for (x, y) in zip(inicioBarras, altoBarras):
+                valores.append({"id": str(x), "value": str(y)})
+
+            # Guardamos la información
+            histogramas.append(
+                {
+                    'data': valores,
+                    'title': t
+                }
+            )
+            plt.clf()
+
+        # Retornamos los valores
+        return histogramas
+
+
+    else:
+        return []
 
 # Funciones de control
 

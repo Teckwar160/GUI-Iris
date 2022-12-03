@@ -19,6 +19,7 @@ const Barra = (Props) => {
         indexBy={Props.indexBy}
         margin={{ top: 50, right: 60, bottom: 50, left: 60 }}
         padding={0.3}
+        layout={Props.layout}
         groupMode="grouped"
         valueScale={{ type: "linear" }}
         indexScale={{ type: "band", round: true }}
