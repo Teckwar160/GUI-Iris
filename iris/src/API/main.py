@@ -67,9 +67,6 @@ async def vistaPrevia():
         # Obtenemos columnas
         columnas = data.columns.values.tolist()
 
-        # Cambiamos el nombre de la primer columna
-        columnas[0] = ""
-
         # Lista que contendra las filas
         filas = []
 
@@ -372,8 +369,8 @@ async def dataCorrelacion():
 @app.get("/EDA/DataCorrelacion/Mapa")
 async def dataCorrelacionMapa():
     # Dataframe
-    #data = pd.read_csv("Proyectos/5391_melb_data.csv")
     global data
+
     if not data.empty:
         # Obtenemos columnas
         columnas = data.corr().columns.tolist()
@@ -381,19 +378,22 @@ async def dataCorrelacionMapa():
         # Lista que contendra las filas
         filas = data.corr().values.tolist()
 
-        data = []
-        for columna, fila in zip(columnas, filas):
-            # columna = "" fila = []
+        # Lista que contendra la matriz de correlaciones
+        mapa = []
 
-            for x,y in zip(columnas,fila):
-                #x="" y =value
-                data.append(
-                    {
-                        'id':columna,
-                        'data':[ { 'x': x, 'y': y }]
-                    }
+        # Damso formato a los datos
+        for columna, fila in zip(columnas, filas):
+            tmp = []
+            for x,y in zip(columnas,fila): 
+                tmp.append({ 'x': x, 'y': round(y, 2) })
+            mapa.append(
+                {
+                    'id':columna,
+                    'data':tmp
+                }
             )
-        return data
+        # Retornamos los elementos
+        return mapa
     else:
         return []
 

@@ -10,6 +10,7 @@ import CodigoBoton from "../Componentes/EDA/CodigoBoton";
 //Graficas
 import Barra from "../Graficas/Barra";
 import Caja from "../Graficas/Caja";
+import HeatMap from "../Graficas/HeatMap";
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -69,7 +70,8 @@ export default function EDA() {
   const [dataCorrelacion, setDataCorrelacion] = useState([[], []]);
   const [visibleDataCorrelacion, setVisibleDataCorrelacion] = useState(false);
   const [dataCorrelacionMapa, setDataCorrelacionMapa] = useState([]);
-  const [visibleDataCorrelacionMapa, setVisibleDataCorrelacionMapa] = useState(false);
+  const [visibleDataCorrelacionMapa, setVisibleDataCorrelacionMapa] =
+    useState(false);
 
   // Vista Previa
   function vistaPrevia() {
@@ -259,7 +261,7 @@ export default function EDA() {
       })
       .then((result) => {
         setDataCorrelacionMapa(result);
-        if (result !== [[], []]) {
+        if (result !== []) {
           setVisibleDataCorrelacionMapa(true);
         }
       })
@@ -543,6 +545,11 @@ export default function EDA() {
           </Box>
         </Box>
       </Grid>
+
+      <HeatMap
+        data={dataCorrelacionMapa}
+        visible={visibleDataCorrelacionMapa}
+      />
     </Grid>
   );
 }
