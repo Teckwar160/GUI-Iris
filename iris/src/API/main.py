@@ -290,10 +290,7 @@ async def dataHistogramaObject():
     global data
     histogramas = []
     tipos = []
-    
-    #for col in DatosMelbourne.select_dtypes(include='object'):
-    #    if DatosMelbourne[col].nunique()<10:sns.countplot(y=col, data=DatosMelbourne):
-    #        plt.show()
+
     if not data.empty:
 
         # Obtenemos los nombres de las variables
@@ -302,28 +299,15 @@ async def dataHistogramaObject():
                 tipos.append(key)
 
         for t in tipos:
-            if data[t].nunique()<10:
-                sns.countplot(y=t,data=data)
 
-            ax = plt.gca()
-            p = ax.patches
-
-            # Conseguimos el alto de las barras
-            altoBarras = []
-
-            for i in range(len(p)):
-                altoBarras.append(p[i].get_width())
-
-            # Conseguimos el identificador de las barras
-            inicioBarras = []
-
-            for i in range(len(p)):
-                inicioBarras.append(p[i].get_y())
+            # Obtenemos los datos de las barras
+            barraEtiqueta = data[t].value_counts().index.tolist()
+            barraValor = data[t].value_counts().tolist()
 
             # Emparejamos los valores
             valores = []
 
-            for (x, y) in zip(inicioBarras, altoBarras):
+            for (x, y) in zip(barraEtiqueta, barraValor):
                 valores.append({"id": str(x), "value": str(y)})
 
             # Guardamos la información
@@ -337,7 +321,6 @@ async def dataHistogramaObject():
 
         # Retornamos los valores
         return histogramas
-
 
     else:
         return []
@@ -398,7 +381,6 @@ async def dataCorrelacionMapa():
         return []
 
 # Funciones de control
-
 
 @app.post("/crear/Proyecto")
 async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), descripcion: str = Form(...)):

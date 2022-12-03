@@ -390,6 +390,7 @@ export default function EDA() {
                 indexBy={"id"}
                 title={d.title}
                 layout={"vertical"}
+                interactivo={false}
               />
             </Box>
           </Box>
@@ -501,6 +502,7 @@ export default function EDA() {
                 indexBy={"id"}
                 title={d.title}
                 layout={"horizontal"}
+                interactivo={true}
               />
             </Box>
           </Box>

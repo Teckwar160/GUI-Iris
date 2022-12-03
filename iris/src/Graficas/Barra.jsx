@@ -5,7 +5,7 @@ import { BasicTooltip } from '@nivo/tooltip';
 const Barra = (Props) => {
   const BarTooltip = (props) => {
     return React.createElement(BasicTooltip, {
-      id: props.id,
+      id: props.indexValue,
       value: props.value,
       color: props.color,
       enableChip: true,
@@ -74,6 +74,7 @@ const Barra = (Props) => {
           modifiers: [["darker", 1.6]],
         }}
         legends={[]}
+        isInteractive={Props.interactivo}
         role="application"
         ariaLabel="Nivo bar chart demo"
         tooltip={BarTooltip}
