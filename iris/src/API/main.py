@@ -345,6 +345,58 @@ async def dataHistogramaObject():
     else:
         return []
 
+@app.get("/EDA/DataCorrelacion")
+async def dataCorrelacion():
+    # Dataframe
+    global data
+
+    if not data.empty:
+        # Obtenemos columnas
+        columnas = data.corr().columns.tolist()
+
+        # Lista que contendra las filas
+        filas = data.corr().values.tolist()
+
+        # Acomodamos las filas
+        for fila, columna in zip(filas, columnas):
+            fila.insert(0, columna)
+
+        # Insertamos una columna de más para las etiquetas
+        columnas.insert(0, '')
+
+        # Retornamos los elementos
+        return [columnas, filas]
+    else:
+        return [[], []]
+
+@app.get("/EDA/DataCorrelacion/Mapa")
+async def dataCorrelacionMapa():
+    # Dataframe
+    #data = pd.read_csv("Proyectos/5391_melb_data.csv")
+    global data
+    if not data.empty:
+        # Obtenemos columnas
+        columnas = data.corr().columns.tolist()
+
+        # Lista que contendra las filas
+        filas = data.corr().values.tolist()
+
+        data = []
+        for columna, fila in zip(columnas, filas):
+            # columna = "" fila = []
+
+            for x,y in zip(columnas,fila):
+                #x="" y =value
+                data.append(
+                    {
+                        'id':columna,
+                        'data':[ { 'x': x, 'y': y }]
+                    }
+            )
+        return data
+    else:
+        return []
+
 # Funciones de control
 
 

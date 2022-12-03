@@ -65,6 +65,12 @@ export default function EDA() {
   const [visibleDescribeObject, setVisibleDescribeObject] = useState(false);
   const [dataHistogramaObject, setDataHistogramaObject] = useState([]);
 
+  // Paso 4
+  const [dataCorrelacion, setDataCorrelacion] = useState([[], []]);
+  const [visibleDataCorrelacion, setVisibleDataCorrelacion] = useState(false);
+  const [dataCorrelacionMapa, setDataCorrelacionMapa] = useState([]);
+  const [visibleDataCorrelacionMapa, setVisibleDataCorrelacionMapa] = useState(false);
+
   // Vista Previa
   function vistaPrevia() {
     var requestOptions = {
@@ -223,6 +229,42 @@ export default function EDA() {
       .catch((error) => console.log("error", error));
   }
 
+  // Paso 4
+  function getDataCorrelacion() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/EDA/DataCorrelacion", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setDataCorrelacion(result);
+        if (result !== [[], []]) {
+          setVisibleDataCorrelacion(true);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getDataCorrelacionMapa() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/EDA/DataCorrelacion/Mapa", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setDataCorrelacionMapa(result);
+        if (result !== [[], []]) {
+          setVisibleDataCorrelacionMapa(true);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
 
   return (
     <Grid
@@ -472,6 +514,32 @@ export default function EDA() {
             <Subtitulo>
               Paso 4: Identificación de relaciones entre pares variables.
             </Subtitulo>
+          </Box>
+        </Box>
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Parrafo>
+              Una matriz de correlaciones es útil para analizar la relación
+              entre las variables numéricas.
+            </Parrafo>
+
+            <CodigoBoton ejecutar={getDataCorrelacion} visible={false} />
+          </Box>
+        </Box>
+      </Grid>
+
+      <Tabla
+        dataColumnas={dataCorrelacion[0]}
+        dataFilas={dataCorrelacion[1]}
+        visible={visibleDataCorrelacion}
+      />
+
+      <Grid item xs={12} sm={12} md={12}>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Parrafo>Mapa de calor de correlaciones</Parrafo>
+            <CodigoBoton ejecutar={getDataCorrelacionMapa} visible={false} />
           </Box>
         </Box>
       </Grid>
