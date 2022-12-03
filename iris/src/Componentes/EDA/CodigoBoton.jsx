@@ -24,7 +24,7 @@ const TextoBoton = styled(Typography)({
 const Codigo = styled("div")({
   border: "1px solid lightgray",
   boxShadow: "60px",
-  backgroundColor: "mintcream",
+  backgroundColor: "white",
   color: "Black",
 });
 

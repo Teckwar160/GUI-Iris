@@ -372,9 +372,7 @@ export default function EDA() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Bold>a) Distribución de variables numéricas</Bold>
-            <Parrafo>
-              Se utilizan histogramas que agrupan los números en rangos.
-            </Parrafo>
+            <Parrafo>Histogramas que agrupan los números en rangos.</Parrafo>
             <CodigoBoton ejecutar={getDataHistogramas} visible={false} />
           </Box>
         </Box>
@@ -401,10 +399,6 @@ export default function EDA() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Bold>b) Resumen estadístico de variables numéricas</Bold>
-            <Parrafo>
-              Se saca un resumen estadístico de las variables numéricas.
-            </Parrafo>
-
             <CodigoBoton ejecutar={getDataDescribe} visible={false} />
           </Box>
         </Box>
@@ -420,9 +414,7 @@ export default function EDA() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Bold>c) Diagramas para detectar posibles valores atípicos</Bold>
-            <Parrafo>
-              Diagramas de cajas para detectar valores atípicos.
-            </Parrafo>
+            <Parrafo>Diagramas de cajas.</Parrafo>
 
             <CodigoBoton ejecutar={getDataBox} visible={false} />
           </Box>
@@ -521,10 +513,7 @@ export default function EDA() {
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>
-              Una matriz de correlaciones es útil para analizar la relación
-              entre las variables numéricas.
-            </Parrafo>
+            <Parrafo>Matriz de correlaciones.</Parrafo>
 
             <CodigoBoton ejecutar={getDataCorrelacion} visible={false} />
           </Box>
@@ -540,7 +529,7 @@ export default function EDA() {
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>Mapa de calor de correlaciones</Parrafo>
+            <Parrafo>Mapa de calor de correlaciones.</Parrafo>
             <CodigoBoton ejecutar={getDataCorrelacionMapa} visible={false} />
           </Box>
         </Box>
