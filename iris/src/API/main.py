@@ -625,6 +625,32 @@ async def pcaComponentes():
     else:
         return [[],[]]
 
+@app.post("/PCA/Varianza")
+async def pcaComponentes(numero: int = Form(...)):
+    # Dataframe
+    global data
+    global MEstandarizada
+    global pca
+
+
+    if not data.empty:
+        varianza = pca.explained_variance_ratio_
+
+        varianzaAcumulada = sum(varianza[0:numero])
+
+        componentes = varianza.tolist()
+
+        columnas = ["Número de componente","Varianza de componente"]
+
+        filas = []
+
+        for i,fila in enumerate(componentes):
+            filas.append([i+1,fila])
+        
+        return [varianzaAcumulada,columnas,filas]
+    else:
+        return [[],[],[]]
+
 # Funciones de control
 
 @app.post("/crear/Proyecto")

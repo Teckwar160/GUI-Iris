@@ -6,6 +6,7 @@ import { Typography, Grid, Box } from "@mui/material";
 //Componentes
 import Tabla from "../Componentes/Mostrar datos/Tabla";
 import CodigoBoton from "../Componentes/Mostrar datos/CodigoBoton";
+import Comando from "../Componentes/Editores/Comando";
 
 //Graficas
 import HeatMap from "../Graficas/HeatMap";
@@ -60,6 +61,11 @@ export default function EDA() {
   // Paso 3 y Paso 4
   const [dataComponentes, setDataComponentes] = useState([]);
   const [visibleDataComponentes, setVisibleDataComponentes] = useState(false);
+
+  // Paso 5
+  const [dataVarianza, setDataVarianza] = useState([]);
+  const [visibleDataVarianza, setVisibleDataVarianza] = useState(false);
+  const [numeroDeComponentes, setNumeroDeComponentes] = useState("");
 
   // Vista previa
   function vistaPrevia() {
@@ -165,11 +171,38 @@ export default function EDA() {
       })
       .then((result) => {
         setDataComponentes([result[0], result[1]]);
-        if (result !== [[],[]]) {
+        if (result !== [[], []]) {
           setVisibleDataComponentes(true);
         }
       })
       .catch((error) => console.log("error", error));
+  }
+
+  function getVarianza() {
+    if (numeroDeComponentes === "") {
+      alert("Favor de ingresar el comando");
+    } else {
+      // Ingresamos los datos
+      const formdata = new FormData();
+      formdata.append("numero", numeroDeComponentes);
+
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+      };
+
+      fetch("http://127.0.0.1:8000/PCA/Varianza", requestOptions)
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          setDataVarianza([result[0], result[1], result[2]]);
+          if (result !== [[], [], []]) {
+            setVisibleDataVarianza(true);
+          }
+        })
+        .catch((error) => console.log("error", error));
+    }
   }
 
   return (
@@ -292,11 +325,8 @@ export default function EDA() {
               Pasos 3 y 4: Se calcula la matriz de covarianzas o correlaciones,
               y se calculan los componentes (eigen-vectores) y la varianza
               (eigen-valores).
-              <CodigoBoton
-                ejecutar={getComponentes}
-                visible={false}
-              />
             </Subtitulo>
+            <CodigoBoton ejecutar={getComponentes} visible={false} />
           </Box>
         </Box>
 
@@ -304,6 +334,35 @@ export default function EDA() {
           dataColumnas={dataComponentes[0]}
           dataFilas={dataComponentes[1]}
           visible={visibleDataComponentes}
+        />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
+            <Subtitulo>
+              Paso 5: Se decide el número de componentes principales.
+            </Subtitulo>
+            <Parrafo>
+              Se calcula el porcentaje de relevancia, es decir, entre el 75 y
+              90% de varianza total.
+            </Parrafo>
+            <Comando
+              Label={"Ingrese número de componentes"}
+              setComando={setNumeroDeComponentes}
+              comando={numeroDeComponentes}
+              type={"number"}
+            />
+            <CodigoBoton
+              texto={"Varianza acumulada: " + dataVarianza[0]}
+              ejecutar={getVarianza}
+              visible={visibleDataVarianza}
+            />
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={dataVarianza[1]}
+          dataFilas={dataVarianza[2]}
+          visible={visibleDataVarianza}
         />
       </Grid>
     </Grid>
