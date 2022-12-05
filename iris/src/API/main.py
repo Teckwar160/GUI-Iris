@@ -25,6 +25,7 @@ data = pd.DataFrame()
 # Variables globales de PCA
 MEstandarizada = None
 dataSinObjectNan = None
+pca = None
 
 # Clase que nos ayuda a manipular los datos
 
@@ -595,6 +596,34 @@ async def pcaMinMaxScaler():
         return [columnas, filas]
     else:
         return [[], []]
+
+@app.get("/PCA/Componentes")
+async def pcaComponentes():
+    # Dataframe
+    global data
+    global MEstandarizada
+    global pca
+
+
+    if not data.empty:
+        # Se instancia el objeto PCA
+        pca = PCA(n_components=None)
+
+        # Se obtienen los componentes
+        pca.fit(MEstandarizada)
+
+        componentes = pca.components_.tolist()
+
+        columnas = list(range(len(componentes[0])))
+
+        columnas.insert(0,'#')
+
+        for i,fila in enumerate(componentes):
+            fila.insert(0,i)
+        
+        return [columnas,componentes]
+    else:
+        return [[],[]]
 
 # Funciones de control
 

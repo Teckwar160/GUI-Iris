@@ -44,7 +44,7 @@ export default function CodigoBoton(Props) {
         <Box sx={{ padding: 1 }}>
           <Codigo>
             <Typography sx={{ ml: 2 }}>
-              <pre style={{ fontFamily: "inherit" }}>{Props.codigo}</pre>
+              <pre style={{ fontFamily: "inherit" }}>{Props.texto}</pre>
             </Typography>
           </Codigo>
         </Box>

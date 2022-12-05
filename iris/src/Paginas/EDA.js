@@ -323,7 +323,7 @@ export default function EDA() {
 
             <CodigoBoton
               ejecutar={getForma}
-              codigo={"(" + forma[0] + "," + forma[1] + ")"}
+              texto={"(" + forma[0] + "," + forma[1] + ")"}
               visible={visibleForma}
             />
           </Box>

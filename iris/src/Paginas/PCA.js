@@ -54,14 +54,12 @@ export default function EDA() {
   const [dataStandardScaler, setDataStandardScaler] = useState([[], []]);
   const [visibleDataStandardScaler, setVisibleDataStandardScaler] =
     useState(false);
-
   const [dataMinMaxScaler, setDataMinMaxScaler] = useState([[], []]);
-  const [visibleDataMinMaxScaler, setVisibleDataMinMaxScaler] =
-    useState(false);
+  const [visibleDataMinMaxScaler, setVisibleDataMinMaxScaler] = useState(false);
 
-  // Paso 3
-
-  // Paso 4
+  // Paso 3 y Paso 4
+  const [dataComponentes, setDataComponentes] = useState([]);
+  const [visibleDataComponentes, setVisibleDataComponentes] = useState(false);
 
   // Vista previa
   function vistaPrevia() {
@@ -151,6 +149,24 @@ export default function EDA() {
         setDataMinMaxScaler([result[0], result[1]]);
         if (result !== [[], []]) {
           setVisibleDataMinMaxScaler(true);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getComponentes() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/PCA/Componentes", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setDataComponentes([result[0], result[1]]);
+        if (result !== []) {
+          setVisibleDataComponentes(true);
         }
       })
       .catch((error) => console.log("error", error));
@@ -268,6 +284,26 @@ export default function EDA() {
           dataColumnas={dataMinMaxScaler[0]}
           dataFilas={dataMinMaxScaler[1]}
           visible={visibleDataMinMaxScaler}
+        />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
+            <Subtitulo>
+              Pasos 3 y 4: Se calcula la matriz de covarianzas o correlaciones,
+              y se calculan los componentes (eigen-vectores) y la varianza
+              (eigen-valores).
+              <CodigoBoton
+                ejecutar={getComponentes}
+                visible={false}
+              />
+            </Subtitulo>
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={dataComponentes[0]}
+          dataFilas={dataComponentes[1]}
+          visible={visibleDataComponentes}
         />
       </Grid>
     </Grid>
