@@ -165,7 +165,7 @@ export default function EDA() {
       })
       .then((result) => {
         setDataComponentes([result[0], result[1]]);
-        if (result !== []) {
+        if (result !== [[],[]]) {
           setVisibleDataComponentes(true);
         }
       })
