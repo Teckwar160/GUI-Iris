@@ -339,7 +339,7 @@ export default function EDA() {
 
             <Parrafo>
               Intentar encontrar una estructura donde la varianza de los datos
-              sea mayor, es decir, donde hay una mayor dispersión de éstos.
+              sea mayor.
             </Parrafo>
           </Box>
         </Box>

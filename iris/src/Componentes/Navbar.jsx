@@ -29,7 +29,7 @@ const ThemeAppBar = styled(AppBar)({
   backgroundColor: "purple",
 });
 
-const pages = ["Home", "EDA", "PCA"];
+const pages = ["Home", "EDA", "PCA","Pronóstico Arboles"];
 
 export default function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
