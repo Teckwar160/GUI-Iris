@@ -597,17 +597,21 @@ async def pcaMinMaxScaler():
     else:
         return [[], []]
 
-@app.get("/PCA/Componentes")
-async def pcaComponentes():
+@app.post("/PCA/Componentes")
+async def pcaComponentes(numero: str = Form(...)):
     # Dataframe
     global data
     global MEstandarizada
     global pca
 
+    if numero == "None":
+        numero = None
+    else:
+        numero = int(numero)
 
     if not data.empty:
         # Se instancia el objeto PCA
-        pca = PCA(n_components=None)
+        pca = PCA(n_components=numero)
 
         # Se obtienen los componentes
         pca.fit(MEstandarizada)

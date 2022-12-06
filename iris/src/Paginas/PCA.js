@@ -61,11 +61,13 @@ export default function EDA() {
   // Paso 3 y Paso 4
   const [dataComponentes, setDataComponentes] = useState([]);
   const [visibleDataComponentes, setVisibleDataComponentes] = useState(false);
+  const [numeroDeComponentes, setNumeroDeComponentes] = useState("");
 
   // Paso 5
   const [dataVarianza, setDataVarianza] = useState([]);
   const [visibleDataVarianza, setVisibleDataVarianza] = useState(false);
-  const [numeroDeComponentes, setNumeroDeComponentes] = useState("");
+  const [numeroDeComponentesVarianza, setNumeroDeComponentesVarianza] =
+    useState("");
 
   // Vista previa
   function vistaPrevia() {
@@ -160,31 +162,42 @@ export default function EDA() {
       .catch((error) => console.log("error", error));
   }
 
+  //Paso 3 y 4
   function getComponentes() {
-    var requestOptions = {
-      method: "GET",
-    };
-
-    fetch("http://127.0.0.1:8000/PCA/Componentes", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        setDataComponentes([result[0], result[1]]);
-        if (result !== [[], []]) {
-          setVisibleDataComponentes(true);
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function getVarianza() {
     if (numeroDeComponentes === "") {
-      alert("Favor de ingresar el comando");
+      setNumeroDeComponentes("None");
     } else {
       // Ingresamos los datos
       const formdata = new FormData();
       formdata.append("numero", numeroDeComponentes);
+
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+      };
+
+      fetch("http://127.0.0.1:8000/PCA/Componentes", requestOptions)
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          setDataComponentes([result[0], result[1]]);
+          if (result !== [[], []]) {
+            setVisibleDataComponentes(true);
+          }
+        })
+        .catch((error) => console.log("error", error));
+    }
+  }
+
+  // Paso 5
+  function getVarianza() {
+    if (numeroDeComponentesVarianza === "") {
+      alert("Favor de ingresar el comando");
+    } else {
+      // Ingresamos los datos
+      const formdata = new FormData();
+      formdata.append("numero", numeroDeComponentesVarianza);
 
       var requestOptions = {
         method: "POST",
@@ -319,6 +332,7 @@ export default function EDA() {
           visible={visibleDataMinMaxScaler}
         />
 
+        {/*Paso 3 y 4*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
             <Subtitulo>
@@ -326,6 +340,14 @@ export default function EDA() {
               y se calculan los componentes (eigen-vectores) y la varianza
               (eigen-valores).
             </Subtitulo>
+            <Box sx={{ padding: 2 }}>
+              <Comando
+                Label={"Ingrese número de componentes"}
+                setComando={setNumeroDeComponentes}
+                comando={numeroDeComponentes}
+                type={"number"}
+              />
+            </Box>
             <CodigoBoton ejecutar={getComponentes} visible={false} />
           </Box>
         </Box>
@@ -345,12 +367,15 @@ export default function EDA() {
               Se calcula el porcentaje de relevancia, es decir, entre el 75 y
               90% de varianza total.
             </Parrafo>
-            <Comando
-              Label={"Ingrese número de componentes"}
-              setComando={setNumeroDeComponentes}
-              comando={numeroDeComponentes}
-              type={"number"}
-            />
+
+            <Box sx={{ padding: 2 }}>
+              <Comando
+                Label={"Ingrese número de componentes"}
+                setComando={setNumeroDeComponentesVarianza}
+                comando={numeroDeComponentesVarianza}
+                type={"number"}
+              />
+            </Box>
             <CodigoBoton
               texto={"Varianza acumulada: " + dataVarianza[0]}
               ejecutar={getVarianza}
