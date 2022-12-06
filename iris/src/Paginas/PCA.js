@@ -1,5 +1,5 @@
 //Bibliotecas
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box } from "@mui/material";
 
@@ -7,6 +7,7 @@ import { Typography, Grid, Box } from "@mui/material";
 import Tabla from "../Componentes/Mostrar datos/Tabla";
 import CodigoBoton from "../Componentes/Mostrar datos/CodigoBoton";
 import Comando from "../Componentes/Editores/Comando";
+import Visualizador from "../Componentes/Editores/Visualizador";
 
 //Graficas
 import HeatMap from "../Graficas/HeatMap";
@@ -68,6 +69,19 @@ export default function EDA() {
   const [visibleDataVarianza, setVisibleDataVarianza] = useState(false);
   const [numeroDeComponentesVarianza, setNumeroDeComponentesVarianza] =
     useState("");
+
+  // Paso 6
+  const [dataCargas, setDataCargas] = useState([]);
+  const [visibleDataCargas, setVisibleDataCargas] = useState(false);
+  const [variables, setVariables] = useState([]);
+  const [dataDrop, setDataDrop] = useState([]);
+  const [visibleDataDrop, setVisibleDataDrop] = useState(false);
+  const [variable, setVariable] = useState("");
+
+  useEffect(() => {
+    traeVariables();
+    // eslint-disable-next-line
+  }, []);
 
   // Vista previa
   function vistaPrevia() {
@@ -165,7 +179,26 @@ export default function EDA() {
   //Paso 3 y 4
   function getComponentes() {
     if (numeroDeComponentes === "") {
-      setNumeroDeComponentes("None");
+      // Ingresamos los datos
+      const formdata = new FormData();
+      formdata.append("numero", "None");
+
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+      };
+
+      fetch("http://127.0.0.1:8000/PCA/Componentes", requestOptions)
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          setDataComponentes([result[0], result[1]]);
+          if (result !== [[], []]) {
+            setVisibleDataComponentes(true);
+          }
+        })
+        .catch((error) => console.log("error", error));
     } else {
       // Ingresamos los datos
       const formdata = new FormData();
@@ -216,6 +249,70 @@ export default function EDA() {
         })
         .catch((error) => console.log("error", error));
     }
+  }
+
+  // Paso 6
+  function getCargas() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("numero", numeroDeComponentesVarianza);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/PCA/Paso6", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setDataCargas([result[0], result[1], result[2], result[3]]);
+        if (result !== [[], [], [], []]) {
+          setVisibleDataCargas(true);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function traeVariables() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/PCA/trae/Variables", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setVariables(result);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getDataDrop() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("variable", variable);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/PCA/Drop", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        alert("Se elimino correctamente la variable");
+        setDataDrop([result[0], result[1]]);
+        traeVariables();
+        if (result !== [[], []]) {
+          setVisibleDataDrop(true);
+        }
+      })
+      .catch((error) => console.log("error", error));
   }
 
   return (
@@ -358,6 +455,7 @@ export default function EDA() {
           visible={visibleDataComponentes}
         />
 
+        {/*Paso 5*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
             <Subtitulo>
@@ -388,6 +486,52 @@ export default function EDA() {
           dataColumnas={dataVarianza[1]}
           dataFilas={dataVarianza[2]}
           visible={visibleDataVarianza}
+        />
+
+        {/*Paso 6*/}
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
+            <Subtitulo>
+              Paso 6: Se examina la proporción de relevancias.
+            </Subtitulo>
+            <Parrafo>
+              Se revisan los valores absolutos de los componentes principales
+              seleccionados. Cuanto mayor sea el valor absoluto, más importante
+              es esa variable en el componente principal.
+            </Parrafo>
+            <CodigoBoton ejecutar={getCargas} visible={false} />
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={dataCargas[0]}
+          dataFilas={dataCargas[1]}
+          visible={visibleDataCargas}
+        />
+
+        <Tabla
+          dataColumnas={dataCargas[2]}
+          dataFilas={dataCargas[3]}
+          visible={visibleDataCargas}
+        />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Parrafo>
+              Selecciona la variable que quieras eliminar y pulsa ejecutar.
+            </Parrafo>
+            <Box sx={{ padding: 2 }}>
+              <Visualizador variables={variables} funcion={setVariable} />
+            </Box>
+
+            <CodigoBoton ejecutar={getDataDrop} visible={false} />
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={dataDrop[0]}
+          dataFilas={dataDrop[1]}
+          visible={visibleDataDrop}
         />
       </Grid>
     </Grid>

@@ -26,6 +26,7 @@ data = pd.DataFrame()
 MEstandarizada = None
 dataSinObjectNan = None
 pca = None
+dataDrop = pd.DataFrame()
 
 # Clase que nos ayuda a manipular los datos
 
@@ -655,6 +656,144 @@ async def pcaComponentes(numero: int = Form(...)):
     else:
         return [[],[],[]]
 
+@app.post("/PCA/Paso6")
+async def pcaPaso6(numero: int = Form(...)):
+    # Dataframe
+    global data
+    global pca
+
+    if not data.empty:
+
+        cargasComponentes = pd.DataFrame(abs(pca.components_), columns=dataSinObjectNan.columns)
+
+        # Obtenemos columnas
+        columnas = cargasComponentes.columns.values.tolist()
+
+        # Agregamos una columna vacia para los indices
+        if columnas[0] != "":
+            columnas.insert(0, "")
+
+        # Lista que contendra las filas
+        filas = []
+        filasHead = []
+
+        # Lista que contendra las filas
+        filasRaw = cargasComponentes.values.tolist()
+
+        # Agregamos los indices
+        tam = len(cargasComponentes.values.tolist())
+        for i in range(0, tam):
+            filasRaw[i].insert(0, i)
+
+
+        # Convertimos a string todos los elementos para que sean mostrados
+        for fila in filasRaw:
+            f = []
+            for i in fila:
+                f.append(str(i))
+            filas.append(f)
+
+        # Obtenemos las columnas y filas para el Head
+
+        # Obtenemos columnas
+        columnasHead = cargasComponentes.head(numero).columns.values.tolist()
+
+        # Agregamos una columna vacia para los indices
+        if columnasHead[0] != "":
+            columnasHead.insert(0, "")
+
+        # Lista que contendra las filas
+        filasRaw = cargasComponentes.head(numero).values.tolist()
+
+        # Agregamos los indices
+        for i in range(0, numero):
+            filasRaw[i].insert(0, i)
+
+
+        # Convertimos a string todos los elementos para que sean mostrados
+        for fila in filasRaw:
+            f = []
+            for i in fila:
+                f.append(str(i))
+            filasHead.append(f)
+
+        # Retornamos los elementos
+        return [columnas, filas, columnasHead, filasHead]
+    else:
+        return [[], [], [], []]
+
+@app.get("/PCA/trae/Variables")
+async def pcaTraeVariables():
+    # Dataframe
+    global data
+    global dataDrop
+
+    if not data.empty:
+        # Obtenemos columnas
+        variables = dataDrop.columns.values.tolist()
+
+        # Retornamos los elementos
+        return variables
+    else:
+        return []
+
+@app.post("/PCA/Drop")
+async def pcaDrop(variable: str = Form(...)):
+    # Dataframe
+    global data
+    global dataDrop
+
+    if not data.empty:
+
+        # Eliminamos la variable
+        dataDrop = dataDrop.drop(columns=[variable])
+
+        # Obtenemos columnas
+        columnas = dataDrop.columns.values.tolist()
+
+        if len(columnas) == 0:
+            dataDrop = data
+            columnas = dataDrop.columns.values.tolist()
+
+        # Agregamos una columna vacia para los indices
+        columnas.insert(0, "")
+
+        # Lista que contendra las filas
+        filas = []
+
+        # Obtenemos los primeros y ultimos 5 elementos del dataframe
+        filasHead = dataDrop.head().values.tolist()
+        filasTail = dataDrop.tail().values.tolist()
+
+        # Agregamos los indices
+        tam = len(dataDrop.values.tolist())
+        for i in range(0, 5):
+            filasHead[i].insert(0, i)
+            filasTail[4-i].insert(0, tam-i-1)
+
+        # Agregamos un separador
+        filasSeparador = []
+
+        for i in columnas:
+            filasSeparador.append("...")
+        filasHead.append(filasSeparador)
+
+        # Unimos las listas
+        filasRaw = filasHead+filasTail
+
+        # Convertimos a string todos los elementos para que sean mostrados
+        for fila in filasRaw:
+            f = []
+            for i in fila:
+                f.append(str(i))
+            filas.append(f)
+
+        # Retornamos los elementos
+        return [columnas, filas]
+    else:
+        return [[], []]
+
+
 # Funciones de control
 
 @app.post("/crear/Proyecto")
@@ -710,11 +849,14 @@ async def createProyecto(id: int = Form(...)):
 @app.post("/cargar/Proyecto")
 async def createProyecto(id: int = Form(...)):
     global data
+    global dataDrop
 
     # Buscamos el proyecto
     fila = bd.buscarFila(id)
 
     # Cargamos el proyecto
     data = pd.read_csv(fila[0][2])
+
+    dataDrop = data
 
     return True
