@@ -51,7 +51,7 @@ export default function Arboles() {
 
   // Limpieza de datos
   const [variables, setVariables] = useState([]);
-  const [tablaDrop, setTablaDrop] = useState([]); 
+  const [tablaDrop, setTablaDrop] = useState([]);
   const [visibleTablaDrop, setVisibleTablaDrop] = useState(false);
   const [variablesDrop, setVariablesDrop] = useState([]);
 
@@ -140,7 +140,7 @@ export default function Arboles() {
       method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/PCA/trae/Variables", requestOptions)
+    fetch("http://127.0.0.1:8000/Arboles/trae/Variables", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -160,7 +160,7 @@ export default function Arboles() {
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/PCA/Drop", requestOptions)
+    fetch("http://127.0.0.1:8000/Arboles/Drop", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -274,10 +274,16 @@ export default function Arboles() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>
-              Selecciona la(s) variable(s) que quieras eliminar y pulsa ejecutar.
+              Selecciona la(s) variable(s) que quieras eliminar y pulsa
+              ejecutar. Las variables que aparecen son unicamente numericas con
+              ellas se trabajara en los pasos siguientes.
             </Parrafo>
             <Box sx={{ padding: 2 }}>
-              <Visualizador lista={variables} listaSeleccionada={variablesDrop} actualizaSeleccion={setVariablesDrop} />
+              <Visualizador
+                lista={variables}
+                listaSeleccionada={variablesDrop}
+                actualizaSeleccion={setVariablesDrop}
+              />
             </Box>
 
             <CodigoBoton ejecutar={getDataDrop} visible={false} />

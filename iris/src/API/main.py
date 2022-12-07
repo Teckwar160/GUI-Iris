@@ -668,6 +668,7 @@ async def pcaTraeVariables():
     global data
 
     if not data.empty:
+
         # Obtenemos columnas
         variables = data.columns.values.tolist()
 
@@ -735,6 +736,98 @@ async def pcaDrop(lista: list = Form(...)):
     else:
         return [[], []]
 
+# Arboles
+@app.get("/Arboles/trae/Variables")
+async def arbolesTraeVariables():
+    # Dataframe
+    global data
+
+    if not data.empty:
+
+        # Limpiamos el conjunto de variables categoricas y datos Nan
+        dataTmp = data
+
+        for (key, value) in data.dtypes.items():
+            if (str(value) == 'object'):
+                dataTmp = dataTmp.drop(columns=[key])
+
+        dataTmp = dataTmp.dropna()
+
+        # Obtenemos columnas
+        variables = dataTmp.columns.values.tolist()
+
+        # Retornamos los elementos
+        return variables
+    else:
+        return []
+
+@app.post("/Arboles/Drop")
+async def arbolesDrop(lista: list = Form(...)):
+    # Dataframe
+    global data
+    global dataDrop
+
+    if not data.empty:
+        # Eliminamos la variable
+        if lista != [""]:
+            lista = lista[0].split(',')
+            dataDrop = data.drop(columns=lista)
+        else:
+            dataDrop = data
+
+        # Limpiamos el conjunto de variables categoricas y datos Nan
+        dataTmp = dataDrop
+
+        for (key, value) in dataDrop.dtypes.items():
+            if (str(value) == 'object'):
+                dataTmp = dataTmp.drop(columns=[key])
+
+        dataDrop = dataTmp.dropna()
+            
+        # Obtenemos columnas
+        columnas = dataDrop.columns.values.tolist()
+
+        if len(columnas) == 0:
+            dataDrop = data
+            columnas = dataDrop.columns.values.tolist()
+
+        # Agregamos una columna vacia para los indices
+        columnas.insert(0, "")
+
+        # Lista que contendra las filas
+        filas = []
+
+        # Obtenemos los primeros y ultimos 5 elementos del dataframe
+        filasHead = dataDrop.head().values.tolist()
+        filasTail = dataDrop.tail().values.tolist()
+
+        # Agregamos los indices
+        tam = len(dataDrop.values.tolist())
+        for i in range(0, 5):
+            filasHead[i].insert(0, i)
+            filasTail[4-i].insert(0, tam-i-1)
+
+        # Agregamos un separador
+        filasSeparador = []
+
+        for i in columnas:
+            filasSeparador.append("...")
+        filasHead.append(filasSeparador)
+
+        # Unimos las listas
+        filasRaw = filasHead+filasTail
+
+        # Convertimos a string todos los elementos para que sean mostrados
+        for fila in filasRaw:
+            f = []
+            for i in fila:
+                f.append(str(i))
+            filas.append(f)
+
+        # Retornamos los elementos
+        return [columnas, filas]
+    else:
+        return [[], []]
 
 # Funciones de control
 
