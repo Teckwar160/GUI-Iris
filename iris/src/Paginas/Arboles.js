@@ -7,6 +7,7 @@ import { Typography, Grid, Box } from "@mui/material";
 import Tabla from "../Componentes/Mostrar datos/Tabla";
 import CodigoBoton from "../Componentes/Mostrar datos/CodigoBoton";
 import Visualizador from "../Componentes/Editores/Visualizador";
+import Comando from "../Componentes/Editores/Comando";
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -260,6 +261,26 @@ export default function Arboles() {
       })
       .catch((error) => console.log("error", error));
   }
+
+  function division() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/Arboles/Division", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result) {
+          alert("Se realizo la división correctamente.");
+        } else {
+          alert("Favor de revisar si realizo todos los pasos anteriores.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
   return (
     <Grid
       container
@@ -438,6 +459,47 @@ export default function Arboles() {
           dataFilas={tablaY[1]}
           visible={visibleTablaY}
         />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Parrafo>División de datos.</Parrafo>
+
+            <CodigoBoton ejecutar={division} visible={false} />
+          </Box>
+        </Box>
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Parrafo>Entrenamiento de modelo.</Parrafo>
+            <Box sx={{ padding: 2 }}>
+              <Comando
+                Label={"max_depth"}
+                setComando={() => {}}
+                comando={() => {}}
+                type={"number"}
+              />
+              <Comando
+                Label={"min_samples_split"}
+                setComando={() => {}}
+                comando={() => {}}
+                type={"number"}
+              />
+              <Comando
+                Label={"min_samples_leaf"}
+                setComando={() => {}}
+                comando={() => {}}
+                type={"number"}
+              />
+              <Comando
+                Label={"random_state"}
+                setComando={() => {}}
+                comando={() => {}}
+                type={"number"}
+              />
+            </Box>
+            <CodigoBoton ejecutar={division} visible={false} />
+          </Box>
+        </Box>
       </Grid>
     </Grid>
   );

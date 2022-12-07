@@ -36,6 +36,10 @@ dataDrop = None
 # Variables globales de Arboles
 X = None
 Y = None
+X_train = None
+X_test = None
+Y_train = None
+Y_test = None
 
 # Clase que nos ayuda a manipular los datos
 
@@ -686,6 +690,7 @@ async def pcaTraeVariables():
     else:
         return []
 
+
 @app.post("/PCA/Drop")
 async def pcaDrop(lista: list = Form(...)):
     # Dataframe
@@ -699,7 +704,7 @@ async def pcaDrop(lista: list = Form(...)):
             dataDrop = data.drop(columns=lista)
         else:
             dataDrop = data
-            
+
         # Obtenemos columnas
         columnas = dataDrop.columns.values.tolist()
 
@@ -746,6 +751,8 @@ async def pcaDrop(lista: list = Form(...)):
         return [[], []]
 
 # Arboles
+
+
 @app.get("/Arboles/trae/Variables")
 async def arbolesTraeVariables():
     # Dataframe
@@ -770,6 +777,7 @@ async def arbolesTraeVariables():
     else:
         return []
 
+
 @app.post("/Arboles/Drop")
 async def arbolesDrop(lista: list = Form(...)):
     # Dataframe
@@ -792,7 +800,7 @@ async def arbolesDrop(lista: list = Form(...)):
                 dataTmp = dataTmp.drop(columns=[key])
 
         dataDrop = dataTmp.dropna()
-            
+
         # Obtenemos columnas
         columnas = dataDrop.columns.values.tolist()
 
@@ -838,6 +846,7 @@ async def arbolesDrop(lista: list = Form(...)):
     else:
         return [[], []]
 
+
 @app.get("/Arboles/trae/Variables/Seleccion")
 async def arbolesTraeVariables():
     # Dataframe
@@ -853,6 +862,7 @@ async def arbolesTraeVariables():
         return variables
     else:
         return []
+
 
 @app.post("/Arboles/seleccionaX")
 async def arbolesSeleccionaX(lista: list = Form(...)):
@@ -873,7 +883,6 @@ async def arbolesSeleccionaX(lista: list = Form(...)):
 
         tmp = pd.DataFrame(X)
 
-            
         # Obtenemos columnas
         columnas = tmp.columns.values.tolist()
 
@@ -914,6 +923,7 @@ async def arbolesSeleccionaX(lista: list = Form(...)):
         return [columnas, filas]
     else:
         return [[], []]
+
 
 @app.post("/Arboles/seleccionaY")
 async def arbolesSeleccionaY(lista: list = Form(...)):
@@ -934,7 +944,6 @@ async def arbolesSeleccionaY(lista: list = Form(...)):
 
         tmp = pd.DataFrame(Y)
 
-            
         # Obtenemos columnas
         columnas = tmp.columns.values.tolist()
 
@@ -975,6 +984,29 @@ async def arbolesSeleccionaY(lista: list = Form(...)):
         return [columnas, filas]
     else:
         return [[], []]
+
+
+@app.get("/Arboles/Division")
+async def arbolesDivision():
+    # Variables
+    global data
+    global dataDrop
+    global X
+    global Y
+    global X_train
+    global X_test
+    global Y_train
+    global Y_test
+
+    if not data.empty:
+        X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
+            X, Y, test_size=0.2, random_state=0, shuffle=True)
+
+        return True
+
+    else:
+        return False
+
 
 # Funciones de control
 
