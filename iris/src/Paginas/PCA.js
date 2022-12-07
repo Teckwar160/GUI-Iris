@@ -73,10 +73,11 @@ export default function EDA() {
   // Paso 6
   const [dataCargas, setDataCargas] = useState([]);
   const [visibleDataCargas, setVisibleDataCargas] = useState(false);
+  
   const [variables, setVariables] = useState([]);
-  const [dataDrop, setDataDrop] = useState([]);
-  const [visibleDataDrop, setVisibleDataDrop] = useState(false);
-  const [variable, setVariable] = useState("");
+  const [tablaDrop, setTablaDrop] = useState([]);
+  const [visibleTablaDrop, setVisibleTablaDrop] = useState(false);
+  const [variablesDrop, setVariablesDrop] = useState([]);
 
   useEffect(() => {
     traeVariables();
@@ -290,10 +291,10 @@ export default function EDA() {
       .catch((error) => console.log("error", error));
   }
 
-  function getDataDrop() {
+  function sendDataDrop(v) {
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("variable", variable);
+    formdata.append("variable", v);
 
     var requestOptions = {
       method: "POST",
@@ -304,15 +305,33 @@ export default function EDA() {
       .then((response) => {
         return response.json();
       })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getDataDrop() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/PCA/viewDrop", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
       .then((result) => {
-        alert("Se elimino correctamente la variable");
-        setDataDrop([result[0], result[1]]);
-        traeVariables();
+        alert("Se elimino correctamente la(s) variable(s)");
+        setTablaDrop([result[0], result[1]]);
         if (result !== [[], []]) {
-          setVisibleDataDrop(true);
+          setVisibleTablaDrop(true);
         }
       })
       .catch((error) => console.log("error", error));
+  }
+
+  function ejecutarDataDrop(){
+    variablesDrop.map((v,i) =>(
+      sendDataDrop(v)
+    ))
+    getDataDrop()
   }
 
   return (
@@ -518,20 +537,20 @@ export default function EDA() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>
-              Selecciona la variable que quieras eliminar y pulsa ejecutar.
+              Selecciona la(s) variable(s) que quieras eliminar y pulsa ejecutar.
             </Parrafo>
             <Box sx={{ padding: 2 }}>
-              <Visualizador variables={variables} funcion={setVariable} />
+              <Visualizador lista={variables} listaSeleccionada={variablesDrop} actualizaSeleccion={setVariablesDrop} />
             </Box>
 
-            <CodigoBoton ejecutar={getDataDrop} visible={false} />
+            <CodigoBoton ejecutar={ejecutarDataDrop} visible={false} />
           </Box>
         </Box>
 
         <Tabla
-          dataColumnas={dataDrop[0]}
-          dataFilas={dataDrop[1]}
-          visible={visibleDataDrop}
+          dataColumnas={tablaDrop[0]}
+          dataFilas={tablaDrop[1]}
+          visible={visibleTablaDrop}
         />
       </Grid>
     </Grid>

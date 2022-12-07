@@ -294,10 +294,10 @@ export default function PronosticoArboles() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>
-              Selecciona la variable que quieras eliminar y pulsa ejecutar.
+              Selecciona la(s) variable(s) que quieras eliminar y pulsa ejecutar.
             </Parrafo>
             <Box sx={{ padding: 2 }}>
-              <Visualizador variables={variables} listaSeleccionada={variablesDrop} funcion={setVariablesDrop} />
+              <Visualizador lista={variables} listaSeleccionada={variablesDrop} actualizaSeleccion={setVariablesDrop} />
             </Box>
 
             <CodigoBoton ejecutar={ejecutarDataDrop} visible={false} />

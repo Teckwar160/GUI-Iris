@@ -11,16 +11,15 @@ export default function Visualizador(Props) {
       // Eliminamos el elementos
       tmp.splice(tmp.indexOf(event.target.value),1)
     }
-    console.log(tmp)
-    Props.funcion(tmp)
+    Props.actualizaSeleccion(tmp)
   };
   return (
     <Box sx={{ maxWidth: 250, minWidth: 250 }}>
       <FormGroup>
-        {Props.variables.map((variable, index) => (
+        {Props.lista.map((elemento, index) => (
           <FormControlLabel
-            control={<Checkbox onChange={handleChange} value={variable} />}
-            label={variable}
+            control={<Checkbox onChange={handleChange} value={elemento} />}
+            label={elemento}
           />
         ))}
       </FormGroup>
