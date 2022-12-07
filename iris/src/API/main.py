@@ -744,9 +744,19 @@ async def pcaDrop(variable: str = Form(...)):
     global dataDrop
 
     if not data.empty:
-
         # Eliminamos la variable
         dataDrop = dataDrop.drop(columns=[variable])
+        return True
+
+    return False
+
+@app.get("/PCA/viewDrop")
+async def pcaViewDrop():
+    # Dataframe
+    global data
+    global dataDrop
+
+    if not data.empty:
 
         # Obtenemos columnas
         columnas = dataDrop.columns.values.tolist()

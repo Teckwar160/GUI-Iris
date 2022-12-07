@@ -50,10 +50,10 @@ export default function PronosticoArboles() {
   const [visibleDescribeObject, setVisibleDescribeObject] = useState(false);
 
   // Limpieza de datos
-  const [dataDrop, setDataDrop] = useState([]);
   const [variables, setVariables] = useState([]);
-  const [visibleDataDrop, setVisibleDataDrop] = useState(false);
-  const [variable, setVariable] = useState("");
+  const [tablaDrop, setTablaDrop] = useState([]); 
+  const [visibleTablaDrop, setVisibleTablaDrop] = useState(false);
+  const [variablesDrop, setVariablesDrop] = useState([]);
 
   useEffect(() => {
     traeVariables();
@@ -150,10 +150,11 @@ export default function PronosticoArboles() {
       .catch((error) => console.log("error", error));
   }
 
-  function getDataDrop() {
+
+  function sendDataDrop(v) {
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("variable", variable);
+    formdata.append("variable", v);
 
     var requestOptions = {
       method: "POST",
@@ -164,15 +165,35 @@ export default function PronosticoArboles() {
       .then((response) => {
         return response.json();
       })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getDataDrop() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/PCA/viewDrop", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
       .then((result) => {
-        alert("Se elimino correctamente la variable");
-        setDataDrop([result[0], result[1]]);
+        alert("Se elimino correctamente la(s) variable(s)");
+        setTablaDrop([result[0], result[1]]);
         traeVariables();
         if (result !== [[], []]) {
-          setVisibleDataDrop(true);
+          setVisibleTablaDrop(true);
         }
       })
       .catch((error) => console.log("error", error));
+  }
+
+  function ejecutarDataDrop(){
+    variablesDrop.map((v,i) =>(
+      sendDataDrop(v)
+    ))
+    getDataDrop()
+    setVariablesDrop([])
   }
 
   return (
@@ -278,17 +299,17 @@ export default function PronosticoArboles() {
               Selecciona la variable que quieras eliminar y pulsa ejecutar.
             </Parrafo>
             <Box sx={{ padding: 2 }}>
-              <Visualizador variables={variables} funcion={setVariable} />
+              <Visualizador variables={variables} listaSeleccionada={variablesDrop} funcion={setVariablesDrop} />
             </Box>
 
-            <CodigoBoton ejecutar={getDataDrop} visible={false} />
+            <CodigoBoton ejecutar={ejecutarDataDrop} visible={false} />
           </Box>
         </Box>
 
         <Tabla
-          dataColumnas={dataDrop[0]}
-          dataFilas={dataDrop[1]}
-          visible={visibleDataDrop}
+          dataColumnas={tablaDrop[0]}
+          dataFilas={tablaDrop[1]}
+          visible={visibleTablaDrop}
         />
       </Grid>
     </Grid>
