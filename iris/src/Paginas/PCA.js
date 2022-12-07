@@ -8,6 +8,7 @@ import Tabla from "../Componentes/Mostrar datos/Tabla";
 import CodigoBoton from "../Componentes/Mostrar datos/CodigoBoton";
 import Comando from "../Componentes/Editores/Comando";
 import Visualizador from "../Componentes/Editores/Visualizador";
+import Selector from "../Componentes/Editores/Selector";
 
 //Graficas
 import HeatMap from "../Graficas/HeatMap";
@@ -47,11 +48,9 @@ export default function EDA() {
     useState(false);
 
   // Paso 2
-  const [dataStandardScaler, setDataStandardScaler] = useState([[], []]);
-  const [visibleDataStandardScaler, setVisibleDataStandardScaler] =
-    useState(false);
-  const [dataMinMaxScaler, setDataMinMaxScaler] = useState([[], []]);
-  const [visibleDataMinMaxScaler, setVisibleDataMinMaxScaler] = useState(false);
+  const [metodo, setMetodo] = useState("");
+  const [tablaMetodo, setTablaMetodo] = useState([[], []]);
+  const [visibleTablaMetodo, setVisibleTablaMetodo] = useState(false);
 
   // Paso 3 y Paso 4
   const [dataComponentes, setDataComponentes] = useState([]);
@@ -135,40 +134,31 @@ export default function EDA() {
   }
 
   // Paso 2
-  function standardScaler() {
-    var requestOptions = {
-      method: "GET",
-    };
+  function estandarizacion() {
+    if (metodo === "") {
+      alert("Selecciona un método.");
+    } else {
+      // Ingresamos los datos
+      const formdata = new FormData();
+      formdata.append("metodo", metodo);
 
-    fetch("http://127.0.0.1:8000/PCA/Estandar/StandardScaler", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        setDataStandardScaler([result[0], result[1]]);
-        if (result !== [[], []]) {
-          setVisibleDataStandardScaler(true);
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+      };
 
-  function MinMaxScaler() {
-    var requestOptions = {
-      method: "GET",
-    };
-
-    fetch("http://127.0.0.1:8000/PCA/Estandar/MinMaxScaler", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        setDataMinMaxScaler([result[0], result[1]]);
-        if (result !== [[], []]) {
-          setVisibleDataMinMaxScaler(true);
-        }
-      })
-      .catch((error) => console.log("error", error));
+      fetch("http://127.0.0.1:8000/PCA/Estandar", requestOptions)
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          setTablaMetodo([result[0], result[1]]);
+          if (result !== [[], []]) {
+            setVisibleTablaMetodo(true);
+          }
+        })
+        .catch((error) => console.log("error", error));
+    }
   }
 
   //Paso 3 y 4
@@ -398,28 +388,25 @@ export default function EDA() {
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>Estandarización con StandardScaler.</Parrafo>
-            <CodigoBoton ejecutar={standardScaler} visible={false} />
+            <Parrafo>
+              Selecciona el método de estandarización y pulsa ejecutar.
+            </Parrafo>
+            <Box sx={{ padding: 2 }}>
+              <Selector
+                label={"Método"}
+                lista={["StandardScaler", "MinMaxScaler"]}
+                elemento={metodo}
+                setElemento={setMetodo}
+              />
+            </Box>
+            <CodigoBoton ejecutar={estandarizacion} visible={false} />
           </Box>
         </Box>
 
         <Tabla
-          dataColumnas={dataStandardScaler[0]}
-          dataFilas={dataStandardScaler[1]}
-          visible={visibleDataStandardScaler}
-        />
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>Estandarización con MinMaxScaler.</Parrafo>
-            <CodigoBoton ejecutar={MinMaxScaler} visible={false} />
-          </Box>
-        </Box>
-
-        <Tabla
-          dataColumnas={dataMinMaxScaler[0]}
-          dataFilas={dataMinMaxScaler[1]}
-          visible={visibleDataMinMaxScaler}
+          dataColumnas={tablaMetodo[0]}
+          dataFilas={tablaMetodo[1]}
+          visible={visibleTablaMetodo}
         />
 
         {/*Paso 3 y 4*/}

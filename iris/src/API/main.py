@@ -460,8 +460,9 @@ async def pcaDataCorrelacionMapa():
     else:
         return []
 
-@app.get("/PCA/Estandar/StandardScaler")
-async def pcaStandardScaler():
+
+@app.post("/PCA/Estandar")
+async def pcaMinMaxScaler(metodo: str = Form(...)):
     # Dataframe
     global data
     global MEstandarizada
@@ -479,76 +480,10 @@ async def pcaStandardScaler():
         dataSinObjectNan = dataTmp.dropna()
 
         # Instanciamos al objeto
-        Estandarizar = StandardScaler()
-
-        # Estandarizamos
-        MEstandarizada = Estandarizar.fit_transform(dataSinObjectNan)
-
-        # Creamos un dataframe temporal para mostrar
-        tmp = pd.DataFrame(MEstandarizada, columns=dataSinObjectNan.columns)
-
-        # Obtenemos columnas
-        columnas = tmp.columns.values.tolist()
-
-        # Agregamos una columna vacia para los indices
-        if columnas[0] != "":
-            columnas.insert(0, "")
-
-        # Lista que contendra las filas
-        filas = []
-
-        # Obtenemos los primeros y ultimos 5 elementos del dataframe
-        filasHead = tmp.head().values.tolist()
-        filasTail = tmp.tail().values.tolist()
-
-        # Agregamos los indices
-        tam = len(data.values.tolist())
-        for i in range(0, 5):
-            filasHead[i].insert(0, i)
-            filasTail[4-i].insert(0, tam-i-1)
-
-        # Agregamos un separador
-        filasSeparador = []
-
-        for i in columnas:
-            filasSeparador.append("...")
-        filasHead.append(filasSeparador)
-
-        # Unimos las listas
-        filasRaw = filasHead+filasTail
-
-        # Convertimos a string todos los elementos para que sean mostrados
-        for fila in filasRaw:
-            f = []
-            for i in fila:
-                f.append(str(i))
-            filas.append(f)
-
-        # Retornamos los elementos
-        return [columnas, filas]
-    else:
-        return [[], []]
-
-@app.get("/PCA/Estandar/MinMaxScaler")
-async def pcaMinMaxScaler():
-    # Dataframe
-    global data
-    global MEstandarizada
-    global dataSinObjectNan
-
-    if not data.empty:
-
-        # Limpiamos el conjunto de variables categoricas y datos Nan
-        dataTmp = data
-
-        for (key, value) in data.dtypes.items():
-            if (str(value) == 'object'):
-                dataTmp = dataTmp.drop(columns=[key])
-        
-        dataSinObjectNan = dataTmp.dropna()
-
-        # Instanciamos al objeto
-        Estandarizar = MinMaxScaler()
+        if metodo == "StandardScaler":
+            Estandarizar = StandardScaler()
+        else:
+            Estandarizar = MinMaxScaler()
 
         # Estandarizamos
         MEstandarizada = Estandarizar.fit_transform(dataSinObjectNan)
