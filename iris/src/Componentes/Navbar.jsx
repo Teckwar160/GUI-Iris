@@ -3,7 +3,7 @@ import {
   AppBar,
   Box,
   Toolbar,
-  IconButton,
+  Button,
   Typography,
   Container,
   Menu,
@@ -18,18 +18,27 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import MenuIcon from "@mui/icons-material/Menu";
 import Logo from "../Imagenes/Logo.png";
 
+//Colores
+import { purple } from "@mui/material/colors";
+
 //Estilos
 const LinkInterno = styled(Link)({
   color: "black",
   textDecoration: "none",
 });
 
-//Estilos
 const ThemeAppBar = styled(AppBar)({
   backgroundColor: "purple",
 });
 
-const pages = ["Home", "EDA", "PCA","Pronóstico Arboles"];
+const Boton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(purple[500]),
+  "&:hover": {
+    backgroundColor: purple[600],
+  },
+}));
+
+const pages = ["Home", "EDA", "PCA","Arboles"];
 
 export default function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -47,7 +56,7 @@ export default function NavBar() {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <LinkInterno to={"/"}>
-            <IconButton
+            <Boton
               size="large"
               edge="start"
               color="inherit"
@@ -63,12 +72,12 @@ export default function NavBar() {
               >
                 IRIS
               </Typography>
-            </IconButton>
+            </Boton>
           </LinkInterno>
 
           {/*Menú pequeño*/}
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
+            <Boton
               size="large"
               aria-label="account of current user"
               aria-controls="menu-appbar"
@@ -78,7 +87,7 @@ export default function NavBar() {
               sx={{ ml: -3 }}
             >
               <MenuIcon />
-            </IconButton>
+            </Boton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -118,7 +127,7 @@ export default function NavBar() {
             </Menu>
           </Box>
           <LinkInterno to={"/"}>
-            <IconButton
+            <Boton
               size="large"
               edge="start"
               color="inherit"
@@ -137,13 +146,13 @@ export default function NavBar() {
               >
                 IRIS
               </Typography>
-            </IconButton>
+            </Boton>
           </LinkInterno>
           {/*Caja que se muestra siempre*/}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page, index) => (
               <LinkInterno to={index === 0 ? "/" : page}>
-                <IconButton key={page} onClick={handleCloseNavMenu}>
+                <Boton key={page} onClick={handleCloseNavMenu}>
                   {index === 0 ? (
                     <HomeIcon
                       style={{ height: "30px", color: "beige" }}
@@ -162,7 +171,7 @@ export default function NavBar() {
                   >
                     {page}
                   </Typography>
-                </IconButton>
+                </Boton>
               </LinkInterno>
             ))}
           </Box>

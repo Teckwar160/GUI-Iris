@@ -34,7 +34,7 @@ const Parrafo = styled(Typography)({
   fontFamily: "Roboto",
 });
 
-export default function PronosticoArboles() {
+export default function Arboles() {
   // Comandos de EDA
 
   // Vista Previa

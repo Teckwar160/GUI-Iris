@@ -8,7 +8,7 @@ import Footer from "./Footer";
 import Home from "../Paginas/Home";
 import EDA from "../Paginas/EDA";
 import PCA from "../Paginas/PCA";
-import PronosticoArboles from "../Paginas/Pronóstico Arboles";
+import Arboles from "../Paginas/Arboles";
 
 export default function Main() {
   return (
@@ -19,7 +19,7 @@ export default function Main() {
           <Route exact path="/" element={<Home />} />
           <Route exact path="/EDA" element={<EDA />} />
           <Route exact path="/PCA" element={<PCA />} />
-          <Route exact path="/Pronóstico Arboles" element={<PronosticoArboles />} />
+          <Route exact path="/Arboles" element={<Arboles />} />
         </Routes>
       </Router>
       <Footer />
