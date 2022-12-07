@@ -7,14 +7,14 @@ export default function Visualizador(Props) {
     if (event.target.checked) {
       // Agregamos un elemento al array
       tmp.push(event.target.value);
-    }else{
+    } else {
       // Eliminamos el elementos
-      tmp.splice(tmp.indexOf(event.target.value),1)
+      tmp.splice(tmp.indexOf(event.target.value), 1);
     }
-    Props.actualizaSeleccion(tmp)
+    Props.actualizaSeleccion(tmp);
   };
   return (
-    <Box >
+    <Box>
       <FormGroup row>
         {Props.lista.map((elemento, index) => (
           <FormControlLabel
