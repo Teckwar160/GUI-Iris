@@ -1,27 +1,37 @@
 import { styled } from "@mui/material/styles";
-import { Typography, Grid, Box, IconButton } from "@mui/material";
+import { Typography, Grid, Box, Button } from "@mui/material";
 
-//Iconos
+// Iconos
 import GitHubIcon from "@mui/icons-material/GitHub";
 
-//Imagenes
+// Imagenes
 import LogoReact from "../Imagenes/React.png";
 import LogoMUI from "../Imagenes/MUI.png";
 import LogoNivo from "../Imagenes/Nivo.png";
 
-//Estilos
+// Colores
+import { purple } from "@mui/material/colors";
+
+// Estilos
 const CustomFooter = styled("footer")({
   color: "black",
   margin: 0,
   padding: 20,
   position: "sticky",
-  background: "mediumpurple",
+  background: "purple",
 });
 
 const CustomLink = styled("a")({
   color: "black",
   textDecoration: "none",
 });
+
+const Boton = styled(Button)(({ theme }) => ({
+  color: theme.palette.getContrastText(purple[700]),
+  "&:hover": {
+    backgroundColor: purple[600],
+  },
+}));
 
 export default function Footer() {
   return (
@@ -31,7 +41,7 @@ export default function Footer() {
         <Grid item xs={12} sm={12} md={6}>
           <Box sx={{ ml: 2, mr: 2 }}>
             <div align="center">
-              <Typography fontWeight={"bold"}>
+              <Typography style={{ color: "white" }} fontWeight={"bold"}>
                 Proyecto final de Minería de datos
               </Typography>
               <CustomLink
@@ -39,12 +49,12 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <IconButton>
+                <Boton>
                   <GitHubIcon fontSize="large" />
                   <Typography fontWeight={"bold"} sx={{ ml: 1 }}>
                     Repositorio
                   </Typography>
-                </IconButton>
+                </Boton>
               </CustomLink>
             </div>
           </Box>
@@ -54,7 +64,7 @@ export default function Footer() {
         <Grid item xs={12} sm={12} md={6}>
           <Box sx={{ ml: 2, mr: 2 }}>
             <div align="center">
-              <Typography fontWeight={"bold"}>
+              <Typography style={{ color: "white" }} fontWeight={"bold"}>
                 Tecnologías utilizadas
               </Typography>
               <CustomLink
@@ -62,7 +72,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <IconButton>
+                <Boton>
                   <img
                     src={LogoReact}
                     alt="logoReact"
@@ -71,7 +81,7 @@ export default function Footer() {
                   <Typography fontWeight={"bold"} sx={{ ml: 1 }}>
                     React
                   </Typography>
-                </IconButton>
+                </Boton>
               </CustomLink>
 
               <CustomLink
@@ -79,12 +89,12 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <IconButton>
+                <Boton>
                   <img src={LogoMUI} alt="logoMUI" style={{ height: "30px" }} />
                   <Typography fontWeight={"bold"} sx={{ ml: 1 }}>
                     Material UI
                   </Typography>
-                </IconButton>
+                </Boton>
               </CustomLink>
 
               <CustomLink
@@ -92,7 +102,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <IconButton>
+                <Boton>
                   <img
                     src={LogoNivo}
                     alt="logoNivo"
@@ -101,7 +111,7 @@ export default function Footer() {
                   <Typography fontWeight={"bold"} sx={{ ml: 1 }}>
                     Nivo
                   </Typography>
-                </IconButton>
+                </Boton>
               </CustomLink>
             </div>
           </Box>
