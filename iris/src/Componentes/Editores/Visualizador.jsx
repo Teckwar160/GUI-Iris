@@ -14,8 +14,8 @@ export default function Visualizador(Props) {
     Props.actualizaSeleccion(tmp)
   };
   return (
-    <Box sx={{ maxWidth: 250, minWidth: 250 }}>
-      <FormGroup>
+    <Box >
+      <FormGroup row>
         {Props.lista.map((elemento, index) => (
           <FormControlLabel
             control={<Checkbox onChange={handleChange} value={elemento} />}
