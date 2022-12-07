@@ -26,7 +26,7 @@ data = pd.DataFrame()
 MEstandarizada = None
 dataSinObjectNan = None
 pca = None
-dataDrop = pd.DataFrame()
+dataDrop = None
 
 # Clase que nos ayuda a manipular los datos
 
@@ -56,6 +56,7 @@ app.add_middleware(
 )
 
 # Funciones de apoyo
+
 
 def convierteStr(data):
     lista = []
@@ -405,6 +406,7 @@ async def dataCorrelacionMapa():
 
 # Funciones de PCA
 
+
 @app.get("/PCA/DataCorrelacion")
 async def pcaDataCorrelacion():
     # Dataframe
@@ -428,6 +430,7 @@ async def pcaDataCorrelacion():
         return [columnas, filas]
     else:
         return [[], []]
+
 
 @app.get("/PCA/DataCorrelacion/Mapa")
 async def pcaDataCorrelacionMapa():
@@ -476,7 +479,7 @@ async def pcaMinMaxScaler(metodo: str = Form(...)):
         for (key, value) in data.dtypes.items():
             if (str(value) == 'object'):
                 dataTmp = dataTmp.drop(columns=[key])
-        
+
         dataSinObjectNan = dataTmp.dropna()
 
         # Instanciamos al objeto
@@ -533,6 +536,7 @@ async def pcaMinMaxScaler(metodo: str = Form(...)):
     else:
         return [[], []]
 
+
 @app.post("/PCA/Componentes")
 async def pcaComponentes(numero: str = Form(...)):
     # Dataframe
@@ -556,14 +560,15 @@ async def pcaComponentes(numero: str = Form(...)):
 
         columnas = list(range(len(componentes[0])))
 
-        columnas.insert(0,'#')
+        columnas.insert(0, '#')
 
-        for i,fila in enumerate(componentes):
-            fila.insert(0,i)
-        
-        return [columnas,componentes]
+        for i, fila in enumerate(componentes):
+            fila.insert(0, i)
+
+        return [columnas, componentes]
     else:
-        return [[],[]]
+        return [[], []]
+
 
 @app.post("/PCA/Varianza")
 async def pcaComponentes(numero: int = Form(...)):
@@ -572,7 +577,6 @@ async def pcaComponentes(numero: int = Form(...)):
     global MEstandarizada
     global pca
 
-
     if not data.empty:
         varianza = pca.explained_variance_ratio_
 
@@ -580,16 +584,17 @@ async def pcaComponentes(numero: int = Form(...)):
 
         componentes = varianza.tolist()
 
-        columnas = ["Número de componente","Varianza de componente"]
+        columnas = ["Número de componente", "Varianza de componente"]
 
         filas = []
 
-        for i,fila in enumerate(componentes):
-            filas.append([i+1,fila])
-        
-        return [varianzaAcumulada,columnas,filas]
+        for i, fila in enumerate(componentes):
+            filas.append([i+1, fila])
+
+        return [varianzaAcumulada, columnas, filas]
     else:
-        return [[],[],[]]
+        return [[], [], []]
+
 
 @app.post("/PCA/Paso6")
 async def pcaPaso6(numero: int = Form(...)):
@@ -599,7 +604,8 @@ async def pcaPaso6(numero: int = Form(...)):
 
     if not data.empty:
 
-        cargasComponentes = pd.DataFrame(abs(pca.components_), columns=dataSinObjectNan.columns)
+        cargasComponentes = pd.DataFrame(
+            abs(pca.components_), columns=dataSinObjectNan.columns)
 
         # Obtenemos columnas
         columnas = cargasComponentes.columns.values.tolist()
@@ -619,7 +625,6 @@ async def pcaPaso6(numero: int = Form(...)):
         tam = len(cargasComponentes.values.tolist())
         for i in range(0, tam):
             filasRaw[i].insert(0, i)
-
 
         # Convertimos a string todos los elementos para que sean mostrados
         for fila in filasRaw:
@@ -644,7 +649,6 @@ async def pcaPaso6(numero: int = Form(...)):
         for i in range(0, numero):
             filasRaw[i].insert(0, i)
 
-
         # Convertimos a string todos los elementos para que sean mostrados
         for fila in filasRaw:
             f = []
@@ -656,6 +660,7 @@ async def pcaPaso6(numero: int = Form(...)):
         return [columnas, filas, columnasHead, filasHead]
     else:
         return [[], [], [], []]
+
 
 @app.get("/PCA/trae/Variables")
 async def pcaTraeVariables():
@@ -672,26 +677,19 @@ async def pcaTraeVariables():
         return []
 
 @app.post("/PCA/Drop")
-async def pcaDrop(variable: str = Form(...)):
+async def pcaDrop(lista: list = Form(...)):
     # Dataframe
     global data
     global dataDrop
 
     if not data.empty:
         # Eliminamos la variable
-        dataDrop = dataDrop.drop(columns=[variable])
-        return True
-
-    return False
-
-@app.get("/PCA/viewDrop")
-async def pcaViewDrop():
-    # Dataframe
-    global data
-    global dataDrop
-
-    if not data.empty:
-
+        if lista != [""]:
+            lista = lista[0].split(',')
+            dataDrop = data.drop(columns=lista)
+        else:
+            dataDrop = data
+            
         # Obtenemos columnas
         columnas = dataDrop.columns.values.tolist()
 
@@ -731,9 +729,6 @@ async def pcaViewDrop():
             for i in fila:
                 f.append(str(i))
             filas.append(f)
-
-        # Regresamos al estado anterior
-        dataDrop = data
 
         # Retornamos los elementos
         return [columnas, filas]
@@ -796,14 +791,11 @@ async def createProyecto(id: int = Form(...)):
 @app.post("/cargar/Proyecto")
 async def createProyecto(id: int = Form(...)):
     global data
-    global dataDrop
 
     # Buscamos el proyecto
     fila = bd.buscarFila(id)
 
     # Cargamos el proyecto
     data = pd.read_csv(fila[0][2])
-
-    dataDrop = data
 
     return True

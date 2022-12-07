@@ -150,11 +150,10 @@ export default function Arboles() {
       .catch((error) => console.log("error", error));
   }
 
-
-  function sendDataDrop(v) {
+  function getDataDrop() {
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("variable", v);
+    formdata.append("lista", variablesDrop);
 
     var requestOptions = {
       method: "POST",
@@ -162,18 +161,6 @@ export default function Arboles() {
     };
 
     fetch("http://127.0.0.1:8000/PCA/Drop", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function getDataDrop() {
-    var requestOptions = {
-      method: "GET",
-    };
-
-    fetch("http://127.0.0.1:8000/PCA/viewDrop", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -185,13 +172,6 @@ export default function Arboles() {
         }
       })
       .catch((error) => console.log("error", error));
-  }
-
-  function ejecutarDataDrop(){
-    variablesDrop.map((v,i) =>(
-      sendDataDrop(v)
-    ))
-    getDataDrop()
   }
 
   return (
@@ -300,7 +280,7 @@ export default function Arboles() {
               <Visualizador lista={variables} listaSeleccionada={variablesDrop} actualizaSeleccion={setVariablesDrop} />
             </Box>
 
-            <CodigoBoton ejecutar={ejecutarDataDrop} visible={false} />
+            <CodigoBoton ejecutar={getDataDrop} visible={false} />
           </Box>
         </Box>
 
