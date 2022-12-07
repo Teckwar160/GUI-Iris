@@ -726,11 +726,10 @@ async def pcaPaso6(numero: int = Form(...)):
 async def pcaTraeVariables():
     # Dataframe
     global data
-    global dataDrop
 
     if not data.empty:
         # Obtenemos columnas
-        variables = dataDrop.columns.values.tolist()
+        variables = data.columns.values.tolist()
 
         # Retornamos los elementos
         return variables
@@ -797,6 +796,9 @@ async def pcaViewDrop():
             for i in fila:
                 f.append(str(i))
             filas.append(f)
+
+        # Regresamos al estado anterior
+        dataDrop = data
 
         # Retornamos los elementos
         return [columnas, filas]

@@ -180,7 +180,6 @@ export default function PronosticoArboles() {
       .then((result) => {
         alert("Se elimino correctamente la(s) variable(s)");
         setTablaDrop([result[0], result[1]]);
-        traeVariables();
         if (result !== [[], []]) {
           setVisibleTablaDrop(true);
         }
@@ -193,7 +192,6 @@ export default function PronosticoArboles() {
       sendDataDrop(v)
     ))
     getDataDrop()
-    setVariablesDrop([])
   }
 
   return (
