@@ -27,12 +27,6 @@ const Subtitulo = styled(Typography)({
   fontSize: "20px",
 });
 
-const Bold = styled(Typography)({
-  color: "black",
-  fontWeight: "bold",
-  fontFamily: "Roboto",
-});
-
 const Parrafo = styled(Typography)({
   textAlign: "justify",
   fontFamily: "Roboto",
@@ -73,7 +67,7 @@ export default function EDA() {
   // Paso 6
   const [dataCargas, setDataCargas] = useState([]);
   const [visibleDataCargas, setVisibleDataCargas] = useState(false);
-  
+
   const [variables, setVariables] = useState([]);
   const [tablaDrop, setTablaDrop] = useState([]);
   const [visibleTablaDrop, setVisibleTablaDrop] = useState(false);
@@ -179,49 +173,31 @@ export default function EDA() {
 
   //Paso 3 y 4
   function getComponentes() {
+    const formdata = new FormData();
     if (numeroDeComponentes === "") {
       // Ingresamos los datos
-      const formdata = new FormData();
       formdata.append("numero", "None");
-
-      var requestOptions = {
-        method: "POST",
-        body: formdata,
-      };
-
-      fetch("http://127.0.0.1:8000/PCA/Componentes", requestOptions)
-        .then((response) => {
-          return response.json();
-        })
-        .then((result) => {
-          setDataComponentes([result[0], result[1]]);
-          if (result !== [[], []]) {
-            setVisibleDataComponentes(true);
-          }
-        })
-        .catch((error) => console.log("error", error));
     } else {
       // Ingresamos los datos
-      const formdata = new FormData();
       formdata.append("numero", numeroDeComponentes);
-
-      var requestOptions = {
-        method: "POST",
-        body: formdata,
-      };
-
-      fetch("http://127.0.0.1:8000/PCA/Componentes", requestOptions)
-        .then((response) => {
-          return response.json();
-        })
-        .then((result) => {
-          setDataComponentes([result[0], result[1]]);
-          if (result !== [[], []]) {
-            setVisibleDataComponentes(true);
-          }
-        })
-        .catch((error) => console.log("error", error));
     }
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/PCA/Componentes", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setDataComponentes([result[0], result[1]]);
+        if (result !== [[], []]) {
+          setVisibleDataComponentes(true);
+        }
+      })
+      .catch((error) => console.log("error", error));
   }
 
   // Paso 5
@@ -327,11 +303,9 @@ export default function EDA() {
       .catch((error) => console.log("error", error));
   }
 
-  function ejecutarDataDrop(){
-    variablesDrop.map((v,i) =>(
-      sendDataDrop(v)
-    ))
-    getDataDrop()
+  function ejecutarDataDrop() {
+    variablesDrop.map((v, i) => sendDataDrop(v));
+    getDataDrop();
   }
 
   return (
@@ -537,10 +511,15 @@ export default function EDA() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Parrafo>
-              Selecciona la(s) variable(s) que quieras eliminar y pulsa ejecutar.
+              Selecciona la(s) variable(s) que quieras eliminar y pulsa
+              ejecutar.
             </Parrafo>
             <Box sx={{ padding: 2 }}>
-              <Visualizador lista={variables} listaSeleccionada={variablesDrop} actualizaSeleccion={setVariablesDrop} />
+              <Visualizador
+                lista={variables}
+                listaSeleccionada={variablesDrop}
+                actualizaSeleccion={setVariablesDrop}
+              />
             </Box>
 
             <CodigoBoton ejecutar={ejecutarDataDrop} visible={false} />
