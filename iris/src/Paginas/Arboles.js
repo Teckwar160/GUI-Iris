@@ -55,6 +55,15 @@ export default function Arboles() {
   const [visibleTablaDrop, setVisibleTablaDrop] = useState(false);
   const [variablesDrop, setVariablesDrop] = useState([]);
 
+  // Pronostico
+  const [variablesSeleccion, setVariablesSeleccion] = useState([]);
+  const [variablesX, setVariablesX] = useState([]);
+  const [tablaX, setTablaX] = useState([]);
+  const [visibleTablaX, setVisibleTablaX] = useState(false);
+  const [variableY, setVariableY] = useState([]);
+  const [tablaY, setTablaY] = useState([]);
+  const [visibleTablaY, setVisibleTablaY] = useState(false);
+
   useEffect(() => {
     traeVariables();
     // eslint-disable-next-line
@@ -169,11 +178,88 @@ export default function Arboles() {
         setTablaDrop([result[0], result[1]]);
         if (result !== [[], []]) {
           setVisibleTablaDrop(true);
+
+          // Actualizamos las variables disponibles para despues
+          traeVariablesSeleccion();
         }
       })
       .catch((error) => console.log("error", error));
   }
 
+  // Pronostico
+  function traeVariablesSeleccion() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch(
+      "http://127.0.0.1:8000/Arboles/trae/Variables/Seleccion",
+      requestOptions
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setVariablesSeleccion(result);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function defineX() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("lista", variablesX);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Arboles/seleccionaX", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          alert("Se asignarón correctamente las variables a X.");
+          setTablaX([result[0], result[1]]);
+          if (result !== [[], []]) {
+            setVisibleTablaX(true);
+          }
+        } else {
+          alert("Selecciona alguna variable.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function defineY() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("lista", variableY);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Arboles/seleccionaY", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          alert("Se asignó correctamente la variable a Y.");
+          setTablaY([result[0], result[1]]);
+          if (result !== [[], []]) {
+            setVisibleTablaY(true);
+          }
+        } else {
+          alert("Selecciona alguna variable.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
   return (
     <Grid
       container
@@ -273,11 +359,16 @@ export default function Arboles() {
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>
+            <Bold>
               Selecciona la(s) variable(s) que quieras eliminar y pulsa
-              ejecutar. Las variables que aparecen son unicamente numericas con
-              ellas se trabajara en los pasos siguientes.
+              ejecutar.
+            </Bold>
+            <Parrafo>
+              Las variables que aparecen son unicamente numericas con ellas se
+              trabajara en los pasos siguientes. Si no deseas eliminar ninguna
+              solo pulsa ejecutar.
             </Parrafo>
+
             <Box sx={{ padding: 2 }}>
               <Visualizador
                 lista={variables}
@@ -294,6 +385,58 @@ export default function Arboles() {
           dataColumnas={tablaDrop[0]}
           dataFilas={tablaDrop[1]}
           visible={visibleTablaDrop}
+        />
+
+        {/*Pronóstico*/}
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
+            <Subtitulo>Aplicación del algoritmo: Pronóstico Árboles</Subtitulo>
+          </Box>
+        </Box>
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Selecciona las variables predictoras (X).</Bold>
+            <Box sx={{ padding: 2 }}>
+              <Visualizador
+                lista={variablesSeleccion}
+                listaSeleccionada={variablesX}
+                actualizaSeleccion={setVariablesX}
+              />
+            </Box>
+            <CodigoBoton ejecutar={defineX} visible={false} />
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={tablaX[0]}
+          dataFilas={tablaX[1]}
+          visible={visibleTablaX}
+        />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Selecciona la variable a pronosticar (Y).</Bold>
+            <Parrafo>
+              Si selecciona más de un elemento unicamente se tomara el primero
+              en ser seleccionado.
+            </Parrafo>
+            <Box sx={{ padding: 2 }}>
+              <Visualizador
+                lista={variablesSeleccion}
+                listaSeleccionada={variableY}
+                actualizaSeleccion={setVariableY}
+              />
+            </Box>
+
+            <CodigoBoton ejecutar={defineY} visible={false} />
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={tablaY[0]}
+          dataFilas={tablaY[1]}
+          visible={visibleTablaY}
         />
       </Grid>
     </Grid>
