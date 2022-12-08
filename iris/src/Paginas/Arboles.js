@@ -8,6 +8,7 @@ import Tabla from "../Componentes/Mostrar datos/Tabla";
 import CodigoBoton from "../Componentes/Mostrar datos/CodigoBoton";
 import Visualizador from "../Componentes/Editores/Visualizador";
 import Comando from "../Componentes/Editores/Comando";
+import Selector from "../Componentes/Editores/Selector";
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -72,6 +73,12 @@ export default function Arboles() {
   const [pronosticoMedidas, setPronosticoMedidas] = useState([]);
   const [visiblePronosticoMedidas, setVisiblePronosticoMedidas] =
     useState(false);
+
+  const [variablesNuevoPronostico, setVariablesNuevoPronostico] =
+    useState(variablesX);
+  const [nuevoPronosticoLabel, setNuevoPronosticoLabel] = useState("");
+  const [nuevoPronsoticoValue, setNuevoPronosticoValue] = useState("");
+  const [nuevoPronosticoLista, setNuevoPronosticoLista] = useState([]);
 
   useEffect(() => {
     traeVariables();
@@ -301,6 +308,30 @@ export default function Arboles() {
       .catch((error) => console.log("error", error));
   }
 
+  function guardaValorPronostico() {
+    // Actualzamos la lista
+    let lista = nuevoPronosticoLista;
+    let index = -1;
+    let tam = lista.length;
+
+    for (let i = 0; i < tam; i++) {
+      if (lista[i][0] === nuevoPronosticoLabel) {
+        index = i;
+        break;
+      }
+    }
+
+    if (index === -1) {
+      alert("Se registro el valor de: " + nuevoPronosticoLabel);
+      lista.push([nuevoPronosticoLabel, nuevoPronsoticoValue]);
+    } else {
+      alert("Se actualizo el valor de: " + nuevoPronosticoLabel);
+      lista[index] = [nuevoPronosticoLabel, nuevoPronsoticoValue];
+    }
+
+    setNuevoPronosticoLista(lista);
+  }
+
   return (
     <Grid
       container
@@ -525,6 +556,34 @@ export default function Arboles() {
                 pronosticoMedidas[4]
               }
             />
+          </Box>
+        </Box>
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Nuevos pronósticos.</Bold>
+            <Parrafo>
+              Para las variables de X previamente seleccionadas digite un valor
+              y pulse ejecutar para cada una de las variables.
+            </Parrafo>
+            <Box sx={{ padding: 2 }}>
+              <Selector
+                label={"Variable"}
+                lista={variablesNuevoPronostico}
+                elemento={nuevoPronosticoLabel}
+                setElemento={setNuevoPronosticoLabel}
+              />
+              <Box sx={{ padding: 2 }}>
+                <Comando
+                  Label={nuevoPronosticoLabel}
+                  setComando={setNuevoPronosticoValue}
+                  comando={nuevoPronsoticoValue}
+                  type={"number"}
+                />
+              </Box>
+            </Box>
+
+            <CodigoBoton ejecutar={guardaValorPronostico} visible={false} />
           </Box>
         </Box>
       </Grid>
