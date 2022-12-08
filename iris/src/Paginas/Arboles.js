@@ -65,6 +65,14 @@ export default function Arboles() {
   const [tablaY, setTablaY] = useState([]);
   const [visibleTablaY, setVisibleTablaY] = useState(false);
 
+  const [max_depth, setMax_depth] = useState("None");
+  const [min_samples_split, setMin_samples_split] = useState("2");
+  const [min_samples_leaf, setMin_samples_leaf] = useState("1");
+  const [random_state, setRandom_state] = useState("0");
+  const [pronosticoMedidas, setPronosticoMedidas] = useState([]);
+  const [visiblePronosticoMedidas, setVisiblePronosticoMedidas] =
+    useState(false);
+
   useEffect(() => {
     traeVariables();
     // eslint-disable-next-line
@@ -262,18 +270,30 @@ export default function Arboles() {
       .catch((error) => console.log("error", error));
   }
 
-  function division() {
+  function pronosticoEntrenamiento() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("max_depth", max_depth);
+    formdata.append("min_samples_split", min_samples_split);
+    formdata.append("min_samples_leaf", min_samples_leaf);
+    formdata.append("random_state", random_state);
+
     var requestOptions = {
-      method: "GET",
+      method: "POST",
+      body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Arboles/Division", requestOptions)
+    fetch(
+      "http://127.0.0.1:8000/Arboles/Pronostico/Entrenamiento",
+      requestOptions
+    )
       .then((response) => {
         return response.json();
       })
       .then((result) => {
-        if (result) {
-          alert("Se realizo la división correctamente.");
+        if (result !== false) {
+          setPronosticoMedidas(result);
+          setVisiblePronosticoMedidas(true);
         } else {
           alert("Favor de revisar si realizo todos los pasos anteriores.");
         }
@@ -462,42 +482,49 @@ export default function Arboles() {
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>División de datos.</Parrafo>
-
-            <CodigoBoton ejecutar={division} visible={false} />
-          </Box>
-        </Box>
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>Entrenamiento de modelo.</Parrafo>
+            <Bold>Entrenamiento de modelo.</Bold>
             <Box sx={{ padding: 2 }}>
               <Comando
                 Label={"max_depth"}
-                setComando={() => {}}
-                comando={() => {}}
+                setComando={setMax_depth}
+                comando={max_depth}
                 type={"number"}
               />
               <Comando
                 Label={"min_samples_split"}
-                setComando={() => {}}
-                comando={() => {}}
+                setComando={setMin_samples_split}
+                comando={min_samples_split}
                 type={"number"}
               />
               <Comando
                 Label={"min_samples_leaf"}
-                setComando={() => {}}
-                comando={() => {}}
+                setComando={setMin_samples_leaf}
+                comando={min_samples_leaf}
                 type={"number"}
               />
               <Comando
                 Label={"random_state"}
-                setComando={() => {}}
-                comando={() => {}}
+                setComando={setRandom_state}
+                comando={random_state}
                 type={"number"}
               />
             </Box>
-            <CodigoBoton ejecutar={division} visible={false} />
+            <CodigoBoton
+              ejecutar={pronosticoEntrenamiento}
+              visible={visiblePronosticoMedidas}
+              texto={
+                "Criterio: " +
+                pronosticoMedidas[0] +
+                "\nMAE: " +
+                pronosticoMedidas[1] +
+                "\nMSE: " +
+                pronosticoMedidas[2] +
+                "\nRMSE: " +
+                pronosticoMedidas[3] +
+                "\nScore: " +
+                pronosticoMedidas[4]
+              }
+            />
           </Box>
         </Box>
       </Grid>

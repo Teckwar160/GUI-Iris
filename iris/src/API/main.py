@@ -36,10 +36,7 @@ dataDrop = None
 # Variables globales de Arboles
 X = None
 Y = None
-X_train = None
-X_test = None
-Y_train = None
-Y_test = None
+PronosticoAD = None
 
 # Clase que nos ayuda a manipular los datos
 
@@ -985,24 +982,38 @@ async def arbolesSeleccionaY(lista: list = Form(...)):
     else:
         return [[], []]
 
-
-@app.get("/Arboles/Division")
-async def arbolesDivision():
+@app.post("/Arboles/Pronostico/Entrenamiento")
+async def arbolesDivision(max_depth: str = Form(...), min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
     # Variables
     global data
-    global dataDrop
+    global PronosticoAD
     global X
     global Y
-    global X_train
-    global X_test
-    global Y_train
-    global Y_test
 
     if not data.empty:
+
+        # Divisón de datos
         X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
             X, Y, test_size=0.2, random_state=0, shuffle=True)
 
-        return True
+        if max_depth == "None":
+            max_depth = None
+        else:
+            max_depth = int(max_depth)
+
+        PronosticoAD = DecisionTreeRegressor(
+            max_depth=max_depth, min_samples_split=int(min_samples_split), min_samples_leaf=int(min_samples_leaf), random_state=int(random_state))
+        PronosticoAD.fit(X_train, Y_train)
+
+        # Se genera el pronóstico
+        Y_Pronostico = PronosticoAD.predict(X_test)
+
+        # Medidas
+        return [PronosticoAD.criterion, 
+        mean_absolute_error(Y_test, Y_Pronostico), 
+        mean_squared_error(Y_test, Y_Pronostico), 
+        mean_squared_error(Y_test, Y_Pronostico, squared=False), 
+        r2_score(Y_test, Y_Pronostico)]
 
     else:
         return False
