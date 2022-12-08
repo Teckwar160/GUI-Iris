@@ -192,7 +192,6 @@ export default function Arboles() {
         return response.json();
       })
       .then((result) => {
-        alert("Se elimino correctamente la(s) variable(s)");
         setTablaDrop([result[0], result[1]]);
         if (result !== [[], []]) {
           setVisibleTablaDrop(true);
@@ -239,7 +238,6 @@ export default function Arboles() {
       })
       .then((result) => {
         if (result !== false) {
-          alert("Se asignarón correctamente las variables a X.");
           setTablaX([result[0], result[1]]);
           setNuevoPronosticoLista([]);
           if (result !== [[], []]) {
@@ -268,7 +266,6 @@ export default function Arboles() {
       })
       .then((result) => {
         if (result !== false) {
-          alert("Se asignó correctamente la variable a Y.");
           setTablaY([result[0], result[1]]);
           if (result !== [[], []]) {
             setVisibleTablaY(true);
