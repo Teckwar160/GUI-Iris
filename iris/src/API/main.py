@@ -869,12 +869,12 @@ async def arbolesSeleccionaX(lista: list = Form(...)):
     global X
 
     if not data.empty:
-        # Eliminamos la variable
+        # Convertimos en lista
         if lista != [""]:
             lista = lista[0].split(',')
         else:
             return False
-        print(lista)
+
         # Guardamos la seleccion de X
         X = np.array(dataDrop[lista])
 
@@ -930,7 +930,7 @@ async def arbolesSeleccionaY(lista: list = Form(...)):
     global Y
 
     if not data.empty:
-        # Eliminamos la variable
+        # Convertimos a lista
         if lista != [""]:
             lista = lista[0].split(',')
         else:
@@ -982,6 +982,7 @@ async def arbolesSeleccionaY(lista: list = Form(...)):
     else:
         return [[], []]
 
+
 @app.post("/Arboles/Pronostico/Entrenamiento")
 async def arbolesDivision(max_depth: str = Form(...), min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
     # Variables
@@ -1009,19 +1010,47 @@ async def arbolesDivision(max_depth: str = Form(...), min_samples_split: str = F
         Y_Pronostico = PronosticoAD.predict(X_test)
 
         # Medidas
-        return [PronosticoAD.criterion, 
-        mean_absolute_error(Y_test, Y_Pronostico), 
-        mean_squared_error(Y_test, Y_Pronostico), 
-        mean_squared_error(Y_test, Y_Pronostico, squared=False), 
-        r2_score(Y_test, Y_Pronostico)]
+        return [PronosticoAD.criterion,
+                mean_absolute_error(Y_test, Y_Pronostico),
+                mean_squared_error(Y_test, Y_Pronostico),
+                mean_squared_error(Y_test, Y_Pronostico, squared=False),
+                r2_score(Y_test, Y_Pronostico)]
 
     else:
         return False
 
 
+@app.post("/Arboles/nuevoPronostico")
+async def arbolesNuevoPronostico(lista: list = Form(...)):
+    # Dataframe
+    global data
+    global PronosticoAD
+
+    if not data.empty:
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        diccionario = {}
+
+        for i in range(0, len(lista)):
+            if i % 2 == 0:
+                diccionario[lista[i]] = [int(lista[i+1])]
+            else:
+                continue
+
+        pronostico = pd.DataFrame(diccionario)
+
+        return (PronosticoAD.predict(pronostico).tolist())[0]
+
+    else:
+        return [False]
+
 # Funciones de control
 
-@app.post("/crear/Proyecto")
+
+@ app.post("/crear/Proyecto")
 async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), descripcion: str = Form(...)):
 
     # Creamos un dataframe
@@ -1040,12 +1069,12 @@ async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), 
     return True
 
 
-@app.get("/trae/Proyectos")
+@ app.get("/trae/Proyectos")
 async def traeProyectos():
     return bd.leerFilas()
 
 
-@app.post("/editar/Proyecto")
+@ app.post("/editar/Proyecto")
 async def createProyecto(id: int = Form(...), nombre: str = Form(...), descripcion: str = Form(...)):
 
     # Actualizamos los valores
@@ -1056,7 +1085,7 @@ async def createProyecto(id: int = Form(...), nombre: str = Form(...), descripci
     return True
 
 
-@app.post("/eliminar/Proyecto")
+@ app.post("/eliminar/Proyecto")
 async def createProyecto(id: int = Form(...)):
 
     # Buscamos el proyecto
@@ -1071,7 +1100,7 @@ async def createProyecto(id: int = Form(...)):
     return True
 
 
-@app.post("/cargar/Proyecto")
+@ app.post("/cargar/Proyecto")
 async def createProyecto(id: int = Form(...)):
     global data
 

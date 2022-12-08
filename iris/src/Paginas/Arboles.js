@@ -79,6 +79,8 @@ export default function Arboles() {
   const [nuevoPronosticoLabel, setNuevoPronosticoLabel] = useState("");
   const [nuevoPronsoticoValue, setNuevoPronosticoValue] = useState("");
   const [nuevoPronosticoLista, setNuevoPronosticoLista] = useState([]);
+  const [nuevoPronostico, setNuevoPronostico] = useState([]);
+  const [visibleNuevoPronostico, setVisibleNuevoPronostico] = useState(false);
 
   useEffect(() => {
     traeVariables();
@@ -239,6 +241,7 @@ export default function Arboles() {
         if (result !== false) {
           alert("Se asignarón correctamente las variables a X.");
           setTablaX([result[0], result[1]]);
+          setNuevoPronosticoLista([]);
           if (result !== [[], []]) {
             setVisibleTablaX(true);
           }
@@ -330,6 +333,30 @@ export default function Arboles() {
     }
 
     setNuevoPronosticoLista(lista);
+  }
+
+  function getNuevoPronostico() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("lista", nuevoPronosticoLista);
+    console.log(nuevoPronosticoLista);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Arboles/nuevoPronostico", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setNuevoPronostico(result);
+          setVisibleNuevoPronostico(true);
+        }
+      })
+      .catch((error) => console.log("error", error));
   }
 
   return (
@@ -584,6 +611,11 @@ export default function Arboles() {
             </Box>
 
             <CodigoBoton ejecutar={guardaValorPronostico} visible={false} />
+            <CodigoBoton
+              ejecutar={getNuevoPronostico}
+              visible={visibleNuevoPronostico}
+              texto={nuevoPronostico}
+            />
           </Box>
         </Box>
       </Grid>
