@@ -36,7 +36,7 @@ const Parrafo = styled(Typography)({
   fontFamily: "Roboto",
 });
 
-export default function Arboles() {
+export default function Pronostico() {
   // Comandos de EDA
 
   // Vista Previa
@@ -57,7 +57,7 @@ export default function Arboles() {
   const [visibleTablaDrop, setVisibleTablaDrop] = useState(false);
   const [variablesDrop, setVariablesDrop] = useState([]);
 
-  // Pronostico
+  // Pronóstico Árboles
   const [variablesSeleccion, setVariablesSeleccion] = useState([]);
   const [variablesX, setVariablesX] = useState([]);
   const [tablaX, setTablaX] = useState([]);
@@ -66,6 +66,7 @@ export default function Arboles() {
   const [tablaY, setTablaY] = useState([]);
   const [visibleTablaY, setVisibleTablaY] = useState(false);
 
+  // Configuración de Árboles
   const [max_depth, setMax_depth] = useState("None");
   const [min_samples_split, setMin_samples_split] = useState("2");
   const [min_samples_leaf, setMin_samples_leaf] = useState("1");
@@ -74,6 +75,7 @@ export default function Arboles() {
   const [visiblePronosticoMedidas, setVisiblePronosticoMedidas] =
     useState(false);
 
+  // Variables de Pronóstico de Árboles
   const [variablesNuevoPronostico, setVariablesNuevoPronostico] =
     useState(variablesX);
   const [nuevoPronosticoLabel, setNuevoPronosticoLabel] = useState("");
@@ -81,6 +83,34 @@ export default function Arboles() {
   const [nuevoPronosticoLista, setNuevoPronosticoLista] = useState([]);
   const [nuevoPronostico, setNuevoPronostico] = useState([]);
   const [visibleNuevoPronostico, setVisibleNuevoPronostico] = useState(false);
+
+  // Pronóstico Bosques
+  const [variablesSeleccionB, setVariablesSeleccionB] = useState([]);
+  const [variablesXB, setVariablesXB] = useState([]);
+  const [tablaXB, setTablaXB] = useState([]);
+  const [visibleTablaXB, setVisibleTablaXB] = useState(false);
+  const [variableYB, setVariableYB] = useState([]);
+  const [tablaYB, setTablaYB] = useState([]);
+  const [visibleTablaYB, setVisibleTablaYB] = useState(false);
+
+  // Configuración de Bosques
+  const [n_estimatorsB, setN_estimatorsB] = useState("100");
+  const [max_depthB, setMax_depthB] = useState("None");
+  const [min_samples_splitB, setMin_samples_splitB] = useState("2");
+  const [min_samples_leafB, setMin_samples_leafB] = useState("1");
+  const [random_stateB, setRandom_stateB] = useState("0");
+  const [pronosticoMedidasB, setPronosticoMedidasB] = useState([]);
+  const [visiblePronosticoMedidasB, setVisiblePronosticoMedidasB] =
+    useState(false);
+
+  // Variables de Pronóstico de Árboles
+  const [variablesNuevoPronosticoB, setVariablesNuevoPronosticoB] =
+    useState(variablesXB);
+  const [nuevoPronosticoLabelB, setNuevoPronosticoLabelB] = useState("");
+  const [nuevoPronsoticoValueB, setNuevoPronosticoValueB] = useState("");
+  const [nuevoPronosticoListaB, setNuevoPronosticoListaB] = useState([]);
+  const [nuevoPronosticoB, setNuevoPronosticoB] = useState([]);
+  const [visibleNuevoPronosticoB, setVisibleNuevoPronosticoB] = useState(false);
 
   useEffect(() => {
     traeVariables();
@@ -196,14 +226,17 @@ export default function Arboles() {
         if (result !== [[], []]) {
           setVisibleTablaDrop(true);
 
-          // Actualizamos las variables disponibles para despues
+          // Actualizamos las variables disponibles para despues de Árboles
           traeVariablesSeleccion();
+
+          // Actualizamos las variables disponibles para despues de Bosques
+          traeVariablesSeleccionB();
         }
       })
       .catch((error) => console.log("error", error));
   }
 
-  // Pronostico
+  // Pronostico Árboles
   function traeVariablesSeleccion() {
     var requestOptions = {
       method: "GET",
@@ -356,6 +389,160 @@ export default function Arboles() {
       .catch((error) => console.log("error", error));
   }
 
+  // Pronostico Bosques
+  function traeVariablesSeleccionB() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch(
+      "http://127.0.0.1:8000/Arboles/trae/Variables/Seleccion",
+      requestOptions
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        setVariablesSeleccionB(result);
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function defineXB() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("lista", variablesX);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Bosques/seleccionaX", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setTablaXB([result[0], result[1]]);
+          setNuevoPronosticoListaB([]);
+          if (result !== [[], []]) {
+            setVisibleTablaXB(true);
+          }
+        } else {
+          alert("Selecciona alguna variable.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function defineYB() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("lista", variableY);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Bosques/seleccionaY", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setTablaYB([result[0], result[1]]);
+          if (result !== [[], []]) {
+            setVisibleTablaYB(true);
+          }
+        } else {
+          alert("Selecciona alguna variable.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function pronosticoEntrenamientoB() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("n_estimators", n_estimatorsB);
+    formdata.append("max_depth", max_depthB);
+    formdata.append("min_samples_split", min_samples_splitB);
+    formdata.append("min_samples_leaf", min_samples_leafB);
+    formdata.append("random_state", random_stateB);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch(
+      "http://127.0.0.1:8000/Bosques/Pronostico/Entrenamiento",
+      requestOptions
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setPronosticoMedidasB(result);
+          setVisiblePronosticoMedidasB(true);
+        } else {
+          alert("Favor de revisar si realizo todos los pasos anteriores.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function guardaValorPronosticoB() {
+    // Actualzamos la lista
+    let lista = nuevoPronosticoListaB;
+    let index = -1;
+    let tam = lista.length;
+
+    for (let i = 0; i < tam; i++) {
+      if (lista[i][0] === nuevoPronosticoLabelB) {
+        index = i;
+        break;
+      }
+    }
+
+    if (index === -1) {
+      alert("Se registro el valor de: " + nuevoPronosticoLabelB);
+      lista.push([nuevoPronosticoLabelB, nuevoPronsoticoValueB]);
+    } else {
+      alert("Se actualizo el valor de: " + nuevoPronosticoLabelB);
+      lista[index] = [nuevoPronosticoLabelB, nuevoPronsoticoValueB];
+    }
+
+    setNuevoPronosticoLista(lista);
+  }
+
+  function getNuevoPronosticoB() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("lista", nuevoPronosticoListaB);
+    console.log(nuevoPronosticoListaB);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Bosques/nuevoPronostico", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setNuevoPronosticoB(result);
+          setVisibleNuevoPronosticoB(true);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
   return (
     <Grid
       container
@@ -374,7 +561,7 @@ export default function Arboles() {
       >
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
-            <Titulo textAlign={"center"}>Pronóstico Arboles</Titulo>
+            <Titulo textAlign={"center"}>Pronóstico</Titulo>
 
             <Subtitulo>Propósito</Subtitulo>
 
@@ -606,12 +793,165 @@ export default function Arboles() {
                 />
               </Box>
             </Box>
-
             <CodigoBoton ejecutar={guardaValorPronostico} visible={false} />
+          </Box>
+        </Box>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>
+              Pulse este botón una vez que haya terminado de asignar valores a
+              las variables para realizar el prónostico.
+            </Bold>
             <CodigoBoton
               ejecutar={getNuevoPronostico}
               visible={visibleNuevoPronostico}
               texto={nuevoPronostico}
+            />
+          </Box>
+        </Box>
+
+        {/*Pronostico bosques*/}
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
+            <Subtitulo>Aplicación del algoritmo: Bosques aleatorios</Subtitulo>
+          </Box>
+        </Box>
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Selecciona las variables predictoras (X).</Bold>
+            <Box sx={{ padding: 2 }}>
+              <Visualizador
+                lista={variablesSeleccionB}
+                listaSeleccionada={variablesXB}
+                actualizaSeleccion={setVariablesXB}
+              />
+            </Box>
+            <CodigoBoton ejecutar={defineXB} visible={false} />
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={tablaXB[0]}
+          dataFilas={tablaXB[1]}
+          visible={visibleTablaXB}
+        />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Selecciona la variable a pronosticar (Y).</Bold>
+            <Parrafo>
+              Si selecciona más de un elemento unicamente se tomara el primero
+              en ser seleccionado.
+            </Parrafo>
+            <Box sx={{ padding: 2 }}>
+              <Visualizador
+                lista={variablesSeleccionB}
+                listaSeleccionada={variableYB}
+                actualizaSeleccion={setVariableYB}
+              />
+            </Box>
+
+            <CodigoBoton ejecutar={defineYB} visible={false} />
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={tablaYB[0]}
+          dataFilas={tablaYB[1]}
+          visible={visibleTablaYB}
+        />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Entrenamiento de modelo.</Bold>
+            <Box sx={{ padding: 2 }}>
+              <Comando
+                Label={"n_estimatorsn"}
+                setComando={setN_estimatorsB}
+                comando={n_estimatorsB}
+                type={"number"}
+              />
+              <Comando
+                Label={"max_depth"}
+                setComando={setMax_depthB}
+                comando={max_depthB}
+                type={"number"}
+              />
+              <Comando
+                Label={"min_samples_split"}
+                setComando={setMin_samples_splitB}
+                comando={min_samples_splitB}
+                type={"number"}
+              />
+              <Comando
+                Label={"min_samples_leaf"}
+                setComando={setMin_samples_leafB}
+                comando={min_samples_leafB}
+                type={"number"}
+              />
+              <Comando
+                Label={"random_state"}
+                setComando={setRandom_stateB}
+                comando={random_stateB}
+                type={"number"}
+              />
+            </Box>
+            <CodigoBoton
+              ejecutar={pronosticoEntrenamientoB}
+              visible={visiblePronosticoMedidasB}
+              texto={
+                "Criterio: " +
+                pronosticoMedidasB[0] +
+                "\nMAE: " +
+                pronosticoMedidasB[1] +
+                "\nMSE: " +
+                pronosticoMedidasB[2] +
+                "\nRMSE: " +
+                pronosticoMedidasB[3] +
+                "\nScore: " +
+                pronosticoMedidasB[4]
+              }
+            />
+          </Box>
+        </Box>
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Nuevos pronósticos.</Bold>
+            <Parrafo>
+              Para las variables de X previamente seleccionadas digite un valor
+              y pulse ejecutar para cada una de las variables.
+            </Parrafo>
+            <Box sx={{ padding: 2 }}>
+              <Selector
+                label={"Variable"}
+                lista={variablesNuevoPronosticoB}
+                elemento={nuevoPronosticoLabelB}
+                setElemento={setNuevoPronosticoLabelB}
+              />
+              <Box sx={{ padding: 2 }}>
+                <Comando
+                  Label={nuevoPronosticoLabelB}
+                  setComando={setNuevoPronosticoValueB}
+                  comando={nuevoPronsoticoValueB}
+                  type={"number"}
+                />
+              </Box>
+            </Box>
+            <CodigoBoton ejecutar={guardaValorPronosticoB} visible={false} />
+          </Box>
+        </Box>
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>
+              Pulse este botón una vez que haya terminado de asignar valores a
+              las variables para realizar el prónostico.
+            </Bold>
+            <CodigoBoton
+              ejecutar={getNuevoPronosticoB}
+              visible={visibleNuevoPronosticoB}
+              texto={nuevoPronosticoB}
             />
           </Box>
         </Box>

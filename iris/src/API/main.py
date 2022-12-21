@@ -18,9 +18,10 @@ import seaborn as sns
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-# Para arboles
+# Para arboles y bosques
 from sklearn import model_selection
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
 
@@ -37,6 +38,11 @@ dataDrop = None
 X = None
 Y = None
 PronosticoAD = None
+
+# Variables globales de Bosques
+XB = None
+YB = None
+PronosticoBA = None
 
 # Clase que nos ayuda a manipular los datos
 
@@ -748,8 +754,6 @@ async def pcaDrop(lista: list = Form(...)):
         return [[], []]
 
 # Arboles
-
-
 @app.get("/Arboles/trae/Variables")
 async def arbolesTraeVariables():
     # Dataframe
@@ -982,7 +986,6 @@ async def arbolesSeleccionaY(lista: list = Form(...)):
     else:
         return [[], []]
 
-
 @app.post("/Arboles/Pronostico/Entrenamiento")
 async def arbolesDivision(max_depth: str = Form(...), min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
     # Variables
@@ -1019,7 +1022,6 @@ async def arbolesDivision(max_depth: str = Form(...), min_samples_split: str = F
     else:
         return False
 
-
 @app.post("/Arboles/nuevoPronostico")
 async def arbolesNuevoPronostico(lista: list = Form(...)):
     # Dataframe
@@ -1043,6 +1045,196 @@ async def arbolesNuevoPronostico(lista: list = Form(...)):
         pronostico = pd.DataFrame(diccionario)
 
         return (PronosticoAD.predict(pronostico).tolist())[0]
+
+    else:
+        return [False]
+
+
+# Bosques
+@app.post("/Bosques/seleccionaX")
+async def bosquesSeleccionaX(lista: list = Form(...)):
+    # Dataframe
+    global data
+    global dataDrop
+    global XB
+
+    if not data.empty:
+        # Convertimos en lista
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        # Guardamos la seleccion de X
+        XB = np.array(dataDrop[lista])
+
+        tmp = pd.DataFrame(XB)
+
+        # Obtenemos columnas
+        columnas = tmp.columns.values.tolist()
+
+        # Agregamos una columna vacia para los indices
+        columnas.insert(0, "")
+
+        # Lista que contendra las filas
+        filas = []
+
+        # Obtenemos los primeros y ultimos 5 elementos del dataframe
+        filasHead = tmp.head().values.tolist()
+        filasTail = tmp.tail().values.tolist()
+
+        # Agregamos los indices
+        tam = len(tmp.values.tolist())
+        for i in range(0, 5):
+            filasHead[i].insert(0, i)
+            filasTail[4-i].insert(0, tam-i-1)
+
+        # Agregamos un separador
+        filasSeparador = []
+
+        for i in columnas:
+            filasSeparador.append("...")
+        filasHead.append(filasSeparador)
+
+        # Unimos las listas
+        filasRaw = filasHead+filasTail
+
+        # Convertimos a string todos los elementos para que sean mostrados
+        for fila in filasRaw:
+            f = []
+            for i in fila:
+                f.append(str(i))
+            filas.append(f)
+
+        # Retornamos los elementos
+        return [columnas, filas]
+    else:
+        return [[], []]
+
+
+@app.post("/Bosques/seleccionaY")
+async def bosquesSeleccionaY(lista: list = Form(...)):
+    # Dataframe
+    global data
+    global dataDrop
+    global YB
+
+    if not data.empty:
+        # Convertimos a lista
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+        print(lista)
+        # Guardamos la seleccion de Y
+        YB = np.array(dataDrop[lista[0]])
+
+        tmp = pd.DataFrame(YB)
+
+        # Obtenemos columnas
+        columnas = tmp.columns.values.tolist()
+
+        # Agregamos una columna vacia para los indices
+        columnas.insert(0, "")
+
+        # Lista que contendra las filas
+        filas = []
+
+        # Obtenemos los primeros y ultimos 5 elementos del dataframe
+        filasHead = tmp.head().values.tolist()
+        filasTail = tmp.tail().values.tolist()
+
+        # Agregamos los indices
+        tam = len(tmp.values.tolist())
+        for i in range(0, 5):
+            filasHead[i].insert(0, i)
+            filasTail[4-i].insert(0, tam-i-1)
+
+        # Agregamos un separador
+        filasSeparador = []
+
+        for i in columnas:
+            filasSeparador.append("...")
+        filasHead.append(filasSeparador)
+
+        # Unimos las listas
+        filasRaw = filasHead+filasTail
+
+        # Convertimos a string todos los elementos para que sean mostrados
+        for fila in filasRaw:
+            f = []
+            for i in fila:
+                f.append(str(i))
+            filas.append(f)
+
+        # Retornamos los elementos
+        return [columnas, filas]
+    else:
+        return [[], []]
+
+
+
+@app.post("/Bosques/Pronostico/Entrenamiento")
+async def arbolesDivision(n_estimators: str = Form(...), max_depth: str = Form(...), \
+    min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
+    # Variables
+    global data
+    global PronosticoBA
+    global XB
+    global YB
+
+    if not data.empty:
+
+        # Divisón de datos
+        X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
+            XB, YB, test_size=0.2, random_state=0, shuffle=True)
+
+        if max_depth == "None":
+            max_depth = None
+        else:
+            max_depth = int(max_depth)
+
+        PronosticoBA = RandomForestRegressor(n_estimators=int(n_estimators),
+        max_depth=max_depth, min_samples_split=int(min_samples_split), 
+        min_samples_leaf=int(min_samples_leaf), random_state=int(random_state))
+        PronosticoBA.fit(X_train, Y_train)
+
+        # Se genera el pronóstico
+        Y_Pronostico = PronosticoBA.predict(X_test)
+
+        # Medidas
+        return [PronosticoBA.criterion,
+                mean_absolute_error(Y_test, Y_Pronostico),
+                mean_squared_error(Y_test, Y_Pronostico),
+                mean_squared_error(Y_test, Y_Pronostico, squared=False),
+                r2_score(Y_test, Y_Pronostico)]
+
+    else:
+        return False
+
+@app.post("/Bosques/nuevoPronostico")
+async def arbolesNuevoPronostico(lista: list = Form(...)):
+    # Dataframe
+    global data
+    global PronosticoBA
+
+    if not data.empty:
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        diccionario = {}
+
+        for i in range(0, len(lista)):
+            if i % 2 == 0:
+                diccionario[lista[i]] = [int(lista[i+1])]
+            else:
+                continue
+
+        pronostico = pd.DataFrame(diccionario)
+
+        return (PronosticoBA.predict(pronostico).tolist())[0]
 
     else:
         return [False]

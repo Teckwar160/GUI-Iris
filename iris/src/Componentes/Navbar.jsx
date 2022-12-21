@@ -38,7 +38,7 @@ const Boton = styled(Button)(({ theme }) => ({
   },
 }));
 
-const pages = ["Home", "EDA", "PCA","Arboles"];
+const pages = ["Home", "EDA", "PCA","Pronostico"];
 
 export default function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
