@@ -72,8 +72,6 @@ app.add_middleware(
 )
 
 # Funciones de apoyo
-
-
 def convierteStr(data):
     lista = []
 
@@ -82,6 +80,48 @@ def convierteStr(data):
 
     return lista
 
+# Función encargada de obtener filas 
+# y columnas para las tablas
+def creaTabla(dataframe):
+    # Obtenemos columnas
+    columnas = dataframe.columns.values.tolist()
+
+    # Agregamos una columna vacia para los indices
+    if columnas[0] != "":
+        columnas.insert(0, "")
+
+    # Lista que contendra las filas
+    filas = []
+
+    # Obtenemos los primeros y ultimos 5 elementos del dataframe
+    filasHead = dataframe.head().values.tolist()
+    filasTail = dataframe.tail().values.tolist()
+
+    # Agregamos los indices
+    tam = len(dataframe.values.tolist())
+    for i in range(0, 5):
+        filasHead[i].insert(0, i)
+        filasTail[4-i].insert(0, tam-i-1)
+
+    # Agregamos un separador
+    filasSeparador = []
+
+    for i in columnas:
+        filasSeparador.append("...")
+    filasHead.append(filasSeparador)
+
+    # Unimos las listas
+    filasRaw = filasHead+filasTail
+
+    # Convertimos a string todos los elementos para que sean mostrados
+    for fila in filasRaw:
+        f = []
+        for i in fila:
+            f.append(str(i))
+        filas.append(f)
+
+    # Retornamos los elementos
+    return [columnas, filas]
 
 # Funciones de EDA
 
@@ -90,48 +130,12 @@ async def vistaPrevia():
     # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
-        # Obtenemos columnas
-        columnas = data.columns.values.tolist()
-
-        # Agregamos una columna vacia para los indices
-        if columnas[0] != "":
-            columnas.insert(0, "")
-
-        # Lista que contendra las filas
-        filas = []
-
-        # Obtenemos los primeros y ultimos 5 elementos del dataframe
-        filasHead = data.head().values.tolist()
-        filasTail = data.tail().values.tolist()
-
-        # Agregamos los indices
-        tam = len(data.values.tolist())
-        for i in range(0, 5):
-            filasHead[i].insert(0, i)
-            filasTail[4-i].insert(0, tam-i-1)
-
-        # Agregamos un separador
-        filasSeparador = []
-
-        for i in columnas:
-            filasSeparador.append("...")
-        filasHead.append(filasSeparador)
-
-        # Unimos las listas
-        filasRaw = filasHead+filasTail
-
-        # Convertimos a string todos los elementos para que sean mostrados
-        for fila in filasRaw:
-            f = []
-            for i in fila:
-                f.append(str(i))
-            filas.append(f)
-
-        # Retornamos los elementos
-        return [columnas, filas]
+        # Creamos la tabla a mostrar
+        return creaTabla(data)
     else:
-        return [[], []]
+        return False
 
 
 @app.get("/EDA/Forma")
@@ -480,7 +484,7 @@ async def pcaDataCorrelacionMapa():
         return []
 
 
-@app.post("/PCA/Estandar")
+@app.post("/PCA/Estandar") # <----- usar funcion creartale
 async def pcaMinMaxScaler(metodo: str = Form(...)):
     # Dataframe
     global data
@@ -612,7 +616,7 @@ async def pcaComponentes(numero: int = Form(...)):
         return [[], [], []]
 
 
-@app.post("/PCA/Paso6")
+@app.post("/PCA/Paso6") # <---- usamos funcion crear tabla
 async def pcaPaso6(numero: int = Form(...)):
     # Dataframe
     global data
@@ -694,7 +698,7 @@ async def pcaTraeVariables():
         return []
 
 
-@app.post("/PCA/Drop")
+@app.post("/PCA/Drop") #<--- usar funcion creatabla
 async def pcaDrop(lista: list = Form(...)):
     # Dataframe
     global data
@@ -779,7 +783,7 @@ async def arbolesTraeVariables():
         return []
 
 
-@app.post("/Arboles/Drop")
+@app.post("/Arboles/Drop") #<--- usa funcion crea tabla
 async def arbolesDrop(lista: list = Form(...)):
     # Dataframe
     global data
@@ -865,7 +869,7 @@ async def arbolesTraeVariables():
         return []
 
 
-@app.post("/Arboles/seleccionaX")
+@app.post("/Arboles/seleccionaX") #<--- usa funcion creatabla
 async def arbolesSeleccionaX(lista: list = Form(...)):
     # Dataframe
     global data
@@ -926,7 +930,7 @@ async def arbolesSeleccionaX(lista: list = Form(...)):
         return [[], []]
 
 
-@app.post("/Arboles/seleccionaY")
+@app.post("/Arboles/seleccionaY") #<--- usa funcion creatabla
 async def arbolesSeleccionaY(lista: list = Form(...)):
     # Dataframe
     global data
@@ -1051,7 +1055,7 @@ async def arbolesNuevoPronostico(lista: list = Form(...)):
 
 
 # Bosques
-@app.post("/Bosques/seleccionaX")
+@app.post("/Bosques/seleccionaX") #<--- usa funcion creatbal
 async def bosquesSeleccionaX(lista: list = Form(...)):
     # Dataframe
     global data
@@ -1112,7 +1116,7 @@ async def bosquesSeleccionaX(lista: list = Form(...)):
         return [[], []]
 
 
-@app.post("/Bosques/seleccionaY")
+@app.post("/Bosques/seleccionaY") # <--- usa funcion creat tabla
 async def bosquesSeleccionaY(lista: list = Form(...)):
     # Dataframe
     global data

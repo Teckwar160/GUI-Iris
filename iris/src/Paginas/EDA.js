@@ -42,7 +42,7 @@ export default function EDA() {
   // Comandos de EDA
 
   // Vista Previa
-  const [dataVistaPrevia, setDataVistaPrevia] = useState([[],[]]);
+  const [dataVistaPrevia, setDataVistaPrevia] = useState([[], []]);
   const [visibleVistaPrevia, setVisibleVistaPrevia] = useState(false);
 
   // Paso 1
@@ -83,9 +83,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataVistaPrevia([result[0],result[1]]);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDataVistaPrevia([result[0], result[1]]);
           setVisibleVistaPrevia(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));

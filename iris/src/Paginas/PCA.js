@@ -88,9 +88,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataVistaPrevia([result[0], result[1]]);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDataVistaPrevia([result[0], result[1]]);
           setVisibleVistaPrevia(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
