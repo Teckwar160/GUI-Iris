@@ -491,7 +491,7 @@ async def pcaDataCorrelacionMapa():
         return []
 
 
-@app.post("/PCA/Estandar") # <----- usar funcion creartale (Lista)
+@app.post("/PCA/Estandar") 
 async def pcaMinMaxScaler(metodo: str = Form(...)):
     # Dataframe
     global data
@@ -587,7 +587,7 @@ async def pcaComponentes(numero: int = Form(...)):
         return [[], [], []]
 
 
-@app.post("/PCA/Paso6") # <---- usamos funcion crear tabla (lista)
+@app.post("/PCA/Paso6") 
 async def pcaPaso6(numero: int = Form(...)):
     # Dataframe
     global data
@@ -651,9 +651,10 @@ async def pcaDrop(lista: list = Form(...)):
     else:
         return False
 
-# Pronostico Arboles
-@app.get("/Arboles/trae/Variables")
-async def arbolesTraeVariables():
+
+# Pronostico
+@app.get("/Pronostico/trae/Variables")
+async def traeVariables():
     # Dataframe
     global data
 
@@ -676,8 +677,8 @@ async def arbolesTraeVariables():
     else:
         return []
 
-@app.post("/Arboles/Drop") 
-async def arbolesDrop(lista: list = Form(...)):
+@app.post("/Pronostico/Drop") 
+async def drop(lista: list = Form(...)):
     # Dataframe
     global data
     global dataDrop
@@ -709,8 +710,8 @@ async def arbolesDrop(lista: list = Form(...)):
     else:
         return False
 
-@app.get("/Arboles/trae/Variables/Seleccion")
-async def arbolesTraeVariables():
+@app.get("/Pronostico/trae/Variables/Seleccion")
+async def traeVariablesSeleccion():
     # Dataframe
     global data
     global dataDrop
@@ -725,72 +726,6 @@ async def arbolesTraeVariables():
     else:
         return []
 
-@app.post("/Arboles/seleccion")
-async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
-    # Dataframe
-    global data
-    global dataDrop
-    global X
-    global Y
-
-    # Verificamos que este cargado un proyecto
-    if not data.empty:
-        # Convertimos en lista
-        if lista != [""]:
-            lista = lista[0].split(',')
-        else:
-            return False
-
-        if(seleccion == "x"):
-            # Guardamos la seleccion de X
-            X = np.array(dataDrop[lista])
-
-            tmp = pd.DataFrame(X)
-        else:
-            # Guardamos la seleccion de Y
-            Y = np.array(dataDrop[lista[0]])
-
-            tmp = pd.DataFrame(Y)       
-
-        # Creamos la tabla
-        return creaTabla(tmp,True)
-    else:
-        return False
-
-# Pronostico Bosques
-@app.post("/Bosques/seleccion")
-async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
-    # Dataframe
-    global data
-    global dataDrop
-    global XB
-    global YB
-
-    # Verificamos que este cargado un proyecto
-    if not data.empty:
-        # Convertimos en lista
-        if lista != [""]:
-            lista = lista[0].split(',')
-        else:
-            return False
-
-        if(seleccion == "x"):
-            # Guardamos la seleccion de X
-            XB = np.array(dataDrop[lista])
-
-            tmp = pd.DataFrame(XB)
-        else:
-            # Guardamos la seleccion de Y
-            YB = np.array(dataDrop[lista[0]])
-
-            tmp = pd.DataFrame(YB)       
-
-        # Creamos la tabla
-        return creaTabla(tmp,True)
-    else:
-        return False
-
-# Pronostico
 @app.post("/Pronostico/Entrenamiento")
 async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...), max_depth: str = Form(...), \
     min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
@@ -890,6 +825,72 @@ async def nuevoPronostico(algoritmo: str = Form(...), lista: list = Form(...)):
         else:
             return (PronosticoBA.predict(pronostico).tolist())[0]
 
+    else:
+        return False
+
+# Pronostico arboles
+@app.post("/Arboles/seleccion")
+async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
+    # Dataframe
+    global data
+    global dataDrop
+    global X
+    global Y
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        # Convertimos en lista
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        if(seleccion == "x"):
+            # Guardamos la seleccion de X
+            X = np.array(dataDrop[lista])
+
+            tmp = pd.DataFrame(X)
+        else:
+            # Guardamos la seleccion de Y
+            Y = np.array(dataDrop[lista[0]])
+
+            tmp = pd.DataFrame(Y)       
+
+        # Creamos la tabla
+        return creaTabla(tmp,True)
+    else:
+        return False
+
+# Pronostico Bosques
+@app.post("/Bosques/seleccion")
+async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
+    # Dataframe
+    global data
+    global dataDrop
+    global XB
+    global YB
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        # Convertimos en lista
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        if(seleccion == "x"):
+            # Guardamos la seleccion de X
+            XB = np.array(dataDrop[lista])
+
+            tmp = pd.DataFrame(XB)
+        else:
+            # Guardamos la seleccion de Y
+            YB = np.array(dataDrop[lista[0]])
+
+            tmp = pd.DataFrame(YB)       
+
+        # Creamos la tabla
+        return creaTabla(tmp,True)
     else:
         return False
 

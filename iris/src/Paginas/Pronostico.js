@@ -199,7 +199,7 @@ export default function Pronostico() {
       method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/Arboles/trae/Variables", requestOptions)
+    fetch("http://127.0.0.1:8000/Pronostico/trae/Variables", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -219,7 +219,7 @@ export default function Pronostico() {
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Arboles/Drop", requestOptions)
+    fetch("http://127.0.0.1:8000/Pronostico/Drop", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -245,7 +245,7 @@ export default function Pronostico() {
     };
 
     fetch(
-      "http://127.0.0.1:8000/Arboles/trae/Variables/Seleccion",
+      "http://127.0.0.1:8000/Pronostico/trae/Variables/Seleccion",
       requestOptions
     )
       .then((response) => {
@@ -390,7 +390,7 @@ export default function Pronostico() {
     };
 
     fetch(
-      "http://127.0.0.1:8000/Arboles/trae/Variables/Seleccion",
+      "http://127.0.0.1:8000/Pronostico/trae/Variables/Seleccion",
       requestOptions
     )
       .then((response) => {
