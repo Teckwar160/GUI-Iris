@@ -104,14 +104,16 @@ export default function EDA() {
       method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/PCA/DataCorrelacion", requestOptions)
+    fetch("http://127.0.0.1:8000/EDA/DataCorrelacion", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
-        setDataCorrelacion(result);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDataCorrelacion(result);
           setVisibleDataCorrelacion(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -122,14 +124,16 @@ export default function EDA() {
       method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/PCA/DataCorrelacion/Mapa", requestOptions)
+    fetch("http://127.0.0.1:8000/EDA/DataCorrelacion/Mapa", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
-        setDataCorrelacionMapa(result);
-        if (result !== []) {
+        if (result !== false) {
+          setDataCorrelacionMapa(result);
           setVisibleDataCorrelacionMapa(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -186,9 +190,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataComponentes([result[0], result[1]]);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDataComponentes([result[0], result[1]]);
           setVisibleDataComponentes(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -213,9 +219,11 @@ export default function EDA() {
           return response.json();
         })
         .then((result) => {
-          setDataVarianza([result[0], result[1], result[2]]);
-          if (result !== [[], [], []]) {
+          if (result !== false) {
+            setDataVarianza([result[0], result[1], result[2]]);
             setVisibleDataVarianza(true);
+          } else {
+            alert("Carga un proyecto");
           }
         })
         .catch((error) => console.log("error", error));
@@ -258,7 +266,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setVariables(result);
+        if (result !== false) {
+          setVariables(result);
+        } else {
+          alert("Carga un proyecto");
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -279,9 +291,10 @@ export default function EDA() {
       })
       .then((result) => {
         if (result !== false) {
-          alert("Se elimino correctamente la(s) variable(s)");
           setTablaDrop([result[0], result[1]]);
           setVisibleTablaDrop(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -466,7 +479,7 @@ export default function EDA() {
             <Parrafo>
               Se revisan los valores absolutos de los componentes principales
               seleccionados. Cuanto mayor sea el valor absoluto, más importante
-              es esa variable en el componente principal.
+              es esa variable en el componente principal. (Si modifica el valor del paso 5, vuelva a ejecutar este paso).
             </Parrafo>
             <CodigoBoton ejecutar={getCargas} visible={false} />
           </Box>

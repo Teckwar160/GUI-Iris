@@ -190,7 +190,7 @@ async def datosFaltantesNul():
         return False
 
 
-@app.get("/EDA/DataHistogramas") #posible limpieza
+@app.get("/EDA/DataHistogramas")
 async def dataHistograma():
     # Dataframe
     global data
@@ -274,7 +274,7 @@ async def dataDescribe():
         return False
 
 
-@app.get("/EDA/Box") #posible limpieza
+@app.get("/EDA/Box")
 async def dataBox():
     # Dataframe
     global data
@@ -340,7 +340,7 @@ async def dataDescribeObject():
         return False
 
 
-@app.get("/EDA/DataHistogramas/Object") #Posible modificacion
+@app.get("/EDA/DataHistogramas/Object")
 async def dataHistogramaObject():
     # Dataframe
     global data
@@ -446,67 +446,12 @@ async def dataCorrelacionMapa():
 
 # Funciones de PCA
 
-@app.get("/PCA/DataCorrelacion")
-async def pcaDataCorrelacion():
-    # Dataframe
-    global data
-
-    if not data.empty:
-        # Obtenemos columnas
-        columnas = data.corr(method='pearson').columns.tolist()
-
-        # Lista que contendra las filas
-        filas = data.corr(method='pearson').values.tolist()
-
-        # Acomodamos las filas
-        for fila, columna in zip(filas, columnas):
-            fila.insert(0, columna)
-
-        # Insertamos una columna de más para las etiquetas
-        columnas.insert(0, '')
-
-        # Retornamos los elementos
-        return [columnas, filas]
-    else:
-        return [[], []]
-
-
-@app.get("/PCA/DataCorrelacion/Mapa")
-async def pcaDataCorrelacionMapa():
-    # Dataframe
-    global data
-
-    if not data.empty:
-        # Obtenemos columnas
-        columnas = data.corr(method='pearson').columns.tolist()
-
-        # Lista que contendra las filas
-        filas = data.corr(method='pearson').values.tolist()
-
-        # Lista que contendra la matriz de correlaciones
-        mapa = []
-
-        # Damso formato a los datos
-        for columna, fila in zip(columnas, filas):
-            tmp = []
-            for x, y in zip(columnas, fila):
-                tmp.append({'x': x, 'y': round(y, 2)})
-            mapa.append(
-                {
-                    'id': columna,
-                    'data': tmp
-                }
-            )
-        # Retornamos los elementos
-        return mapa
-    else:
-        return []
-
-
 @app.post("/PCA/Estandar") 
-async def pcaMinMaxScaler(metodo: str = Form(...)):
+async def pcaEstandar(metodo: str = Form(...)):
     # Dataframe
     global data
+
+    # Variables de PCA
     global MEstandarizada
     global dataSinObjectNan
 
@@ -544,14 +489,18 @@ async def pcaMinMaxScaler(metodo: str = Form(...)):
 async def pcaComponentes(numero: str = Form(...)):
     # Dataframe
     global data
+
+    # Variables de PCA
     global MEstandarizada
     global pca
 
+    # Convertimos el valor de número
     if numero == "None":
         numero = None
     else:
         numero = int(numero)
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Se instancia el objeto PCA
         pca = PCA(n_components=numero)
@@ -570,16 +519,19 @@ async def pcaComponentes(numero: str = Form(...)):
 
         return [columnas, componentes]
     else:
-        return [[], []]
+        return False
 
 
 @app.post("/PCA/Varianza")
-async def pcaComponentes(numero: int = Form(...)):
+async def pcaVarianza(numero: int = Form(...)):
     # Dataframe
     global data
+
+    # Variables de PCA
     global MEstandarizada
     global pca
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         varianza = pca.explained_variance_ratio_
 
@@ -596,13 +548,15 @@ async def pcaComponentes(numero: int = Form(...)):
 
         return [varianzaAcumulada, columnas, filas]
     else:
-        return [[], [], []]
+        return False
 
 
 @app.post("/PCA/Paso6") 
 async def pcaPaso6(numero: int = Form(...)):
     # Dataframe
     global data
+
+    # Variable de PCA
     global pca
 
     # Verificamos que este cargado un proyecto
@@ -616,6 +570,7 @@ async def pcaPaso6(numero: int = Form(...)):
         # Creamos tabla con el head
         tablaHead = creaTabla(cargasComponentes.head(numero),False)
 
+        # Retornamos las tablas
         return tablaCompleta + tablaHead
 
     else:
@@ -627,6 +582,7 @@ async def pcaTraeVariables():
     # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
 
         # Obtenemos columnas
@@ -635,13 +591,15 @@ async def pcaTraeVariables():
         # Retornamos los elementos
         return variables
     else:
-        return []
+        return False
 
 
 @app.post("/PCA/Drop") 
 async def pcaDrop(lista: list = Form(...)):
     # Dataframe
     global data
+
+    # Dataframe de apoyo
     global dataDrop
 
     # Verificamos que este cargado un proyecto
