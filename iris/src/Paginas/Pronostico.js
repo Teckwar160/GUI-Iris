@@ -224,8 +224,8 @@ export default function Pronostico() {
         return response.json();
       })
       .then((result) => {
-        setTablaDrop([result[0], result[1]]);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setTablaDrop([result[0], result[1]]);
           setVisibleTablaDrop(true);
 
           // Actualizamos las variables disponibles para despues de Árboles
@@ -275,9 +275,7 @@ export default function Pronostico() {
         if (result !== false) {
           setTablaX([result[0], result[1]]);
           setNuevoPronosticoLista([]);
-          if (result !== [[], []]) {
-            setVisibleTablaX(true);
-          }
+          setVisibleTablaX(true);
         } else {
           alert("Selecciona alguna variable.");
         }

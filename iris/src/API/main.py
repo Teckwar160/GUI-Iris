@@ -677,18 +677,23 @@ async def arbolesTraeVariables():
         return []
 
 
-@app.post("/Arboles/Drop") #<--- usa funcion crea tabla
+@app.post("/Arboles/Drop") #<--- usa funcion crea tabla (lista)
 async def arbolesDrop(lista: list = Form(...)):
     # Dataframe
     global data
     global dataDrop
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Eliminamos la variable
         if lista != [""]:
             lista = lista[0].split(',')
             dataDrop = data.drop(columns=lista)
         else:
+            dataDrop = data
+
+        # Por si eliminan todos los elementos
+        if (dataDrop.empty):
             dataDrop = data
 
         # Limpiamos el conjunto de variables categoricas y datos Nan
@@ -700,50 +705,10 @@ async def arbolesDrop(lista: list = Form(...)):
 
         dataDrop = dataTmp.dropna()
 
-        # Obtenemos columnas
-        columnas = dataDrop.columns.values.tolist()
-
-        if len(columnas) == 0:
-            dataDrop = data
-            columnas = dataDrop.columns.values.tolist()
-
-        # Agregamos una columna vacia para los indices
-        columnas.insert(0, "")
-
-        # Lista que contendra las filas
-        filas = []
-
-        # Obtenemos los primeros y ultimos 5 elementos del dataframe
-        filasHead = dataDrop.head().values.tolist()
-        filasTail = dataDrop.tail().values.tolist()
-
-        # Agregamos los indices
-        tam = len(dataDrop.values.tolist())
-        for i in range(0, 5):
-            filasHead[i].insert(0, i)
-            filasTail[4-i].insert(0, tam-i-1)
-
-        # Agregamos un separador
-        filasSeparador = []
-
-        for i in columnas:
-            filasSeparador.append("...")
-        filasHead.append(filasSeparador)
-
-        # Unimos las listas
-        filasRaw = filasHead+filasTail
-
-        # Convertimos a string todos los elementos para que sean mostrados
-        for fila in filasRaw:
-            f = []
-            for i in fila:
-                f.append(str(i))
-            filas.append(f)
-
-        # Retornamos los elementos
-        return [columnas, filas]
+        # Creamos la tabla
+        return creaTabla(dataDrop,True)
     else:
-        return [[], []]
+        return False
 
 
 @app.get("/Arboles/trae/Variables/Seleccion")
@@ -763,7 +728,7 @@ async def arbolesTraeVariables():
         return []
 
 
-@app.post("/Arboles/seleccionaX") #<--- usa funcion creatabla
+@app.post("/Arboles/seleccionaX") #<--- usa funcion creatabla (lista)
 async def arbolesSeleccionaX(lista: list = Form(...)):
     # Dataframe
     global data
@@ -782,46 +747,10 @@ async def arbolesSeleccionaX(lista: list = Form(...)):
 
         tmp = pd.DataFrame(X)
 
-        # Obtenemos columnas
-        columnas = tmp.columns.values.tolist()
-
-        # Agregamos una columna vacia para los indices
-        columnas.insert(0, "")
-
-        # Lista que contendra las filas
-        filas = []
-
-        # Obtenemos los primeros y ultimos 5 elementos del dataframe
-        filasHead = tmp.head().values.tolist()
-        filasTail = tmp.tail().values.tolist()
-
-        # Agregamos los indices
-        tam = len(tmp.values.tolist())
-        for i in range(0, 5):
-            filasHead[i].insert(0, i)
-            filasTail[4-i].insert(0, tam-i-1)
-
-        # Agregamos un separador
-        filasSeparador = []
-
-        for i in columnas:
-            filasSeparador.append("...")
-        filasHead.append(filasSeparador)
-
-        # Unimos las listas
-        filasRaw = filasHead+filasTail
-
-        # Convertimos a string todos los elementos para que sean mostrados
-        for fila in filasRaw:
-            f = []
-            for i in fila:
-                f.append(str(i))
-            filas.append(f)
-
-        # Retornamos los elementos
-        return [columnas, filas]
+        # Creamos la tabla
+        return creaTabla(tmp,True)
     else:
-        return [[], []]
+        return False
 
 
 @app.post("/Arboles/seleccionaY") #<--- usa funcion creatabla
