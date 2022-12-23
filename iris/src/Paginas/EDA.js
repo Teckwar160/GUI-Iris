@@ -503,7 +503,7 @@ export default function EDA() {
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>Histograma para variables categóricas.</Parrafo>
+            <Parrafo>Histograma para variables categóricas. (Unicamente variables con menos de 10 elementos diferentes.)</Parrafo>
 
             <CodigoBoton ejecutar={getDataHistogramasObject} visible={false} />
           </Box>
