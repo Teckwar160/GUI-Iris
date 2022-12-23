@@ -76,8 +76,7 @@ export default function Pronostico() {
     useState(false);
 
   // Variables de Pronóstico de Árboles
-  const [variablesNuevoPronostico, setVariablesNuevoPronostico] =
-    useState(variablesX);
+  const [variablesNuevoPronostico] = useState(variablesX);
   const [nuevoPronosticoLabel, setNuevoPronosticoLabel] = useState("");
   const [nuevoPronsoticoValue, setNuevoPronosticoValue] = useState("");
   const [nuevoPronosticoLista, setNuevoPronosticoLista] = useState([]);
@@ -104,8 +103,7 @@ export default function Pronostico() {
     useState(false);
 
   // Variables de Pronóstico de Árboles
-  const [variablesNuevoPronosticoB, setVariablesNuevoPronosticoB] =
-    useState(variablesXB);
+  const [variablesNuevoPronosticoB] = useState(variablesXB);
   const [nuevoPronosticoLabelB, setNuevoPronosticoLabelB] = useState("");
   const [nuevoPronsoticoValueB, setNuevoPronosticoValueB] = useState("");
   const [nuevoPronosticoListaB, setNuevoPronosticoListaB] = useState([]);
@@ -149,9 +147,11 @@ export default function Pronostico() {
         return response.json();
       })
       .then((result) => {
-        setDatosFaltantesNull([result[0], result[1]]);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDatosFaltantesNull([result[0], result[1]]);
           setVisibleFaltantesNull(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -167,9 +167,11 @@ export default function Pronostico() {
         return response.json();
       })
       .then((result) => {
-        setDataDescribe(result);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDataDescribe(result);
           setVisibleDescribe(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -185,9 +187,11 @@ export default function Pronostico() {
         return response.json();
       })
       .then((result) => {
-        setDataDescribeObject(result);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDataDescribeObject(result);
           setVisibleDescribeObject(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -204,7 +208,11 @@ export default function Pronostico() {
         return response.json();
       })
       .then((result) => {
-        setVariables(result);
+        if (result !== false) {
+          setVariables(result);
+        } else {
+          alert("Carga un proyecto");
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -233,6 +241,8 @@ export default function Pronostico() {
 
           // Actualizamos las variables disponibles para despues de Bosques
           traeVariablesSeleccionB();
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -252,7 +262,9 @@ export default function Pronostico() {
         return response.json();
       })
       .then((result) => {
-        setVariablesSeleccion(result);
+        if (result !== false) {
+          setVariablesSeleccion(result);
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -260,12 +272,12 @@ export default function Pronostico() {
   function seleccionArboles(letra) {
     // Ingresamos los datos
     const formdata = new FormData();
-    if(letra === "x"){
+    if (letra === "x") {
       formdata.append("lista", variablesX);
-    }else{
+    } else {
       formdata.append("lista", variableY);
     }
-    
+
     formdata.append("seleccion", letra);
 
     var requestOptions = {
@@ -279,14 +291,13 @@ export default function Pronostico() {
       })
       .then((result) => {
         if (result !== false) {
-          if(letra === "x"){
+          if (letra === "x") {
             setTablaX([result[0], result[1]]);
             setVisibleTablaX(true);
-          }else{
+          } else {
             setTablaY([result[0], result[1]]);
             setVisibleTablaY(true);
           }
-
         } else {
           alert("Selecciona alguna variable.");
         }
@@ -294,18 +305,18 @@ export default function Pronostico() {
       .catch((error) => console.log("error", error));
   }
 
-  function seleccionaX(){
-    seleccionArboles("x")
+  function seleccionaX() {
+    seleccionArboles("x");
   }
 
-  function seleccionaY(){
-    seleccionArboles("y")
+  function seleccionaY() {
+    seleccionArboles("y");
   }
 
   function pronosticoEntrenamiento() {
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("algoritmo","arbol");
+    formdata.append("algoritmo", "arbol");
     formdata.append("n_estimators", 0);
     formdata.append("max_depth", max_depth);
     formdata.append("min_samples_split", min_samples_split);
@@ -317,10 +328,7 @@ export default function Pronostico() {
       body: formdata,
     };
 
-    fetch(
-      "http://127.0.0.1:8000/Pronostico/Entrenamiento",
-      requestOptions
-    )
+    fetch("http://127.0.0.1:8000/Pronostico/Entrenamiento", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -362,7 +370,7 @@ export default function Pronostico() {
   function getNuevoPronostico() {
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("algoritmo","arbol");
+    formdata.append("algoritmo", "arbol");
     formdata.append("lista", nuevoPronosticoLista);
 
     var requestOptions = {
@@ -378,6 +386,8 @@ export default function Pronostico() {
         if (result !== false) {
           setNuevoPronostico(result);
           setVisibleNuevoPronostico(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -397,7 +407,11 @@ export default function Pronostico() {
         return response.json();
       })
       .then((result) => {
-        setVariablesSeleccionB(result);
+        if (result !== false) {
+          setVariablesSeleccionB(result);
+        } else {
+          alert("Carga un proyecto");
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -405,12 +419,12 @@ export default function Pronostico() {
   function seleccionBosques(letra) {
     // Ingresamos los datos
     const formdata = new FormData();
-    if(letra === "x"){
+    if (letra === "x") {
       formdata.append("lista", variablesXB);
-    }else{
+    } else {
       formdata.append("lista", variableYB);
     }
-    
+
     formdata.append("seleccion", letra);
 
     var requestOptions = {
@@ -424,14 +438,13 @@ export default function Pronostico() {
       })
       .then((result) => {
         if (result !== false) {
-          if(letra === "x"){
+          if (letra === "x") {
             setTablaXB([result[0], result[1]]);
             setVisibleTablaXB(true);
-          }else{
+          } else {
             setTablaYB([result[0], result[1]]);
             setVisibleTablaYB(true);
           }
-
         } else {
           alert("Selecciona alguna variable.");
         }
@@ -439,18 +452,18 @@ export default function Pronostico() {
       .catch((error) => console.log("error", error));
   }
 
-  function seleccionaXB(){
-    seleccionBosques("x")
+  function seleccionaXB() {
+    seleccionBosques("x");
   }
 
-  function seleccionaYB(){
-    seleccionBosques("y")
+  function seleccionaYB() {
+    seleccionBosques("y");
   }
 
   function pronosticoEntrenamientoB() {
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("algoritmo","bosque");
+    formdata.append("algoritmo", "bosque");
     formdata.append("n_estimators", n_estimatorsB);
     formdata.append("max_depth", max_depthB);
     formdata.append("min_samples_split", min_samples_splitB);
@@ -462,10 +475,7 @@ export default function Pronostico() {
       body: formdata,
     };
 
-    fetch(
-      "http://127.0.0.1:8000/Pronostico/Entrenamiento",
-      requestOptions
-    )
+    fetch("http://127.0.0.1:8000/Pronostico/Entrenamiento", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -501,13 +511,13 @@ export default function Pronostico() {
       lista[index] = [nuevoPronosticoLabelB, nuevoPronsoticoValueB];
     }
 
-    setNuevoPronosticoLista(lista);
+    setNuevoPronosticoListaB(lista);
   }
 
   function getNuevoPronosticoB() {
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("algoritmo","bosque");
+    formdata.append("algoritmo", "bosque");
     formdata.append("lista", nuevoPronosticoListaB);
 
     var requestOptions = {
@@ -527,7 +537,6 @@ export default function Pronostico() {
       })
       .catch((error) => console.log("error", error));
   }
-  
 
   return (
     <Grid
@@ -698,7 +707,7 @@ export default function Pronostico() {
               />
             </Box>
 
-            <CodigoBoton ejecutar={seleccionaY} visible={false}/>
+            <CodigoBoton ejecutar={seleccionaY} visible={false} />
           </Box>
         </Box>
 

@@ -628,6 +628,7 @@ async def traeVariables():
     # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
 
         # Limpiamos el conjunto de variables categoricas y datos Nan
@@ -645,12 +646,14 @@ async def traeVariables():
         # Retornamos los elementos
         return variables
     else:
-        return []
+        return False
 
 @app.post("/Pronostico/Drop") 
 async def drop(lista: list = Form(...)):
     # Dataframe
     global data
+
+    # Datafram de apoyo
     global dataDrop
 
     # Verificamos que este cargado un proyecto
@@ -684,8 +687,11 @@ async def drop(lista: list = Form(...)):
 async def traeVariablesSeleccion():
     # Dataframe
     global data
+
+    # Dataframe de apoyo
     global dataDrop
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
 
         # Obtenemos columnas
@@ -694,7 +700,7 @@ async def traeVariablesSeleccion():
         # Retornamos los elementos
         return variables
     else:
-        return []
+        return False
 
 @app.post("/Pronostico/Entrenamiento")
 async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...), max_depth: str = Form(...), \
@@ -803,7 +809,11 @@ async def nuevoPronostico(algoritmo: str = Form(...), lista: list = Form(...)):
 async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     # Dataframe
     global data
+
+    # Dataframe de poyo
     global dataDrop
+
+    # Variables de Árboles
     global X
     global Y
 
@@ -836,7 +846,11 @@ async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
 async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     # Dataframe
     global data
+
+    # Dataframe de apoyo
     global dataDrop
+
+    # Variables de bosques
     global XB
     global YB
 
