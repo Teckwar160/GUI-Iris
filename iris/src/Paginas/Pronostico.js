@@ -401,27 +401,36 @@ export default function Pronostico() {
       .catch((error) => console.log("error", error));
   }
 
-  function defineXB() {
+  function seleccionBosques(letra) {
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("lista", variablesX);
+    if(letra === "x"){
+      formdata.append("lista", variablesXB);
+    }else{
+      formdata.append("lista", variableYB);
+    }
+    
+    formdata.append("seleccion", letra);
 
     var requestOptions = {
       method: "POST",
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Bosques/seleccionaX", requestOptions)
+    fetch("http://127.0.0.1:8000/Bosques/seleccion", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
         if (result !== false) {
-          setTablaXB([result[0], result[1]]);
-          setNuevoPronosticoListaB([]);
-          if (result !== [[], []]) {
+          if(letra === "x"){
+            setTablaXB([result[0], result[1]]);
             setVisibleTablaXB(true);
+          }else{
+            setTablaYB([result[0], result[1]]);
+            setVisibleTablaYB(true);
           }
+
         } else {
           alert("Selecciona alguna variable.");
         }
@@ -429,31 +438,12 @@ export default function Pronostico() {
       .catch((error) => console.log("error", error));
   }
 
-  function defineYB() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("lista", variableY);
+  function seleccionaXB(){
+    seleccionBosques("x")
+  }
 
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch("http://127.0.0.1:8000/Bosques/seleccionaY", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setTablaYB([result[0], result[1]]);
-          if (result !== [[], []]) {
-            setVisibleTablaYB(true);
-          }
-        } else {
-          alert("Selecciona alguna variable.");
-        }
-      })
-      .catch((error) => console.log("error", error));
+  function seleccionaYB(){
+    seleccionBosques("y")
   }
 
   function pronosticoEntrenamientoB() {
@@ -820,7 +810,7 @@ export default function Pronostico() {
                 actualizaSeleccion={setVariablesXB}
               />
             </Box>
-            <CodigoBoton ejecutar={defineXB} visible={false} />
+            <CodigoBoton ejecutar={seleccionaXB} visible={false} />
           </Box>
         </Box>
 
@@ -845,7 +835,7 @@ export default function Pronostico() {
               />
             </Box>
 
-            <CodigoBoton ejecutar={defineYB} visible={false} />
+            <CodigoBoton ejecutar={seleccionaYB} visible={false} />
           </Box>
         </Box>
 
