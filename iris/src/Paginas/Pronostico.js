@@ -362,15 +362,15 @@ export default function Pronostico() {
   function getNuevoPronostico() {
     // Ingresamos los datos
     const formdata = new FormData();
+    formdata.append("algoritmo","arbol");
     formdata.append("lista", nuevoPronosticoLista);
-    console.log(nuevoPronosticoLista);
 
     var requestOptions = {
       method: "POST",
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Arboles/nuevoPronostico", requestOptions)
+    fetch("http://127.0.0.1:8000/Pronostico/nuevoPronostico", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -507,15 +507,15 @@ export default function Pronostico() {
   function getNuevoPronosticoB() {
     // Ingresamos los datos
     const formdata = new FormData();
+    formdata.append("algoritmo","bosque");
     formdata.append("lista", nuevoPronosticoListaB);
-    console.log(nuevoPronosticoListaB);
 
     var requestOptions = {
       method: "POST",
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Bosques/nuevoPronostico", requestOptions)
+    fetch("http://127.0.0.1:8000/Pronostico/nuevoPronostico", requestOptions)
       .then((response) => {
         return response.json();
       })

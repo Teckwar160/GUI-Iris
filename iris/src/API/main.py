@@ -757,34 +757,6 @@ async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     else:
         return False
 
-@app.post("/Arboles/nuevoPronostico")
-async def arbolesNuevoPronostico(lista: list = Form(...)):
-    # Dataframe
-    global data
-    global PronosticoAD
-
-    if not data.empty:
-        if lista != [""]:
-            lista = lista[0].split(',')
-        else:
-            return False
-
-        diccionario = {}
-
-        for i in range(0, len(lista)):
-            if i % 2 == 0:
-                diccionario[lista[i]] = [int(lista[i+1])]
-            else:
-                continue
-
-        pronostico = pd.DataFrame(diccionario)
-
-        return (PronosticoAD.predict(pronostico).tolist())[0]
-
-    else:
-        return [False]
-
-
 # Pronostico Bosques
 @app.post("/Bosques/seleccion")
 async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
@@ -817,33 +789,6 @@ async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
         return creaTabla(tmp,True)
     else:
         return False
-
-@app.post("/Bosques/nuevoPronostico")
-async def arbolesNuevoPronostico(lista: list = Form(...)):
-    # Dataframe
-    global data
-    global PronosticoBA
-
-    if not data.empty:
-        if lista != [""]:
-            lista = lista[0].split(',')
-        else:
-            return False
-
-        diccionario = {}
-
-        for i in range(0, len(lista)):
-            if i % 2 == 0:
-                diccionario[lista[i]] = [int(lista[i+1])]
-            else:
-                continue
-
-        pronostico = pd.DataFrame(diccionario)
-
-        return (PronosticoBA.predict(pronostico).tolist())[0]
-
-    else:
-        return [False]
 
 # Pronostico
 @app.post("/Pronostico/Entrenamiento")
@@ -912,6 +857,42 @@ async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...
 
     else:
         return False
+
+@app.post("/Pronostico/nuevoPronostico")
+async def nuevoPronostico(algoritmo: str = Form(...), lista: list = Form(...)):
+    # Dataframe
+    global data
+
+    # Arboles
+    global PronosticoAD
+
+    # Bosques
+    global PronosticoBA
+
+    if not data.empty:
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        diccionario = {}
+
+        for i in range(0, len(lista)):
+            if i % 2 == 0:
+                diccionario[lista[i]] = [int(lista[i+1])]
+            else:
+                continue
+
+        pronostico = pd.DataFrame(diccionario)
+
+        if(algoritmo == "arbol"):
+            return (PronosticoAD.predict(pronostico).tolist())[0]
+        else:
+            return (PronosticoBA.predict(pronostico).tolist())[0]
+
+    else:
+        return False
+
 
 # Funciones de control
 
