@@ -104,9 +104,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setForma([result[0], result[1]]);
         if (result !== false) {
+          setForma([result[0], result[1]]);
           setVisibleForma(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -122,9 +124,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setTiposDatos([result[0], result[1]]);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setTiposDatos([result[0], result[1]]);
           setVisibleTiposDatos(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -141,9 +145,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDatosFaltantesNull([result[0], result[1]]);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDatosFaltantesNull([result[0], result[1]]);
           setVisibleFaltantesNull(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -160,7 +166,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataHistograma(result);
+        if (result !== false) {
+          setDataHistograma(result);
+        } else {
+          alert("Carga un proyecto");
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -175,9 +185,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataDescribe(result);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDataDescribe(result);
           setVisibleDescribe(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -193,7 +205,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataBox(result);
+        if (result !== false) {
+          setDataBox(result);
+        } else {
+          alert("Carga un proyecto");
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -208,9 +224,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataDescribeObject(result);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDataDescribeObject(result);
           setVisibleDescribeObject(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -226,7 +244,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataHistogramaObject(result);
+        if (result !== false) {
+          setDataHistogramaObject(result);
+        } else {
+          alert("Carga un proyecto");
+        }
       })
       .catch((error) => console.log("error", error));
   }
@@ -242,9 +264,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataCorrelacion(result);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          setDataCorrelacion(result);
           setVisibleDataCorrelacion(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -260,9 +284,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataCorrelacionMapa(result);
-        if (result !== []) {
+        if (result !== false) {
+          setDataCorrelacionMapa(result);
           setVisibleDataCorrelacionMapa(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));

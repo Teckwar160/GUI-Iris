@@ -1,3 +1,4 @@
+# Bibliotecas globales
 from fastapi import FastAPI, Form, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import random
@@ -44,20 +45,10 @@ XB = None
 YB = None
 PronosticoBA = None
 
-# Clase que nos ayuda a manipular los datos
-
-
-class conjuntoDatos:
-    def __init__(self, csv):
-        self.raw = csv
-        self.columnas = self.raw.columns.values.tolist()
-        self.filas = self.raw.values.tolist()
-        self.sizeColumnas = len(self.columnas)
-        self.sizeFilas = len(self.filas)
-
-
+# API
 app = FastAPI()
 
+# Para poder utilizarla con react
 origins = [
     "http://localhost:3000",
     "localhost:3000"
@@ -71,7 +62,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# Funciones de apoyo
+# Función encargada de convertir una lista en lista de string
 def convierteStr(data):
     lista = []
 
@@ -151,6 +142,7 @@ async def forma():
     # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         return data.shape
     else:
@@ -162,6 +154,7 @@ async def tiposDeDatos():
     # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Definimos las columnas
         columnas = ['Variable', 'Tipo']
@@ -175,7 +168,7 @@ async def tiposDeDatos():
         # Retornamos el valor
         return [columnas, filas]
     else:
-        return [[], []]
+        return False
 
 
 @app.get("/EDA/DatosFaltantesNull")
@@ -183,6 +176,7 @@ async def datosFaltantesNul():
     # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Definimos las columnas
         columnas = ['Variable', 'Cuenta']
@@ -193,21 +187,25 @@ async def datosFaltantesNul():
         # Retornamos el valor
         return [columnas, filas]
     else:
-        return [[], []]
+        return False
 
 
-@app.get("/EDA/DataHistogramas")
+@app.get("/EDA/DataHistogramas") #posible limpieza
 async def dataHistograma():
+    # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         histogramas = []
         tipos = []
 
+        # Quitamos las variables no numericas
         for (key, value) in data.dtypes.items():
             if (str(value) != 'object'):
                 tipos.append(key)
 
+        # Creamos el histograma de cada variable
         for t in tipos:
             hist = data[t].hist()
             ax = plt.gca()
@@ -220,15 +218,15 @@ async def dataHistograma():
                 altoBarras.append(p[i].get_height())
 
             # Conseguimos el identificador de las barras
-            inicioBarras = []
+            identificador = []
 
             for i in range(len(p)):
-                inicioBarras.append(round(p[i].get_x(), 2))
+                identificador.append(round(p[i].get_x(), 2))
 
             # Emparejamos los valores
             valores = []
 
-            for (x, y) in zip(inicioBarras, altoBarras):
+            for (x, y) in zip(identificador, altoBarras):
                 valores.append({"id": x, "value": y})
 
             # Guardamos la información
@@ -243,13 +241,15 @@ async def dataHistograma():
         # Retornamos los valores
         return histogramas
     else:
-        return []
+        return False
 
 
 @app.get("/EDA/DataDescribe")
 async def dataDescribe():
+    # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Obtenemos las columnas
         columnas = data.describe().columns.tolist()
@@ -271,17 +271,20 @@ async def dataDescribe():
         # Retornamos el valor
         return [columnas, filas]
     else:
-        return [[], []]
+        return False
 
 
-@app.get("/EDA/Box")
+@app.get("/EDA/Box") #posible limpieza
 async def dataBox():
+    # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Obtenemos los tipos de los datos
         tipos = []
 
+        # Quitamos las variables no numericas
         for (key, value) in data.dtypes.items():
             if (str(value) != 'object'):
                 tipos.append(key)
@@ -298,13 +301,15 @@ async def dataBox():
         # Retornamos la información
         return cajas
     else:
-        return []
+        return False
 
 
 @app.get("/EDA/DataDescribe/Object")
 async def dataDescribeObject():
+    # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Obtenemos las columnas
         columnas = data.describe(include='object').columns.tolist()
@@ -332,15 +337,19 @@ async def dataDescribeObject():
         # Retornamos el valor
         return [columnas, filas]
     else:
-        return [[], []]
+        return False
 
 
-@app.get("/EDA/DataHistogramas/Object")
+@app.get("/EDA/DataHistogramas/Object") #Posible modificacion
 async def dataHistogramaObject():
+    # Dataframe
     global data
+
+    # Listas
     histogramas = []
     tipos = []
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
 
         # Obtenemos los nombres de las variables
@@ -348,6 +357,7 @@ async def dataHistogramaObject():
             if (str(value) == 'object' and data[key].nunique() < 10):
                 tipos.append(key)
 
+        # Creamos el histograma
         for t in tipos:
 
             # Obtenemos los datos de las barras
@@ -373,7 +383,7 @@ async def dataHistogramaObject():
         return histogramas
 
     else:
-        return []
+        return False
 
 
 @app.get("/EDA/DataCorrelacion")
@@ -381,6 +391,7 @@ async def dataCorrelacion():
     # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Obtenemos columnas
         columnas = data.corr().columns.tolist()
@@ -398,7 +409,7 @@ async def dataCorrelacion():
         # Retornamos los elementos
         return [columnas, filas]
     else:
-        return [[], []]
+        return False
 
 
 @app.get("/EDA/DataCorrelacion/Mapa")
@@ -406,6 +417,7 @@ async def dataCorrelacionMapa():
     # Dataframe
     global data
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Obtenemos columnas
         columnas = data.corr().columns.tolist()
@@ -430,7 +442,7 @@ async def dataCorrelacionMapa():
         # Retornamos los elementos
         return mapa
     else:
-        return []
+        return False
 
 # Funciones de PCA
 
