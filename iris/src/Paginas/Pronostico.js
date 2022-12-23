@@ -257,58 +257,51 @@ export default function Pronostico() {
       .catch((error) => console.log("error", error));
   }
 
-  function defineX() {
+  function seleccionArboles(letra) {
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("lista", variablesX);
+    if(letra === "x"){
+      formdata.append("lista", variablesX);
+    }else{
+      formdata.append("lista", variableY);
+    }
+    
+    formdata.append("seleccion", letra);
 
     var requestOptions = {
       method: "POST",
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Arboles/seleccionaX", requestOptions)
+    fetch("http://127.0.0.1:8000/Arboles/seleccion", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
         if (result !== false) {
-          setTablaX([result[0], result[1]]);
-          setNuevoPronosticoLista([]);
-          setVisibleTablaX(true);
-        } else {
-          alert("Selecciona alguna variable.");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function defineY() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("lista", variableY);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch("http://127.0.0.1:8000/Arboles/seleccionaY", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setTablaY([result[0], result[1]]);
-          if (result !== [[], []]) {
+          if(letra === "x"){
+            setTablaX([result[0], result[1]]);
+            setVisibleTablaX(true);
+          }else{
+            setTablaY([result[0], result[1]]);
             setVisibleTablaY(true);
           }
+
         } else {
           alert("Selecciona alguna variable.");
         }
       })
       .catch((error) => console.log("error", error));
   }
+
+  function seleccionaX(){
+    seleccionArboles("x")
+  }
+
+  function seleccionaY(){
+    seleccionArboles("y")
+  }
+
 
   function pronosticoEntrenamiento() {
     // Ingresamos los datos
@@ -687,7 +680,7 @@ export default function Pronostico() {
                 actualizaSeleccion={setVariablesX}
               />
             </Box>
-            <CodigoBoton ejecutar={defineX} visible={false} />
+            <CodigoBoton ejecutar={seleccionaX} visible={false} />
           </Box>
         </Box>
 
@@ -712,7 +705,7 @@ export default function Pronostico() {
               />
             </Box>
 
-            <CodigoBoton ejecutar={defineY} visible={false} />
+            <CodigoBoton ejecutar={seleccionaY} visible={false}/>
           </Box>
         </Box>
 

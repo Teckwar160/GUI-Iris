@@ -727,14 +727,15 @@ async def arbolesTraeVariables():
     else:
         return []
 
-
-@app.post("/Arboles/seleccionaX") #<--- usa funcion creatabla (lista)
-async def arbolesSeleccionaX(lista: list = Form(...)):
+@app.post("/Arboles/seleccion")
+async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     # Dataframe
     global data
     global dataDrop
     global X
+    global Y
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Convertimos en lista
         if lista != [""]:
@@ -742,76 +743,21 @@ async def arbolesSeleccionaX(lista: list = Form(...)):
         else:
             return False
 
-        # Guardamos la seleccion de X
-        X = np.array(dataDrop[lista])
+        if(seleccion == "x"):
+            # Guardamos la seleccion de X
+            X = np.array(dataDrop[lista])
 
-        tmp = pd.DataFrame(X)
+            tmp = pd.DataFrame(X)
+        else:
+            # Guardamos la seleccion de Y
+            Y = np.array(dataDrop[lista[0]])
+
+            tmp = pd.DataFrame(Y)       
 
         # Creamos la tabla
         return creaTabla(tmp,True)
     else:
         return False
-
-
-@app.post("/Arboles/seleccionaY") #<--- usa funcion creatabla
-async def arbolesSeleccionaY(lista: list = Form(...)):
-    # Dataframe
-    global data
-    global dataDrop
-    global Y
-
-    if not data.empty:
-        # Convertimos a lista
-        if lista != [""]:
-            lista = lista[0].split(',')
-        else:
-            return False
-        print(lista)
-        # Guardamos la seleccion de Y
-        Y = np.array(dataDrop[lista[0]])
-
-        tmp = pd.DataFrame(Y)
-
-        # Obtenemos columnas
-        columnas = tmp.columns.values.tolist()
-
-        # Agregamos una columna vacia para los indices
-        columnas.insert(0, "")
-
-        # Lista que contendra las filas
-        filas = []
-
-        # Obtenemos los primeros y ultimos 5 elementos del dataframe
-        filasHead = tmp.head().values.tolist()
-        filasTail = tmp.tail().values.tolist()
-
-        # Agregamos los indices
-        tam = len(tmp.values.tolist())
-        for i in range(0, 5):
-            filasHead[i].insert(0, i)
-            filasTail[4-i].insert(0, tam-i-1)
-
-        # Agregamos un separador
-        filasSeparador = []
-
-        for i in columnas:
-            filasSeparador.append("...")
-        filasHead.append(filasSeparador)
-
-        # Unimos las listas
-        filasRaw = filasHead+filasTail
-
-        # Convertimos a string todos los elementos para que sean mostrados
-        for fila in filasRaw:
-            f = []
-            for i in fila:
-                f.append(str(i))
-            filas.append(f)
-
-        # Retornamos los elementos
-        return [columnas, filas]
-    else:
-        return [[], []]
 
 @app.post("/Arboles/Pronostico/Entrenamiento")
 async def arbolesDivision(max_depth: str = Form(...), min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
