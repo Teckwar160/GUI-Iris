@@ -80,9 +80,8 @@ def convierteStr(data):
 
     return lista
 
-# Función encargada de obtener filas 
-# y columnas para las tablas
-def creaTabla(dataframe):
+# Función encargada de obtener filas y columnas para las tablas
+def creaTabla(dataframe,completa):
     # Obtenemos columnas
     columnas = dataframe.columns.values.tolist()
 
@@ -93,25 +92,34 @@ def creaTabla(dataframe):
     # Lista que contendra las filas
     filas = []
 
-    # Obtenemos los primeros y ultimos 5 elementos del dataframe
-    filasHead = dataframe.head().values.tolist()
-    filasTail = dataframe.tail().values.tolist()
+    if(completa):
+        # Obtenemos los primeros y ultimos 5 elementos del dataframe
+        filasHead = dataframe.head().values.tolist()
+        filasTail = dataframe.tail().values.tolist()
 
-    # Agregamos los indices
-    tam = len(dataframe.values.tolist())
-    for i in range(0, 5):
-        filasHead[i].insert(0, i)
-        filasTail[4-i].insert(0, tam-i-1)
+        # Agregamos los indices
+        tam = len(dataframe.values.tolist())
+        for i in range(0, 5):
+            filasHead[i].insert(0, i)
+            filasTail[4-i].insert(0, tam-i-1)
 
-    # Agregamos un separador
-    filasSeparador = []
+        # Agregamos un separador
+        filasSeparador = []
 
-    for i in columnas:
-        filasSeparador.append("...")
-    filasHead.append(filasSeparador)
+        for i in columnas:
+            filasSeparador.append("...")
+        filasHead.append(filasSeparador)
 
-    # Unimos las listas
-    filasRaw = filasHead+filasTail
+        # Unimos las listas
+        filasRaw = filasHead+filasTail
+    else:
+        # Lista que contendra las filas
+        filasRaw = dataframe.values.tolist()
+
+        # Agregamos los indices
+        tam = len(dataframe.values.tolist())
+        for i in range(0, tam):
+            filasRaw[i].insert(0, i)       
 
     # Convertimos a string todos los elementos para que sean mostrados
     for fila in filasRaw:
@@ -123,7 +131,6 @@ def creaTabla(dataframe):
     # Retornamos los elementos
     return [columnas, filas]
 
-# Funciones de EDA
 
 @app.get("/vistaPrevia")
 async def vistaPrevia():
@@ -132,11 +139,12 @@ async def vistaPrevia():
 
     # Verificamos que este cargado un proyecto
     if not data.empty:
-        # Creamos la tabla a mostrar
-        return creaTabla(data)
+        # Creamos la tabla
+        return creaTabla(data,True)
     else:
         return False
 
+# Funciones de EDA
 
 @app.get("/EDA/Forma")
 async def forma():
@@ -408,7 +416,7 @@ async def dataCorrelacionMapa():
         # Lista que contendra la matriz de correlaciones
         mapa = []
 
-        # Damso formato a los datos
+        # Damos formato a los datos
         for columna, fila in zip(columnas, filas):
             tmp = []
             for x, y in zip(columnas, fila):
@@ -425,7 +433,6 @@ async def dataCorrelacionMapa():
         return []
 
 # Funciones de PCA
-
 
 @app.get("/PCA/DataCorrelacion")
 async def pcaDataCorrelacion():
@@ -484,13 +491,14 @@ async def pcaDataCorrelacionMapa():
         return []
 
 
-@app.post("/PCA/Estandar") # <----- usar funcion creartale
+@app.post("/PCA/Estandar") # <----- usar funcion creartale (Lista)
 async def pcaMinMaxScaler(metodo: str = Form(...)):
     # Dataframe
     global data
     global MEstandarizada
     global dataSinObjectNan
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
 
         # Limpiamos el conjunto de variables categoricas y datos Nan
@@ -514,47 +522,10 @@ async def pcaMinMaxScaler(metodo: str = Form(...)):
         # Creamos un dataframe temporal para mostrar
         tmp = pd.DataFrame(MEstandarizada, columns=dataSinObjectNan.columns)
 
-        # Obtenemos columnas
-        columnas = tmp.columns.values.tolist()
-
-        # Agregamos una columna vacia para los indices
-        if columnas[0] != "":
-            columnas.insert(0, "")
-
-        # Lista que contendra las filas
-        filas = []
-
-        # Obtenemos los primeros y ultimos 5 elementos del dataframe
-        filasHead = tmp.head().values.tolist()
-        filasTail = tmp.tail().values.tolist()
-
-        # Agregamos los indices
-        tam = len(data.values.tolist())
-        for i in range(0, 5):
-            filasHead[i].insert(0, i)
-            filasTail[4-i].insert(0, tam-i-1)
-
-        # Agregamos un separador
-        filasSeparador = []
-
-        for i in columnas:
-            filasSeparador.append("...")
-        filasHead.append(filasSeparador)
-
-        # Unimos las listas
-        filasRaw = filasHead+filasTail
-
-        # Convertimos a string todos los elementos para que sean mostrados
-        for fila in filasRaw:
-            f = []
-            for i in fila:
-                f.append(str(i))
-            filas.append(f)
-
-        # Retornamos los elementos
-        return [columnas, filas]
+        # Creamos la tabla
+        return creaTabla(tmp,True)
     else:
-        return [[], []]
+        return False
 
 
 @app.post("/PCA/Componentes")
@@ -616,70 +587,27 @@ async def pcaComponentes(numero: int = Form(...)):
         return [[], [], []]
 
 
-@app.post("/PCA/Paso6") # <---- usamos funcion crear tabla
+@app.post("/PCA/Paso6") # <---- usamos funcion crear tabla (lista)
 async def pcaPaso6(numero: int = Form(...)):
     # Dataframe
     global data
     global pca
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
-
         cargasComponentes = pd.DataFrame(
             abs(pca.components_), columns=dataSinObjectNan.columns)
 
-        # Obtenemos columnas
-        columnas = cargasComponentes.columns.values.tolist()
+        # Creamos tabla con todos los elementos
+        tablaCompleta = creaTabla(cargasComponentes,False)
 
-        # Agregamos una columna vacia para los indices
-        if columnas[0] != "":
-            columnas.insert(0, "")
+        # Creamos tabla con el head
+        tablaHead = creaTabla(cargasComponentes.head(numero),False)
 
-        # Lista que contendra las filas
-        filas = []
-        filasHead = []
+        return tablaCompleta + tablaHead
 
-        # Lista que contendra las filas
-        filasRaw = cargasComponentes.values.tolist()
-
-        # Agregamos los indices
-        tam = len(cargasComponentes.values.tolist())
-        for i in range(0, tam):
-            filasRaw[i].insert(0, i)
-
-        # Convertimos a string todos los elementos para que sean mostrados
-        for fila in filasRaw:
-            f = []
-            for i in fila:
-                f.append(str(i))
-            filas.append(f)
-
-        # Obtenemos las columnas y filas para el Head
-
-        # Obtenemos columnas
-        columnasHead = cargasComponentes.head(numero).columns.values.tolist()
-
-        # Agregamos una columna vacia para los indices
-        if columnasHead[0] != "":
-            columnasHead.insert(0, "")
-
-        # Lista que contendra las filas
-        filasRaw = cargasComponentes.head(numero).values.tolist()
-
-        # Agregamos los indices
-        for i in range(0, numero):
-            filasRaw[i].insert(0, i)
-
-        # Convertimos a string todos los elementos para que sean mostrados
-        for fila in filasRaw:
-            f = []
-            for i in fila:
-                f.append(str(i))
-            filasHead.append(f)
-
-        # Retornamos los elementos
-        return [columnas, filas, columnasHead, filasHead]
     else:
-        return [[], [], [], []]
+        return False
 
 
 @app.get("/PCA/trae/Variables")
@@ -698,12 +626,13 @@ async def pcaTraeVariables():
         return []
 
 
-@app.post("/PCA/Drop") #<--- usar funcion creatabla
+@app.post("/PCA/Drop") #<--- usar funcion creatabla (lista)
 async def pcaDrop(lista: list = Form(...)):
     # Dataframe
     global data
     global dataDrop
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
         # Eliminamos la variable
         if lista != [""]:
@@ -712,50 +641,15 @@ async def pcaDrop(lista: list = Form(...)):
         else:
             dataDrop = data
 
-        # Obtenemos columnas
-        columnas = dataDrop.columns.values.tolist()
-
-        if len(columnas) == 0:
+        # Por si eliminan todos los elementos
+        if (dataDrop.empty):
             dataDrop = data
-            columnas = dataDrop.columns.values.tolist()
 
-        # Agregamos una columna vacia para los indices
-        columnas.insert(0, "")
+        # Creamos la tabla
+        return creaTabla(dataDrop,True)
 
-        # Lista que contendra las filas
-        filas = []
-
-        # Obtenemos los primeros y ultimos 5 elementos del dataframe
-        filasHead = dataDrop.head().values.tolist()
-        filasTail = dataDrop.tail().values.tolist()
-
-        # Agregamos los indices
-        tam = len(dataDrop.values.tolist())
-        for i in range(0, 5):
-            filasHead[i].insert(0, i)
-            filasTail[4-i].insert(0, tam-i-1)
-
-        # Agregamos un separador
-        filasSeparador = []
-
-        for i in columnas:
-            filasSeparador.append("...")
-        filasHead.append(filasSeparador)
-
-        # Unimos las listas
-        filasRaw = filasHead+filasTail
-
-        # Convertimos a string todos los elementos para que sean mostrados
-        for fila in filasRaw:
-            f = []
-            for i in fila:
-                f.append(str(i))
-            filas.append(f)
-
-        # Retornamos los elementos
-        return [columnas, filas]
     else:
-        return [[], []]
+        return False
 
 # Arboles
 @app.get("/Arboles/trae/Variables")

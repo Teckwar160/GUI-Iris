@@ -154,9 +154,11 @@ export default function EDA() {
           return response.json();
         })
         .then((result) => {
-          setTablaMetodo([result[0], result[1]]);
-          if (result !== [[], []]) {
+          if (result !== false) {
+            setTablaMetodo([result[0], result[1]]);
             setVisibleTablaMetodo(true);
+          } else {
+            alert("Carga un proyecto");
           }
         })
         .catch((error) => console.log("error", error));
@@ -236,9 +238,11 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        setDataCargas([result[0], result[1], result[2], result[3]]);
-        if (result !== [[], [], [], []]) {
+        if (result !== false) {
+          setDataCargas([result[0], result[1], result[2], result[3]]);
           setVisibleDataCargas(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -274,9 +278,9 @@ export default function EDA() {
         return response.json();
       })
       .then((result) => {
-        alert("Se elimino correctamente la(s) variable(s)");
-        setTablaDrop([result[0], result[1]]);
-        if (result !== [[], []]) {
+        if (result !== false) {
+          alert("Se elimino correctamente la(s) variable(s)");
+          setTablaDrop([result[0], result[1]]);
           setVisibleTablaDrop(true);
         }
       })
