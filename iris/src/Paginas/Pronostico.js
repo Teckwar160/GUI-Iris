@@ -302,10 +302,11 @@ export default function Pronostico() {
     seleccionArboles("y")
   }
 
-
   function pronosticoEntrenamiento() {
     // Ingresamos los datos
     const formdata = new FormData();
+    formdata.append("algoritmo","arbol");
+    formdata.append("n_estimators", 0);
     formdata.append("max_depth", max_depth);
     formdata.append("min_samples_split", min_samples_split);
     formdata.append("min_samples_leaf", min_samples_leaf);
@@ -317,7 +318,7 @@ export default function Pronostico() {
     };
 
     fetch(
-      "http://127.0.0.1:8000/Arboles/Pronostico/Entrenamiento",
+      "http://127.0.0.1:8000/Pronostico/Entrenamiento",
       requestOptions
     )
       .then((response) => {
@@ -449,6 +450,7 @@ export default function Pronostico() {
   function pronosticoEntrenamientoB() {
     // Ingresamos los datos
     const formdata = new FormData();
+    formdata.append("algoritmo","bosque");
     formdata.append("n_estimators", n_estimatorsB);
     formdata.append("max_depth", max_depthB);
     formdata.append("min_samples_split", min_samples_splitB);
@@ -461,7 +463,7 @@ export default function Pronostico() {
     };
 
     fetch(
-      "http://127.0.0.1:8000/Bosques/Pronostico/Entrenamiento",
+      "http://127.0.0.1:8000/Pronostico/Entrenamiento",
       requestOptions
     )
       .then((response) => {
@@ -525,6 +527,7 @@ export default function Pronostico() {
       })
       .catch((error) => console.log("error", error));
   }
+  
 
   return (
     <Grid

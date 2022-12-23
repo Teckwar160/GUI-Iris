@@ -651,7 +651,7 @@ async def pcaDrop(lista: list = Form(...)):
     else:
         return False
 
-# Arboles
+# Pronostico Arboles
 @app.get("/Arboles/trae/Variables")
 async def arbolesTraeVariables():
     # Dataframe
@@ -757,42 +757,6 @@ async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     else:
         return False
 
-@app.post("/Arboles/Pronostico/Entrenamiento")
-async def arbolesDivision(max_depth: str = Form(...), min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
-    # Variables
-    global data
-    global PronosticoAD
-    global X
-    global Y
-
-    if not data.empty:
-
-        # Divisón de datos
-        X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
-            X, Y, test_size=0.2, random_state=0, shuffle=True)
-
-        if max_depth == "None":
-            max_depth = None
-        else:
-            max_depth = int(max_depth)
-
-        PronosticoAD = DecisionTreeRegressor(
-            max_depth=max_depth, min_samples_split=int(min_samples_split), min_samples_leaf=int(min_samples_leaf), random_state=int(random_state))
-        PronosticoAD.fit(X_train, Y_train)
-
-        # Se genera el pronóstico
-        Y_Pronostico = PronosticoAD.predict(X_test)
-
-        # Medidas
-        return [PronosticoAD.criterion,
-                mean_absolute_error(Y_test, Y_Pronostico),
-                mean_squared_error(Y_test, Y_Pronostico),
-                mean_squared_error(Y_test, Y_Pronostico, squared=False),
-                r2_score(Y_test, Y_Pronostico)]
-
-    else:
-        return False
-
 @app.post("/Arboles/nuevoPronostico")
 async def arbolesNuevoPronostico(lista: list = Form(...)):
     # Dataframe
@@ -821,7 +785,7 @@ async def arbolesNuevoPronostico(lista: list = Form(...)):
         return [False]
 
 
-# Bosques
+# Pronostico Bosques
 @app.post("/Bosques/seleccion")
 async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     # Dataframe
@@ -854,44 +818,6 @@ async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     else:
         return False
 
-@app.post("/Bosques/Pronostico/Entrenamiento")
-async def arbolesDivision(n_estimators: str = Form(...), max_depth: str = Form(...), \
-    min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
-    # Variables
-    global data
-    global PronosticoBA
-    global XB
-    global YB
-
-    if not data.empty:
-
-        # Divisón de datos
-        X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
-            XB, YB, test_size=0.2, random_state=0, shuffle=True)
-
-        if max_depth == "None":
-            max_depth = None
-        else:
-            max_depth = int(max_depth)
-
-        PronosticoBA = RandomForestRegressor(n_estimators=int(n_estimators),
-        max_depth=max_depth, min_samples_split=int(min_samples_split), 
-        min_samples_leaf=int(min_samples_leaf), random_state=int(random_state))
-        PronosticoBA.fit(X_train, Y_train)
-
-        # Se genera el pronóstico
-        Y_Pronostico = PronosticoBA.predict(X_test)
-
-        # Medidas
-        return [PronosticoBA.criterion,
-                mean_absolute_error(Y_test, Y_Pronostico),
-                mean_squared_error(Y_test, Y_Pronostico),
-                mean_squared_error(Y_test, Y_Pronostico, squared=False),
-                r2_score(Y_test, Y_Pronostico)]
-
-    else:
-        return False
-
 @app.post("/Bosques/nuevoPronostico")
 async def arbolesNuevoPronostico(lista: list = Form(...)):
     # Dataframe
@@ -919,8 +845,75 @@ async def arbolesNuevoPronostico(lista: list = Form(...)):
     else:
         return [False]
 
-# Funciones de control
+# Pronostico
+@app.post("/Pronostico/Entrenamiento")
+async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...), max_depth: str = Form(...), \
+    min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
+    # Variables
+    global data
 
+    # Variables de Arboles
+    global PronosticoAD
+    global X
+    global Y
+
+    # Variables de Bosques
+    global PronosticoBA
+    global XB
+    global YB
+
+    if not data.empty:
+
+        if max_depth == "None":
+            max_depth = None
+        else:
+            max_depth = int(max_depth)
+
+        if(algoritmo == "arbol"):
+            # Divisón de datos
+            X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
+                X, Y, test_size=0.2, random_state=0, shuffle=True)
+
+            PronosticoAD = DecisionTreeRegressor(
+            max_depth=max_depth, min_samples_split=int(min_samples_split), 
+            min_samples_leaf=int(min_samples_leaf), random_state=int(random_state))
+
+            PronosticoAD.fit(X_train, Y_train)
+
+            # Se genera el pronóstico
+            Y_Pronostico = PronosticoAD.predict(X_test)
+
+            # Criterio
+            criterio = PronosticoAD.criterion
+
+        else:
+            # Divisón de datos
+            X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
+                XB, YB, test_size=0.2, random_state=0, shuffle=True)
+
+            PronosticoBA = RandomForestRegressor(n_estimators=int(n_estimators),
+            max_depth=max_depth, min_samples_split=int(min_samples_split), 
+            min_samples_leaf=int(min_samples_leaf), random_state=int(random_state))
+
+            PronosticoBA.fit(X_train, Y_train)
+
+            # Se genera el pronóstico
+            Y_Pronostico = PronosticoBA.predict(X_test)
+
+            # Criterio
+            criterio = PronosticoBA.criterion
+
+        # Medidas
+        return [criterio,
+                mean_absolute_error(Y_test, Y_Pronostico),
+                mean_squared_error(Y_test, Y_Pronostico),
+                mean_squared_error(Y_test, Y_Pronostico, squared=False),
+                r2_score(Y_test, Y_Pronostico)]
+
+    else:
+        return False
+
+# Funciones de control
 
 @ app.post("/crear/Proyecto")
 async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), descripcion: str = Form(...)):
