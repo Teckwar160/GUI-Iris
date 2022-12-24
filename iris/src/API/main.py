@@ -941,35 +941,37 @@ async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...
             ClasificacionAD.fit(X_train, Y_train)
 
             # Se genera el pronóstico
-            Y_ClasificacionAD = ClasificacionAD.predict(X_validation)
+            Y_Clasificacion = ClasificacionAD.predict(X_validation)
 
             # Criterio
             criterio = ClasificacionAD.criterion
 
         else:
             # Divisón de datos
-            X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
-                XB, YB, test_size=0.2, random_state=0, shuffle=True)
+            X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(XB, YB, 
+                test_size = 0.2, random_state = 0, shuffle = True)
+
 
             ClasificacionBA = RandomForestClassifier(n_estimators=int(n_estimators),
-            max_depth=max_depth, min_samples_split=int(min_samples_split), 
-            min_samples_leaf=int(min_samples_leaf), random_state=int(random_state))
-
+                                         max_depth=max_depth, 
+                                         min_samples_split=int(min_samples_split), 
+                                         min_samples_leaf=int(min_samples_leaf), 
+                                         random_state=int(random_state))
             ClasificacionBA.fit(X_train, Y_train)
 
             # Se genera el pronóstico
-            Y_Pronostico = ClasificacionBA.predict(X_test)
+            Y_Clasificacion = ClasificacionBA.predict(X_validation)
 
             # Criterio
             criterio = ClasificacionBA.criterion
 
         # Medidas
-        return [criterio, accuracy_score(Y_validation, Y_ClasificacionAD)]
+        return [criterio, accuracy_score(Y_validation, Y_Clasificacion)]
 
     else:
         return False
 
-@app.post("/Clasificacion/nuevoPronostico")
+@app.post("/Clasificacion/nuevaClasificacion")
 async def nuevaClasificacion(algoritmo: str = Form(...), lista: list = Form(...)):
     # Dataframe
     global data
@@ -1032,6 +1034,40 @@ async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
             Y = np.array(data[lista[0]])
 
             tmp = pd.DataFrame(Y)       
+
+        # Creamos la tabla
+        return creaTabla(tmp,True)
+    else:
+        return False
+
+# Clasificacion Bosques
+@app.post("/Clasificacion/Bosques/seleccion")
+async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
+    # Dataframe
+    global data
+
+    # Variables de bosques
+    global XB
+    global YB
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        # Convertimos en lista
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        if(seleccion == "x"):
+            # Guardamos la seleccion de X
+            XB = np.array(data[lista])
+
+            tmp = pd.DataFrame(XB)
+        else:
+            # Guardamos la seleccion de Y
+            YB = np.array(data[lista[0]])
+
+            tmp = pd.DataFrame(YB)       
 
         # Creamos la tabla
         return creaTabla(tmp,True)
