@@ -3,14 +3,17 @@ import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Grid, Box } from "@mui/material";
 
-//Componentes
+// Componentes
 import Tabla from "../Componentes/Mostrar datos/Tabla";
 import CodigoBoton from "../Componentes/Mostrar datos/CodigoBoton";
 import Visualizador from "../Componentes/Editores/Visualizador";
 import Comando from "../Componentes/Editores/Comando";
 import Selector from "../Componentes/Editores/Selector";
 
-//Estilos
+// Graficas
+import HeatMap from "../Graficas/HeatMap";
+
+// Estilos
 const Titulo = styled(Typography)({
   color: "black",
   fontWeight: "bold",
@@ -51,14 +54,15 @@ export default function Clasificacion() {
   const [dataDescribeObject, setDataDescribeObject] = useState([[], []]);
   const [visibleDescribeObject, setVisibleDescribeObject] = useState(false);
 
+  // Selección de características
+  const [dataCorrelacionMapa, setDataCorrelacionMapa] = useState([]);
+  const [visibleDataCorrelacionMapa, setVisibleDataCorrelacionMapa] =
+    useState(false);
+
   // Limpieza de datos
   const [variables, setVariables] = useState([]);
-  const [tablaDrop, setTablaDrop] = useState([]);
-  const [visibleTablaDrop, setVisibleTablaDrop] = useState(false);
-  const [variablesDrop, setVariablesDrop] = useState([]);
 
-  // Pronóstico Árboles
-  const [variablesSeleccion, setVariablesSeleccion] = useState([]);
+  // Clasificación Árboles
   const [variablesX, setVariablesX] = useState([]);
   const [tablaX, setTablaX] = useState([]);
   const [visibleTablaX, setVisibleTablaX] = useState(false);
@@ -71,17 +75,17 @@ export default function Clasificacion() {
   const [min_samples_split, setMin_samples_split] = useState("2");
   const [min_samples_leaf, setMin_samples_leaf] = useState("1");
   const [random_state, setRandom_state] = useState("0");
-  const [pronosticoMedidas, setPronosticoMedidas] = useState([]);
-  const [visiblePronosticoMedidas, setVisiblePronosticoMedidas] =
+  const [clasificacionMedidas, setClasificacionMedidas] = useState([]);
+  const [visibleClasificacionMedidas, setVisibleClasificacionMedidas] =
     useState(false);
 
   // Variables de Pronóstico de Árboles
-  const [variablesNuevoPronostico] = useState(variablesX);
-  const [nuevoPronosticoLabel, setNuevoPronosticoLabel] = useState("");
-  const [nuevoPronsoticoValue, setNuevoPronosticoValue] = useState("");
-  const [nuevoPronosticoLista, setNuevoPronosticoLista] = useState([]);
-  const [nuevoPronostico, setNuevoPronostico] = useState([]);
-  const [visibleNuevoPronostico, setVisibleNuevoPronostico] = useState(false);
+  const [variablesNuevaClasificacion] = useState(variablesX);
+  const [nuevaClasificacionLabel, setNuevaClasificacionLabel] = useState("");
+  const [nuevaClasificacionValue, setNuevaClasificacionValue] = useState("");
+  const [nuevaClasificacionLista, setNuevaClasificacionLista] = useState([]);
+  const [nuevaClasificacion, setNuevaClasificacion] = useState([]);
+  const [visibleNuevaClasificacion, setVisibleNuevaClasificacion] = useState(false);
 
   // Pronóstico Bosques
   const [variablesSeleccionB, setVariablesSeleccionB] = useState([]);
@@ -197,13 +201,34 @@ export default function Clasificacion() {
       .catch((error) => console.log("error", error));
   }
 
+  // Selección de características
+  function getDataCorrelacionMapa() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/EDA/DataCorrelacion/Mapa", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setDataCorrelacionMapa(result);
+          setVisibleDataCorrelacionMapa(true);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
   // Limpieza de datos
   function traeVariables() {
     var requestOptions = {
       method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/Pronostico/trae/Variables", requestOptions)
+    fetch("http://127.0.0.1:8000/Clasificacion/trae/Variables", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -217,57 +242,7 @@ export default function Clasificacion() {
       .catch((error) => console.log("error", error));
   }
 
-  function getDataDrop() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("lista", variablesDrop);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch("http://127.0.0.1:8000/Pronostico/Drop", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setTablaDrop([result[0], result[1]]);
-          setVisibleTablaDrop(true);
-
-          // Actualizamos las variables disponibles para despues de Árboles
-          traeVariablesSeleccion();
-
-          // Actualizamos las variables disponibles para despues de Bosques
-          traeVariablesSeleccionB();
-        } else {
-          alert("Carga un proyecto");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  // Pronostico Árboles
-  function traeVariablesSeleccion() {
-    var requestOptions = {
-      method: "GET",
-    };
-
-    fetch(
-      "http://127.0.0.1:8000/Pronostico/trae/Variables/Seleccion",
-      requestOptions
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setVariablesSeleccion(result);
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
+  // Clasificación Árboles
 
   function seleccionArboles(letra) {
     // Ingresamos los datos
@@ -285,7 +260,7 @@ export default function Clasificacion() {
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Arboles/seleccion", requestOptions)
+    fetch("http://127.0.0.1:8000/Clasificacion/Arboles/seleccion", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -313,7 +288,7 @@ export default function Clasificacion() {
     seleccionArboles("y");
   }
 
-  function pronosticoEntrenamiento() {
+  function clasificacionEntrenamiento() {
     // Ingresamos los datos
     const formdata = new FormData();
     formdata.append("algoritmo", "arbol");
@@ -328,14 +303,14 @@ export default function Clasificacion() {
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Pronostico/Entrenamiento", requestOptions)
+    fetch("http://127.0.0.1:8000/Clasificacion/Entrenamiento", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
         if (result !== false) {
-          setPronosticoMedidas(result);
-          setVisiblePronosticoMedidas(true);
+          setClasificacionMedidas(result);
+          setVisibleClasificacionMedidas(true);
         } else {
           alert("Favor de revisar si realizo todos los pasos anteriores.");
         }
@@ -343,49 +318,49 @@ export default function Clasificacion() {
       .catch((error) => console.log("error", error));
   }
 
-  function guardaValorPronostico() {
+  function guardaValorClasificacion() {
     // Actualzamos la lista
-    let lista = nuevoPronosticoLista;
+    let lista = nuevaClasificacionLista;
     let index = -1;
     let tam = lista.length;
 
     for (let i = 0; i < tam; i++) {
-      if (lista[i][0] === nuevoPronosticoLabel) {
+      if (lista[i][0] === nuevaClasificacionLabel) {
         index = i;
         break;
       }
     }
 
     if (index === -1) {
-      alert("Se registro el valor de: " + nuevoPronosticoLabel);
-      lista.push([nuevoPronosticoLabel, nuevoPronsoticoValue]);
+      alert("Se registro el valor de: " + nuevaClasificacionLabel);
+      lista.push([nuevaClasificacionLabel, nuevaClasificacionValue]);
     } else {
-      alert("Se actualizo el valor de: " + nuevoPronosticoLabel);
-      lista[index] = [nuevoPronosticoLabel, nuevoPronsoticoValue];
+      alert("Se actualizo el valor de: " + nuevaClasificacionLabel);
+      lista[index] = [nuevaClasificacionLabel, nuevaClasificacionValue];
     }
 
-    setNuevoPronosticoLista(lista);
+    setNuevaClasificacionLista(lista);
   }
 
-  function getNuevoPronostico() {
+  function getNuevaClasificacion() {
     // Ingresamos los datos
     const formdata = new FormData();
     formdata.append("algoritmo", "arbol");
-    formdata.append("lista", nuevoPronosticoLista);
+    formdata.append("lista", nuevaClasificacionLista);
 
     var requestOptions = {
       method: "POST",
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Pronostico/nuevoPronostico", requestOptions)
+    fetch("http://127.0.0.1:8000/Clasificacion/nuevoPronostico", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
         if (result !== false) {
-          setNuevoPronostico(result);
-          setVisibleNuevoPronostico(true);
+          setNuevaClasificacion(result);
+          setVisibleNuevaClasificacion(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -628,47 +603,31 @@ export default function Clasificacion() {
           visible={visibleDescribeObject}
         />
 
-        {/*Limpieza de datos*/}
+        {/*Selección de caractersticas*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
-            <Subtitulo>Limpieza de datos.</Subtitulo>
+            <Subtitulo>Selección de características.</Subtitulo>
           </Box>
         </Box>
 
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>
-              Selecciona la(s) variable(s) que quieras eliminar y pulsa
-              ejecutar.
-            </Bold>
-            <Parrafo>
-              Las variables que aparecen son unicamente numericas con ellas se
-              trabajara en los pasos siguientes. Si no deseas eliminar ninguna
-              solo pulsa ejecutar.
-            </Parrafo>
-
-            <Box sx={{ padding: 2 }}>
-              <Visualizador
-                lista={variables}
-                listaSeleccionada={variablesDrop}
-                actualizaSeleccion={setVariablesDrop}
-              />
+        <Grid item xs={12} sm={12} md={12}>
+          <Box sx={{ padding: 2 }}>
+            <Box sx={{ p: 2, border: "5px dashed plum" }}>
+              <Parrafo>Mapa de calor de correlaciones.</Parrafo>
+              <CodigoBoton ejecutar={getDataCorrelacionMapa} visible={false} />
             </Box>
-
-            <CodigoBoton ejecutar={getDataDrop} visible={false} />
           </Box>
-        </Box>
+        </Grid>
 
-        <Tabla
-          dataColumnas={tablaDrop[0]}
-          dataFilas={tablaDrop[1]}
-          visible={visibleTablaDrop}
+        <HeatMap
+          data={dataCorrelacionMapa}
+          visible={visibleDataCorrelacionMapa}
         />
 
-        {/*Pronóstico*/}
+        {/*Clasificación arboles*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
-            <Subtitulo>Aplicación del algoritmo: Pronóstico Árboles</Subtitulo>
+            <Subtitulo>Aplicación del algoritmo: Clasificación Árboles</Subtitulo>
           </Box>
         </Box>
 
@@ -677,7 +636,7 @@ export default function Clasificacion() {
             <Bold>Selecciona las variables predictoras (X).</Bold>
             <Box sx={{ padding: 2 }}>
               <Visualizador
-                lista={variablesSeleccion}
+                lista={variables}
                 listaSeleccionada={variablesX}
                 actualizaSeleccion={setVariablesX}
               />
@@ -701,7 +660,7 @@ export default function Clasificacion() {
             </Parrafo>
             <Box sx={{ padding: 2 }}>
               <Visualizador
-                lista={variablesSeleccion}
+                lista={variables}
                 listaSeleccionada={variableY}
                 actualizaSeleccion={setVariableY}
               />
@@ -747,19 +706,13 @@ export default function Clasificacion() {
               />
             </Box>
             <CodigoBoton
-              ejecutar={pronosticoEntrenamiento}
-              visible={visiblePronosticoMedidas}
+              ejecutar={clasificacionEntrenamiento}
+              visible={visibleClasificacionMedidas}
               texto={
                 "Criterio: " +
-                pronosticoMedidas[0] +
-                "\nMAE: " +
-                pronosticoMedidas[1] +
-                "\nMSE: " +
-                pronosticoMedidas[2] +
-                "\nRMSE: " +
-                pronosticoMedidas[3] +
-                "\nScore: " +
-                pronosticoMedidas[4]
+                clasificacionMedidas[0] +
+                "\nExactitud: " +
+                clasificacionMedidas[1]
               }
             />
           </Box>
@@ -767,7 +720,7 @@ export default function Clasificacion() {
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Nuevos pronósticos.</Bold>
+            <Bold>Nuevas clasificaciones</Bold>
             <Parrafo>
               Para las variables de X previamente seleccionadas digite un valor
               y pulse ejecutar para cada una de las variables.
@@ -775,32 +728,32 @@ export default function Clasificacion() {
             <Box sx={{ padding: 2 }}>
               <Selector
                 label={"Variable"}
-                lista={variablesNuevoPronostico}
-                elemento={nuevoPronosticoLabel}
-                setElemento={setNuevoPronosticoLabel}
+                lista={variablesNuevaClasificacion}
+                elemento={nuevaClasificacionLabel}
+                setElemento={setNuevaClasificacionLabel}
               />
               <Box sx={{ padding: 2 }}>
                 <Comando
-                  Label={nuevoPronosticoLabel}
-                  setComando={setNuevoPronosticoValue}
-                  comando={nuevoPronsoticoValue}
-                  type={"number"}
+                  Label={nuevaClasificacionLabel}
+                  setComando={setNuevaClasificacionValue}
+                  comando={nuevaClasificacionValue}
+                  type={"text"}
                 />
               </Box>
             </Box>
-            <CodigoBoton ejecutar={guardaValorPronostico} visible={false} />
+            <CodigoBoton ejecutar={guardaValorClasificacion} visible={false} />
           </Box>
         </Box>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Bold>
               Pulse este botón una vez que haya terminado de asignar valores a
-              las variables para realizar el prónostico.
+              las variables para realizar la clasificación.
             </Bold>
             <CodigoBoton
-              ejecutar={getNuevoPronostico}
-              visible={visibleNuevoPronostico}
-              texto={nuevoPronostico}
+              ejecutar={getNuevaClasificacion}
+              visible={visibleNuevaClasificacion}
+              texto={nuevaClasificacion}
             />
           </Box>
         </Box>

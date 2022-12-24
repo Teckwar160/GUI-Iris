@@ -19,11 +19,18 @@ import seaborn as sns
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-# Para arboles y bosques
+# Para Pronostico de arboles y bosques
 from sklearn import model_selection
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+
+# Para Clasificacion de arboles y bosques
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
 
 
 # Variable global que contendra los conjuntos de datos
@@ -39,11 +46,13 @@ dataDrop = None
 X = None
 Y = None
 PronosticoAD = None
+ClasificacionAD = None
 
 # Variables globales de Bosques
 XB = None
 YB = None
 PronosticoBA = None
+ClasificacionBA = None
 
 # API
 app = FastAPI()
@@ -872,6 +881,157 @@ async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
             YB = np.array(dataDrop[lista[0]])
 
             tmp = pd.DataFrame(YB)       
+
+        # Creamos la tabla
+        return creaTabla(tmp,True)
+    else:
+        return False
+
+
+# Clasificación
+@app.get("/Clasificacion/trae/Variables")
+async def traeVariables():
+    # Dataframe
+    global data
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+
+        # Obtenemos columnas
+        variables = data.columns.values.tolist()
+
+        # Retornamos los elementos
+        return variables
+    else:
+        return False
+
+@app.post("/Clasificacion/Entrenamiento")
+async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...), max_depth: str = Form(...), \
+    min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
+    # Variables
+    global data
+
+    # Variables de Arboles
+    global ClasificacionAD
+    global X
+    global Y
+
+    # Variables de Bosques
+    global ClasificacionBA
+    global XB
+    global YB
+
+    if not data.empty:
+
+        if max_depth == "None":
+            max_depth = None
+        else:
+            max_depth = int(max_depth)
+
+        if(algoritmo == "arbol"):
+            # Divisón de datos
+            X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, 
+                test_size = 0.2, random_state = 0, shuffle = True)
+
+
+            ClasificacionAD = DecisionTreeClassifier(max_depth=max_depth, 
+                                                    min_samples_split=int(min_samples_split), 
+                                                    min_samples_leaf=int(min_samples_leaf),
+                                                    random_state=int(random_state))
+            ClasificacionAD.fit(X_train, Y_train)
+
+            # Se genera el pronóstico
+            Y_ClasificacionAD = ClasificacionAD.predict(X_validation)
+
+            # Criterio
+            criterio = ClasificacionAD.criterion
+
+        else:
+            # Divisón de datos
+            X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
+                XB, YB, test_size=0.2, random_state=0, shuffle=True)
+
+            ClasificacionBA = RandomForestClassifier(n_estimators=int(n_estimators),
+            max_depth=max_depth, min_samples_split=int(min_samples_split), 
+            min_samples_leaf=int(min_samples_leaf), random_state=int(random_state))
+
+            ClasificacionBA.fit(X_train, Y_train)
+
+            # Se genera el pronóstico
+            Y_Pronostico = ClasificacionBA.predict(X_test)
+
+            # Criterio
+            criterio = ClasificacionBA.criterion
+
+        # Medidas
+        return [criterio, accuracy_score(Y_validation, Y_ClasificacionAD)]
+
+    else:
+        return False
+
+@app.post("/Clasificacion/nuevoPronostico")
+async def nuevaClasificacion(algoritmo: str = Form(...), lista: list = Form(...)):
+    # Dataframe
+    global data
+
+    # Arboles
+    global ClasificacionAD
+
+    # Bosques
+    global ClasificacionBA
+
+    if not data.empty:
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        diccionario = {}
+
+        for i in range(0, len(lista)):
+            if i % 2 == 0:
+                diccionario[lista[i]] = [int(lista[i+1])]
+            else:
+                continue
+
+        clasificacion = pd.DataFrame(diccionario)
+
+        if(algoritmo == "arbol"):
+            return (ClasificacionAD.predict(clasificacion).tolist())[0]
+        else:
+            return (ClasificacionBA.predict(clasificacion).tolist())[0]
+
+    else:
+        return False
+
+# Clasificación árboles
+@app.post("/Clasificacion/Arboles/seleccion")
+async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
+    # Dataframe
+    global data
+
+    # Variables de Árboles
+    global X
+    global Y
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        # Convertimos en lista
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        if(seleccion == "x"):
+            # Guardamos la seleccion de X
+            X = np.array(data[lista])
+
+            tmp = pd.DataFrame(X)
+        else:
+            # Guardamos la seleccion de Y
+            Y = np.array(data[lista[0]])
+
+            tmp = pd.DataFrame(Y)       
 
         # Creamos la tabla
         return creaTabla(tmp,True)
