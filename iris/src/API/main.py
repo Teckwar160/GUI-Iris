@@ -1006,6 +1006,26 @@ async def nuevaClasificacion(algoritmo: str = Form(...), lista: list = Form(...)
     else:
         return False
 
+@app.post("/Clasificacion/size")
+async def size(variable: str = Form(...)):
+    # Dataframe
+    global data
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        # Creamos la tabla
+        df = data.groupby(variable).size()
+
+        # Obtenemos las columnas y filas
+        columnas = df.index.tolist()
+
+        filas = df.values.tolist()
+
+        return [columnas,filas]
+
+    else:
+        return False
+
 # Clasificación árboles
 @app.post("/Clasificacion/Arboles/seleccion")
 async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
