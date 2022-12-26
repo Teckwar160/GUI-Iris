@@ -1073,6 +1073,41 @@ async def matriz(algoritmo: str = Form(...)):
     else:
         return False
 
+@app.post("/Clasificacion/eficiencia")
+async def eficiencia(algoritmo: str = Form(...), lista: list = Form(...)):
+    # Dataframe
+    global data
+
+    # Variables
+    global ClasificacionAD
+    global ClasificacionBA
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+
+        # Creamos la matriz
+        if(algoritmo == "arbol"):
+            importancia = pd.DataFrame({'Variable': list(data[lista]),
+            'Importancia': ClasificacionAD.feature_importances_}).sort_values('Importancia', ascending=False)
+        else:
+            importancia = pd.DataFrame({'Variable': list(data[lista]),
+            'Importancia': ClasificacionBA.feature_importances_}).sort_values('Importancia', ascending=False)
+
+
+        # Obtenemos las columnas y filas
+        columnas = importancia.columns.values.tolist()
+        filas = importancia.values.tolist()
+
+        return[columnas,filas]
+
+    else:
+        return False
+
 # Clasificación árboles
 @app.post("/Clasificacion/Arboles/seleccion")
 async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):

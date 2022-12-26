@@ -87,6 +87,10 @@ export default function Clasificacion() {
   const [matriz, setMatriz] = useState([[], []]);
   const [visibleMatriz, setVisibleMatriz] = useState(false);
 
+  // Eficiencia
+  const [tablaEficiencia, setTablaEficiencia] = useState([[],[]])
+  const [visibleTablaEficiencia, setVisibleTablaEficiencia] = useState(false)
+
   // Variables de Clasificación de Árboles
   const [variablesNuevaClasificacion] = useState(variablesX);
   const [nuevaClasificacionLabel, setNuevaClasificacionLabel] = useState("");
@@ -377,6 +381,35 @@ export default function Clasificacion() {
         if (result !== false) {
           setMatriz(result);
           setVisibleMatriz(true);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getEficiencia() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("algoritmo", "arbol");
+    formdata.append("lista", variablesX);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch(
+      "http://127.0.0.1:8000/Clasificacion/eficiencia",
+      requestOptions
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setTablaEficiencia(result);
+          setVisibleTablaEficiencia(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -830,6 +863,18 @@ export default function Clasificacion() {
           dataColumnas={matriz[0]}
           dataFilas={matriz[1]}
           visible={visibleMatriz}
+        />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Eficiencia y conformación del modelo de clasificación</Bold>
+            <CodigoBoton ejecutar={getEficiencia} visible={false} />
+          </Box>
+        </Box>
+        <Tabla
+          dataColumnas={tablaEficiencia[0]}
+          dataFilas={tablaEficiencia[1]}
+          visible={visibleTablaEficiencia}
         />
 
         <Box sx={{ padding: 2 }}>
