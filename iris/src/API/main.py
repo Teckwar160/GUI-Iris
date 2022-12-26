@@ -54,6 +54,10 @@ YB = None
 PronosticoBA = None
 ClasificacionBA = None
 
+# Variables de clasificacion
+X_validation = None
+Y_validation = None
+
 # API
 app = FastAPI()
 
@@ -910,6 +914,8 @@ async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...
     min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
     # Variables
     global data
+    global X_validation
+    global Y_validation
 
     # Variables de Arboles
     global ClasificacionAD
@@ -1022,6 +1028,47 @@ async def size(variable: str = Form(...)):
         filas = [df.values.tolist()]
 
         return [columnas,filas]
+
+    else:
+        return False
+
+@app.post("/Clasificacion/matriz")
+async def matriz(algoritmo: str = Form(...)):
+    # Dataframe
+    global data
+
+    # Variables
+    global X_validation
+    global Y_validation
+    global ClasificacionAD
+    global ClasificacionBA
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+
+        # Creamos la matriz
+        if(algoritmo == "arbol"):
+            modelo = ClasificacionAD.predict(X_validation)
+        else:
+            modelo = ClasificacionBA.predict(X_validation)
+
+        matriz = pd.crosstab(Y_validation.ravel(),modelo,
+        rownames=["Reales"],colnames=["Clasificación"])
+
+
+        # Obtenemos las columnas y filas
+        columnas = matriz.columns.values.tolist()
+        filas = matriz.values.tolist()
+
+        # Agregamos la etiquetas
+        for i in range(len(columnas)):
+            filas[i].insert(0,columnas[i])
+
+        # Agregamos una columna vacia para las etiquetas
+        if columnas[0] != "":
+            columnas.insert(0, "")
+
+        return[columnas,filas]
 
     else:
         return False

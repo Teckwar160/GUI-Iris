@@ -110,6 +110,10 @@ export default function Clasificacion() {
   const [visibleClasificacionMedidasB, setVisibleClasificacionMedidasB] =
     useState(false);
 
+  // Matriz de clasificación árboles
+  const [matriz, setMatriz] = useState([[], []]);
+  const [visibleMatriz, setVisibleMatriz] = useState(false);
+
   // Variables de Clasificación de Árboles
   const [variablesNuevaClasificacionB] = useState(variablesXB);
   const [nuevaClasificacionLabelB, setNuevaClasificacionLabelB] = useState("");
@@ -348,6 +352,31 @@ export default function Clasificacion() {
           setVisibleClasificacionMedidas(true);
         } else {
           alert("Favor de revisar si realizo todos los pasos anteriores.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function clasificacionMatriz() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("algoritmo", "arbol");
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Clasificacion/matriz", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setMatriz(result);
+          setVisibleMatriz(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -763,6 +792,18 @@ export default function Clasificacion() {
             />
           </Box>
         </Box>
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Matriz de Clasificación</Bold>
+            <CodigoBoton ejecutar={clasificacionMatriz} visible={false} />
+          </Box>
+        </Box>
+        <Tabla
+          dataColumnas={matriz[0]}
+          dataFilas={matriz[1]}
+          visible={visibleMatriz}
+        />
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
