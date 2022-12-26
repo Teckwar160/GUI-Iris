@@ -54,6 +54,10 @@ export default function Clasificacion() {
   const [dataDescribeObject, setDataDescribeObject] = useState([[], []]);
   const [visibleDescribeObject, setVisibleDescribeObject] = useState(false);
 
+  const [variableSize, setVariableSize] = useState("");
+  const [tablaSize, setTablaSize] = useState([[], []]);
+  const [visibleTablaSize, setVisibleTablaSize] = useState(false);
+
   // Selección de características
   const [dataCorrelacionMapa, setDataCorrelacionMapa] = useState([]);
   const [visibleDataCorrelacionMapa, setVisibleDataCorrelacionMapa] =
@@ -79,7 +83,7 @@ export default function Clasificacion() {
   const [visibleClasificacionMedidas, setVisibleClasificacionMedidas] =
     useState(false);
 
-  // Variables de Pronóstico de Árboles
+  // Variables de Clasificación de Árboles
   const [variablesNuevaClasificacion] = useState(variablesX);
   const [nuevaClasificacionLabel, setNuevaClasificacionLabel] = useState("");
   const [nuevaClasificacionValue, setNuevaClasificacionValue] = useState("");
@@ -88,7 +92,7 @@ export default function Clasificacion() {
   const [visibleNuevaClasificacion, setVisibleNuevaClasificacion] =
     useState(false);
 
-  // Pronóstico Bosques
+  // Clasificación Bosques
   const [variablesXB, setVariablesXB] = useState([]);
   const [tablaXB, setTablaXB] = useState([]);
   const [visibleTablaXB, setVisibleTablaXB] = useState(false);
@@ -106,13 +110,14 @@ export default function Clasificacion() {
   const [visibleClasificacionMedidasB, setVisibleClasificacionMedidasB] =
     useState(false);
 
-  // Variables de Pronóstico de Árboles
+  // Variables de Clasificación de Árboles
   const [variablesNuevaClasificacionB] = useState(variablesXB);
   const [nuevaClasificacionLabelB, setNuevaClasificacionLabelB] = useState("");
   const [nuevaClasificacionValueB, setNuevaClasificacionValueB] = useState("");
   const [nuevaClasificacionListaB, setNuevaClasificacionListaB] = useState([]);
   const [nuevaClasificacionB, setNuevaClasificacionB] = useState([]);
-  const [visibleNuevaClasificacionB, setVisibleNuevaClasificacionB] = useState(false);
+  const [visibleNuevaClasificacionB, setVisibleNuevaClasificacionB] =
+    useState(false);
 
   useEffect(() => {
     traeVariables();
@@ -199,6 +204,33 @@ export default function Clasificacion() {
         }
       })
       .catch((error) => console.log("error", error));
+  }
+
+  function getSize() {
+    if (variableSize !== "") {
+      // Ingresamos los datos
+      const formdata = new FormData();
+      formdata.append("variable", variableSize);
+
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+      };
+
+      fetch("http://127.0.0.1:8000/Clasificacion/size", requestOptions)
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          if (result !== false) {
+            setTablaSize(result);
+            setVisibleTablaSize(true);
+          }
+        })
+        .catch((error) => console.log("error", error));
+    } else {
+      alert("Selecciona una variable");
+    }
   }
 
   // Selección de características
@@ -356,7 +388,10 @@ export default function Clasificacion() {
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Clasificacion/nuevaClasificacion", requestOptions)
+    fetch(
+      "http://127.0.0.1:8000/Clasificacion/nuevaClasificacion",
+      requestOptions
+    )
       .then((response) => {
         return response.json();
       })
@@ -485,7 +520,10 @@ export default function Clasificacion() {
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Clasificacion/nuevaClasificacion", requestOptions)
+    fetch(
+      "http://127.0.0.1:8000/Clasificacion/nuevaClasificacion",
+      requestOptions
+    )
       .then((response) => {
         return response.json();
       })
@@ -586,6 +624,27 @@ export default function Clasificacion() {
           dataColumnas={dataDescribeObject[0]}
           dataFilas={dataDescribeObject[1]}
           visible={visibleDescribeObject}
+        />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Parrafo>Tamaño de una variable.</Parrafo>
+            <Box sx={{ padding: 2 }}>
+              <Selector
+                label={"Variables"}
+                lista={variables}
+                elemento={variableSize}
+                setElemento={setVariableSize}
+              />
+            </Box>
+            <CodigoBoton ejecutar={getSize} visible={false} />
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={tablaSize[0]}
+          dataFilas={tablaSize[1]}
+          visible={visibleTablaSize}
         />
 
         {/*Selección de caractersticas*/}

@@ -1019,7 +1019,7 @@ async def size(variable: str = Form(...)):
         # Obtenemos las columnas y filas
         columnas = df.index.tolist()
 
-        filas = df.values.tolist()
+        filas = [df.values.tolist()]
 
         return [columnas,filas]
 
