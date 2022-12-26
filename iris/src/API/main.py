@@ -818,7 +818,7 @@ async def nuevoPronostico(algoritmo: str = Form(...), lista: list = Form(...)):
         return False
 
 # Pronostico arboles
-@app.post("/Arboles/seleccion")
+@app.post("/Pronostico/Arboles/seleccion")
 async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     # Dataframe
     global data
@@ -855,7 +855,7 @@ async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
         return False
 
 # Pronostico Bosques
-@app.post("/Bosques/seleccion")
+@app.post("/Pronostico/Bosques/seleccion")
 async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     # Dataframe
     global data

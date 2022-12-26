@@ -210,8 +210,6 @@ export default function Pronostico() {
       .then((result) => {
         if (result !== false) {
           setVariables(result);
-        } else {
-          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -285,7 +283,7 @@ export default function Pronostico() {
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Arboles/seleccion", requestOptions)
+    fetch("http://127.0.0.1:8000/Pronostico/Arboles/seleccion", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -432,7 +430,7 @@ export default function Pronostico() {
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Bosques/seleccion", requestOptions)
+    fetch("http://127.0.0.1:8000/Pronostico/Bosques/seleccion", requestOptions)
       .then((response) => {
         return response.json();
       })
