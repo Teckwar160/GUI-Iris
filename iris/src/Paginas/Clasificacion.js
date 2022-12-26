@@ -88,8 +88,8 @@ export default function Clasificacion() {
   const [visibleMatriz, setVisibleMatriz] = useState(false);
 
   // Eficiencia
-  const [tablaEficiencia, setTablaEficiencia] = useState([[],[]])
-  const [visibleTablaEficiencia, setVisibleTablaEficiencia] = useState(false)
+  const [tablaEficiencia, setTablaEficiencia] = useState([[], []]);
+  const [visibleTablaEficiencia, setVisibleTablaEficiencia] = useState(false);
 
   // Variables de Clasificación de Árboles
   const [variablesNuevaClasificacion] = useState(variablesX);
@@ -121,6 +121,10 @@ export default function Clasificacion() {
   // Matriz de clasificación bosques
   const [matrizB, setMatrizB] = useState([[], []]);
   const [visibleMatrizB, setVisibleMatrizB] = useState(false);
+
+  // Eficiencia de bosques
+  const [tablaEficienciaB, setTablaEficienciaB] = useState([[], []]);
+  const [visibleTablaEficienciaB, setVisibleTablaEficienciaB] = useState(false);
 
   // Variables de Clasificación de Árboles
   const [variablesNuevaClasificacionB] = useState(variablesXB);
@@ -399,10 +403,7 @@ export default function Clasificacion() {
       body: formdata,
     };
 
-    fetch(
-      "http://127.0.0.1:8000/Clasificacion/eficiencia",
-      requestOptions
-    )
+    fetch("http://127.0.0.1:8000/Clasificacion/eficiencia", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -567,6 +568,32 @@ export default function Clasificacion() {
         if (result !== false) {
           setMatrizB(result);
           setVisibleMatrizB(true);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getEficienciaB() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("algoritmo", "bosque");
+    formdata.append("lista", variablesXB);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Clasificacion/eficiencia", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setTablaEficienciaB(result);
+          setVisibleTablaEficienciaB(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -1027,6 +1054,18 @@ export default function Clasificacion() {
           dataColumnas={matrizB[0]}
           dataFilas={matrizB[1]}
           visible={visibleMatrizB}
+        />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Eficiencia y conformación del modelo de clasificación</Bold>
+            <CodigoBoton ejecutar={getEficienciaB} visible={false} />
+          </Box>
+        </Box>
+        <Tabla
+          dataColumnas={tablaEficienciaB[0]}
+          dataFilas={tablaEficienciaB[1]}
+          visible={visibleTablaEficienciaB}
         />
 
         <Box sx={{ padding: 2 }}>
