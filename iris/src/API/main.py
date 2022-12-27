@@ -1248,6 +1248,41 @@ async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     else:
         return False
 
+# Hibridos
+@app.get("/K-means/Estandar") 
+async def estandar():
+    # Dataframe
+    global data
+
+    # Variables
+    global dataDrop
+    global MEstandarizada
+    global dataSinObjectNan
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+
+        # Limpiamos el conjunto de variables categoricas y datos Nan
+        dataTmp = dataDrop
+
+        for (key, value) in data.dtypes.items():
+            if (str(value) == 'object'):
+                dataTmp = dataTmp.drop(columns=[key])
+
+        dataSinObjectNan = dataTmp.dropna()
+
+        Estandarizar = StandardScaler()
+
+        # Estandarizamos
+        MEstandarizada = Estandarizar.fit_transform(dataSinObjectNan)
+
+        # Creamos un dataframe temporal para mostrar
+        tmp = pd.DataFrame(MEstandarizada, columns=dataSinObjectNan.columns)
+
+        # Creamos la tabla
+        return creaTabla(tmp,True)
+    else:
+        return False
 
 # Funciones de control
 

@@ -59,29 +59,24 @@ export default function Hibridos() {
   const [visibleTablaSize, setVisibleTablaSize] = useState(false);
 
   // Selección de características
+  const [dataCorrelacion, setDataCorrelacion] = useState([[], []]);
+  const [visibleDataCorrelacion, setVisibleDataCorrelacion] = useState(false);
   const [dataCorrelacionMapa, setDataCorrelacionMapa] = useState([]);
   const [visibleDataCorrelacionMapa, setVisibleDataCorrelacionMapa] =
     useState(false);
 
   // Limpieza de datos
   const [variables, setVariables] = useState([]);
+  const [tablaDrop, setTablaDrop] = useState([]);
+  const [visibleTablaDrop, setVisibleTablaDrop] = useState(false);
+  const [variablesDrop, setVariablesDrop] = useState([]);
+
+  // K-means
+  const [tablaMetodo, setTablaMetodo] = useState([[], []]);
+  const [visibleTablaMetodo, setVisibleTablaMetodo] = useState(false);
 
   // Clasificación Árboles
   const [variablesX, setVariablesX] = useState([]);
-  const [tablaX, setTablaX] = useState([]);
-  const [visibleTablaX, setVisibleTablaX] = useState(false);
-  const [variableY, setVariableY] = useState([]);
-  const [tablaY, setTablaY] = useState([]);
-  const [visibleTablaY, setVisibleTablaY] = useState(false);
-
-  // Configuración de Árboles
-  const [max_depth, setMax_depth] = useState("None");
-  const [min_samples_split, setMin_samples_split] = useState("2");
-  const [min_samples_leaf, setMin_samples_leaf] = useState("1");
-  const [random_state, setRandom_state] = useState("0");
-  const [clasificacionMedidas, setClasificacionMedidas] = useState([]);
-  const [visibleClasificacionMedidas, setVisibleClasificacionMedidas] =
-    useState(false);
 
   // Matriz de clasificación árboles
   const [matriz, setMatriz] = useState([[], []]);
@@ -251,6 +246,26 @@ export default function Hibridos() {
   }
 
   // Selección de características
+  function getDataCorrelacion() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/EDA/DataCorrelacion", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setDataCorrelacion(result);
+          setVisibleDataCorrelacion(true);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
   function getDataCorrelacionMapa() {
     var requestOptions = {
       method: "GET",
@@ -289,84 +304,53 @@ export default function Hibridos() {
       .catch((error) => console.log("error", error));
   }
 
+  function getDataDrop() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("lista", variablesDrop);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Pronostico/Drop", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setTablaDrop([result[0], result[1]]);
+          setVisibleTablaDrop(true);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  // K-means
+  function estandarizacion() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/K-means/Estandar", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setTablaMetodo([result[0], result[1]]);
+          setVisibleTablaMetodo(true);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
   // Clasificación Árboles
-
-  function seleccionArboles(letra) {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    if (letra === "x") {
-      formdata.append("lista", variablesX);
-    } else {
-      formdata.append("lista", variableY);
-    }
-
-    formdata.append("seleccion", letra);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch(
-      "http://127.0.0.1:8000/Clasificacion/Arboles/seleccion",
-      requestOptions
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          if (letra === "x") {
-            setTablaX([result[0], result[1]]);
-            setVisibleTablaX(true);
-          } else {
-            setTablaY([result[0], result[1]]);
-            setVisibleTablaY(true);
-          }
-        } else {
-          alert("Selecciona alguna variable.");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function seleccionaX() {
-    seleccionArboles("x");
-  }
-
-  function seleccionaY() {
-    seleccionArboles("y");
-  }
-
-  function clasificacionEntrenamiento() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("algoritmo", "arbol");
-    formdata.append("n_estimators", 0);
-    formdata.append("max_depth", max_depth);
-    formdata.append("min_samples_split", min_samples_split);
-    formdata.append("min_samples_leaf", min_samples_leaf);
-    formdata.append("random_state", random_state);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch("http://127.0.0.1:8000/Clasificacion/Entrenamiento", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setClasificacionMedidas(result);
-          setVisibleClasificacionMedidas(true);
-        } else {
-          alert("Favor de revisar si realizo todos los pasos anteriores.");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
 
   function clasificacionMatriz() {
     // Ingresamos los datos
@@ -773,6 +757,20 @@ export default function Hibridos() {
           </Box>
         </Box>
 
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Parrafo>Matriz de correlaciones.</Parrafo>
+
+            <CodigoBoton ejecutar={getDataCorrelacion} visible={false} />
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={dataCorrelacion[0]}
+          dataFilas={dataCorrelacion[1]}
+          visible={visibleDataCorrelacion}
+        />
+
         <Grid item xs={12} sm={12} md={12}>
           <Box sx={{ padding: 2 }}>
             <Box sx={{ p: 2, border: "5px dashed plum" }}>
@@ -787,101 +785,67 @@ export default function Hibridos() {
           visible={visibleDataCorrelacionMapa}
         />
 
-        {/*Clasificación arboles*/}
+        {/*Limpieza de datos*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
-            <Subtitulo>
-              Aplicación del algoritmo: Clasificación Árboles
-            </Subtitulo>
+            <Subtitulo>Limpieza de datos.</Subtitulo>
           </Box>
         </Box>
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Selecciona las variables predictoras (X).</Bold>
-            <Box sx={{ padding: 2 }}>
-              <Visualizador
-                lista={variables}
-                listaSeleccionada={variablesX}
-                actualizaSeleccion={setVariablesX}
-              />
-            </Box>
-            <CodigoBoton ejecutar={seleccionaX} visible={false} />
-          </Box>
-        </Box>
-
-        <Tabla
-          dataColumnas={tablaX[0]}
-          dataFilas={tablaX[1]}
-          visible={visibleTablaX}
-        />
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Selecciona la variable clase (Y).</Bold>
+            <Bold>
+              Selecciona la(s) variable(s) que quieras eliminar y pulsa
+              ejecutar.
+            </Bold>
             <Parrafo>
-              Si selecciona más de un elemento unicamente se tomara el primero
-              en ser seleccionado.
+              Las variables que aparecen son unicamente numericas con ellas se
+              trabajara en los pasos siguientes. Si no deseas eliminar ninguna
+              solo pulsa ejecutar.
             </Parrafo>
+
             <Box sx={{ padding: 2 }}>
               <Visualizador
                 lista={variables}
-                listaSeleccionada={variableY}
-                actualizaSeleccion={setVariableY}
+                listaSeleccionada={variablesDrop}
+                actualizaSeleccion={setVariablesDrop}
               />
             </Box>
 
-            <CodigoBoton ejecutar={seleccionaY} visible={false} />
+            <CodigoBoton ejecutar={getDataDrop} visible={false} />
           </Box>
         </Box>
 
         <Tabla
-          dataColumnas={tablaY[0]}
-          dataFilas={tablaY[1]}
-          visible={visibleTablaY}
+          dataColumnas={tablaDrop[0]}
+          dataFilas={tablaDrop[1]}
+          visible={visibleTablaDrop}
         />
+
+        {/*Modelo 1: Segmentación particiona*/}
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed purple" }}>
+            <Subtitulo>Modelo 1: Segmentación particiona</Subtitulo>
+          </Box>
+        </Box>
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Entrenamiento de modelo.</Bold>
-            <Box sx={{ padding: 2 }}>
-              <Comando
-                Label={"max_depth"}
-                setComando={setMax_depth}
-                comando={max_depth}
-                type={"number"}
-              />
-              <Comando
-                Label={"min_samples_split"}
-                setComando={setMin_samples_split}
-                comando={min_samples_split}
-                type={"number"}
-              />
-              <Comando
-                Label={"min_samples_leaf"}
-                setComando={setMin_samples_leaf}
-                comando={min_samples_leaf}
-                type={"number"}
-              />
-              <Comando
-                Label={"random_state"}
-                setComando={setRandom_state}
-                comando={random_state}
-                type={"number"}
-              />
-            </Box>
-            <CodigoBoton
-              ejecutar={clasificacionEntrenamiento}
-              visible={visibleClasificacionMedidas}
-              texto={
-                "Criterio: " +
-                clasificacionMedidas[0] +
-                "\nExactitud: " +
-                clasificacionMedidas[1]
-              }
-            />
+            <Bold>Algoritmo: K-means</Bold>
+            <Parrafo>
+              Los clústeres mediante K-means es un aprendizaje no supervisado
+              popular. Se utiliza para encontrar grupos intrínsecos dentro del
+              conjunto de datos sin etiquetar y extraer inferencias de ellos.
+            </Parrafo>
+            <CodigoBoton ejecutar={estandarizacion} visible={false} />
           </Box>
         </Box>
+
+        <Tabla
+          dataColumnas={tablaMetodo[0]}
+          dataFilas={tablaMetodo[1]}
+          visible={visibleTablaMetodo}
+        />
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
