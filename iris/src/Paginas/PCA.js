@@ -63,6 +63,8 @@ export default function EDA() {
   const [numeroDeComponentesVarianza, setNumeroDeComponentesVarianza] =
     useState("");
 
+  const [dataLine, setDataLine] = useState([]);
+
   // Paso 6
   const [dataCargas, setDataCargas] = useState([]);
   const [visibleDataCargas, setVisibleDataCargas] = useState(false);
@@ -201,6 +203,26 @@ export default function EDA() {
   }
 
   // Paso 5
+
+  function getGraficaVarianza() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/PCA/grafica/varianza", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setDataLine(result);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
   function getVarianza() {
     if (numeroDeComponentesVarianza === "") {
       alert("Favor de ingresar el comando");
@@ -477,7 +499,8 @@ export default function EDA() {
             <Parrafo>
               Se revisan los valores absolutos de los componentes principales
               seleccionados. Cuanto mayor sea el valor absoluto, más importante
-              es esa variable en el componente principal. (Si modifica el valor del paso 5, vuelva a ejecutar este paso).
+              es esa variable en el componente principal. (Si modifica el valor
+              del paso 5, vuelva a ejecutar este paso).
             </Parrafo>
             <CodigoBoton ejecutar={getCargas} visible={false} />
           </Box>

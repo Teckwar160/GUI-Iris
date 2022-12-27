@@ -534,6 +534,43 @@ async def pcaComponentes(numero: str = Form(...)):
     else:
         return False
 
+@app.get("/PCA/grafica/varianza")
+async def pcaGraficaVarianza():
+    # Dataframe
+    global data
+
+    # Variables de PCA
+    global MEstandarizada
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        # Obtenemos el PCA
+        pca = PCA(n_components=None)
+        pca.fit(MEstandarizada)
+
+        # Obtenemos la varianza
+        listaVarianza = pca.explained_variance_ratio_.tolist()
+
+        # Creamos los elementos de la grafica
+        dic = {"id":"varianza"}
+        data = []
+
+        for i in range(len(listaVarianza)):
+            tmp={}
+            tmp["x"] = i
+            if(i != 0):
+                tmp["y"] = tmp["y"] = data[i-1]["y"] + listaVarianza[i]
+            else:
+                tmp["y"] = listaVarianza[i]
+
+            data.append(tmp)
+
+        dic["data"] = data
+
+        # Retornamos el diccionario
+        return [dic]
+    else:
+        return False
 
 @app.post("/PCA/Varianza")
 async def pcaVarianza(numero: int = Form(...)):
