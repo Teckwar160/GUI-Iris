@@ -10,6 +10,7 @@ import EDA from "../Paginas/EDA";
 import PCA from "../Paginas/PCA";
 import Pronostico from "../Paginas/Pronostico";
 import Clasificacion from "../Paginas/Clasificacion";
+import Hibridos from "../Paginas/Hibridos";
 
 export default function Main() {
   return (
@@ -22,6 +23,7 @@ export default function Main() {
           <Route exact path="/PCA" element={<PCA />} />
           <Route exact path="/Pronostico" element={<Pronostico />} />
           <Route exact path="/Clasificacion" element={<Clasificacion />} />
+          <Route exact path="/Hibridos" element={<Hibridos />} />
         </Routes>
       </Router>
       <Footer />
