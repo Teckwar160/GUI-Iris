@@ -932,7 +932,7 @@ export default function Pronostico() {
             <Bold>Entrenamiento de modelo.</Bold>
             <Box sx={{ padding: 2 }}>
               <Comando
-                Label={"n_estimatorsn"}
+                Label={"n_estimators"}
                 setComando={setN_estimatorsB}
                 comando={n_estimatorsB}
                 type={"number"}
