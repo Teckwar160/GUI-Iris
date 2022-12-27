@@ -75,6 +75,10 @@ export default function Pronostico() {
   const [visiblePronosticoMedidas, setVisiblePronosticoMedidas] =
     useState(false);
 
+  // Importancia
+  const [tablaImportancia, setTablaImportancia] = useState([[], []]);
+  const [visibleTablaImportancia, setVisibleTablaImportancia] = useState(false);
+
   // Variables de Pronóstico de Árboles
   const [variablesNuevoPronostico] = useState(variablesX);
   const [nuevoPronosticoLabel, setNuevoPronosticoLabel] = useState("");
@@ -101,6 +105,10 @@ export default function Pronostico() {
   const [pronosticoMedidasB, setPronosticoMedidasB] = useState([]);
   const [visiblePronosticoMedidasB, setVisiblePronosticoMedidasB] =
     useState(false);
+
+    // Importancia de bosques
+    const [tablaImportanciaB, setTablaImportanciaB] = useState([[], []]);
+    const [visibleTablaImportanciaB, setVisibleTablaImportanciaB] = useState(false);
 
   // Variables de Pronóstico de Árboles
   const [variablesNuevoPronosticoB] = useState(variablesXB);
@@ -341,6 +349,32 @@ export default function Pronostico() {
       .catch((error) => console.log("error", error));
   }
 
+  function getImportancia() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("algoritmo", "arbol");
+    formdata.append("lista", variablesX);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Pronostico/importancia", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setTablaImportancia(result);
+          setVisibleTablaImportancia(true);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
   function guardaValorPronostico() {
     // Actualzamos la lista
     let lista = nuevoPronosticoLista;
@@ -483,6 +517,32 @@ export default function Pronostico() {
           setVisiblePronosticoMedidasB(true);
         } else {
           alert("Favor de revisar si realizo todos los pasos anteriores.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getImportanciaB() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("algoritmo", "bosque");
+    formdata.append("lista", variablesXB);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/Pronostico/importancia", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setTablaImportanciaB(result);
+          setVisibleTablaImportanciaB(true);
+        } else {
+          alert("Carga un proyecto");
         }
       })
       .catch((error) => console.log("error", error));
@@ -765,6 +825,18 @@ export default function Pronostico() {
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Importancia de las variables.</Bold>
+            <CodigoBoton ejecutar={getImportancia} visible={false} />
+          </Box>
+        </Box>
+        <Tabla
+          dataColumnas={tablaImportancia[0]}
+          dataFilas={tablaImportancia[1]}
+          visible={visibleTablaImportancia}
+        />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Bold>Nuevos pronósticos.</Bold>
             <Parrafo>
               Para las variables de X previamente seleccionadas digite un valor
@@ -908,6 +980,18 @@ export default function Pronostico() {
             />
           </Box>
         </Box>
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Bold>Importancia de las variables.</Bold>
+            <CodigoBoton ejecutar={getImportanciaB} visible={false} />
+          </Box>
+        </Box>
+        <Tabla
+          dataColumnas={tablaImportanciaB[0]}
+          dataFilas={tablaImportanciaB[1]}
+          visible={visibleTablaImportanciaB}
+        />
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>

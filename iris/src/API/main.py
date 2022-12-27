@@ -854,6 +854,41 @@ async def nuevoPronostico(algoritmo: str = Form(...), lista: list = Form(...)):
     else:
         return False
 
+@app.post("/Pronostico/importancia")
+async def importancia(algoritmo: str = Form(...), lista: list = Form(...)):
+    # Dataframe
+    global data
+
+    # Variables
+    global PronosticoAD
+    global PronosticoBA
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+
+        # Creamos la matriz
+        if(algoritmo == "arbol"):
+            importancia = pd.DataFrame({'Variable': list(data[lista]),
+            'Importancia': PronosticoAD.feature_importances_}).sort_values('Importancia', ascending=False)
+        else:
+            importancia = pd.DataFrame({'Variable': list(data[lista]),
+            'Importancia': PronosticoBA.feature_importances_}).sort_values('Importancia', ascending=False)
+
+
+        # Obtenemos las columnas y filas
+        columnas = importancia.columns.values.tolist()
+        filas = importancia.values.tolist()
+
+        return[columnas,filas]
+
+    else:
+        return False
+
 # Pronostico arboles
 @app.post("/Pronostico/Arboles/seleccion")
 async def arbolesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
