@@ -87,9 +87,9 @@ export default function Clasificacion() {
   const [matriz, setMatriz] = useState([[], []]);
   const [visibleMatriz, setVisibleMatriz] = useState(false);
 
-  // Eficiencia
-  const [tablaEficiencia, setTablaEficiencia] = useState([[], []]);
-  const [visibleTablaEficiencia, setVisibleTablaEficiencia] = useState(false);
+  // Importancia
+  const [tablaImportancia, setTablaImportancia] = useState([[], []]);
+  const [visibleTablaImportancia, setVisibleTablaImportancia] = useState(false);
 
   // Variables de Clasificación de Árboles
   const [variablesNuevaClasificacion] = useState(variablesX);
@@ -122,9 +122,10 @@ export default function Clasificacion() {
   const [matrizB, setMatrizB] = useState([[], []]);
   const [visibleMatrizB, setVisibleMatrizB] = useState(false);
 
-  // Eficiencia de bosques
-  const [tablaEficienciaB, setTablaEficienciaB] = useState([[], []]);
-  const [visibleTablaEficienciaB, setVisibleTablaEficienciaB] = useState(false);
+  // Importancia de bosques
+  const [tablaImportanciaB, setTablaImportanciaB] = useState([[], []]);
+  const [visibleTablaImportanciaB, setVisibleTablaImportanciaB] =
+    useState(false);
 
   // Variables de Clasificación de Árboles
   const [variablesNuevaClasificacionB] = useState(variablesXB);
@@ -392,7 +393,7 @@ export default function Clasificacion() {
       .catch((error) => console.log("error", error));
   }
 
-  function getEficiencia() {
+  function getImportancia() {
     // Ingresamos los datos
     const formdata = new FormData();
     formdata.append("algoritmo", "arbol");
@@ -403,14 +404,14 @@ export default function Clasificacion() {
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Clasificacion/eficiencia", requestOptions)
+    fetch("http://127.0.0.1:8000/Clasificacion/importancia", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
         if (result !== false) {
-          setTablaEficiencia(result);
-          setVisibleTablaEficiencia(true);
+          setTablaImportancia(result);
+          setVisibleTablaImportancia(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -575,7 +576,7 @@ export default function Clasificacion() {
       .catch((error) => console.log("error", error));
   }
 
-  function getEficienciaB() {
+  function getImportanciaB() {
     // Ingresamos los datos
     const formdata = new FormData();
     formdata.append("algoritmo", "bosque");
@@ -586,14 +587,14 @@ export default function Clasificacion() {
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Clasificacion/eficiencia", requestOptions)
+    fetch("http://127.0.0.1:8000/Clasificacion/importancia", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
         if (result !== false) {
-          setTablaEficienciaB(result);
-          setVisibleTablaEficienciaB(true);
+          setTablaImportanciaB(result);
+          setVisibleTablaImportanciaB(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -894,14 +895,14 @@ export default function Clasificacion() {
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Eficiencia y conformación del modelo de clasificación</Bold>
-            <CodigoBoton ejecutar={getEficiencia} visible={false} />
+            <Bold>Importancia de las variables.</Bold>
+            <CodigoBoton ejecutar={getImportancia} visible={false} />
           </Box>
         </Box>
         <Tabla
-          dataColumnas={tablaEficiencia[0]}
-          dataFilas={tablaEficiencia[1]}
-          visible={visibleTablaEficiencia}
+          dataColumnas={tablaImportancia[0]}
+          dataFilas={tablaImportancia[1]}
+          visible={visibleTablaImportancia}
         />
 
         <Box sx={{ padding: 2 }}>
@@ -1058,14 +1059,14 @@ export default function Clasificacion() {
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Eficiencia y conformación del modelo de clasificación</Bold>
-            <CodigoBoton ejecutar={getEficienciaB} visible={false} />
+            <Bold>Importancia de las variables.</Bold>
+            <CodigoBoton ejecutar={getImportanciaB} visible={false} />
           </Box>
         </Box>
         <Tabla
-          dataColumnas={tablaEficienciaB[0]}
-          dataFilas={tablaEficienciaB[1]}
-          visible={visibleTablaEficienciaB}
+          dataColumnas={tablaImportanciaB[0]}
+          dataFilas={tablaImportanciaB[1]}
+          visible={visibleTablaImportanciaB}
         />
 
         <Box sx={{ padding: 2 }}>

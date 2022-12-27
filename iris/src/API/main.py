@@ -1145,8 +1145,8 @@ async def matriz(algoritmo: str = Form(...)):
     else:
         return False
 
-@app.post("/Clasificacion/eficiencia")
-async def eficiencia(algoritmo: str = Form(...), lista: list = Form(...)):
+@app.post("/Clasificacion/importancia")
+async def importancia(algoritmo: str = Form(...), lista: list = Form(...)):
     # Dataframe
     global data
 
