@@ -32,6 +32,10 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 
+# Para K-means
+from sklearn.cluster import KMeans
+from sklearn.metrics import pairwise_distances_argmin_min
+
 
 # Variable global que contendra los conjuntos de datos
 data = pd.DataFrame()
@@ -497,7 +501,6 @@ async def pcaEstandar(metodo: str = Form(...)):
     else:
         return False
 
-
 @app.post("/PCA/Componentes")
 async def pcaComponentes(numero: str = Form(...)):
     # Dataframe
@@ -600,7 +603,6 @@ async def pcaVarianza(numero: int = Form(...)):
     else:
         return False
 
-
 @app.post("/PCA/Paso6") 
 async def pcaPaso6(numero: int = Form(...)):
     # Dataframe
@@ -625,7 +627,6 @@ async def pcaPaso6(numero: int = Form(...)):
 
     else:
         return False
-
 
 @app.get("/PCA/trae/Variables")
 async def pcaTraeVariables():
@@ -1249,6 +1250,7 @@ async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
         return False
 
 # Hibridos
+
 @app.get("/K-means/Estandar") 
 async def estandar():
     # Dataframe
@@ -1284,9 +1286,46 @@ async def estandar():
     else:
         return False
 
+@app.post("/K-means/grafica")
+async def grafica(maximo: int = Form(...)):
+    # Dataframe
+    global data
+
+    # Variables
+    global MEstandarizada
+
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        #Definición de k clusters para K-means
+        SSE = []
+        for i in range(2, maximo):
+            km = KMeans(n_clusters=i, random_state=0)
+            km.fit(MEstandarizada)
+            SSE.append(km.inertia_)
+
+        # Creamos los elementos de la grafica
+        dic = {"id":"SSE"}
+        dat = []
+
+        for i in range(2, maximo):
+            tmp={}
+            tmp["x"] = i
+            tmp["y"] = SSE[i-2]
+
+            dat.append(tmp)
+
+        dic["data"] = dat
+
+        # Retornamos el diccionario
+        return [dic]
+    else:
+        return False
+
+
 # Funciones de control
 
-@ app.post("/crear/Proyecto")
+@app.post("/crear/Proyecto")
 async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), descripcion: str = Form(...)):
 
     # Creamos un dataframe
@@ -1305,12 +1344,12 @@ async def createProyecto(nombre: str = Form(...), file: UploadFile = Form(...), 
     return True
 
 
-@ app.get("/trae/Proyectos")
+@app.get("/trae/Proyectos")
 async def traeProyectos():
     return bd.leerFilas()
 
 
-@ app.post("/editar/Proyecto")
+@app.post("/editar/Proyecto")
 async def createProyecto(id: int = Form(...), nombre: str = Form(...), descripcion: str = Form(...)):
 
     # Actualizamos los valores
@@ -1321,7 +1360,7 @@ async def createProyecto(id: int = Form(...), nombre: str = Form(...), descripci
     return True
 
 
-@ app.post("/eliminar/Proyecto")
+@app.post("/eliminar/Proyecto")
 async def createProyecto(id: int = Form(...)):
 
     # Buscamos el proyecto
@@ -1336,7 +1375,7 @@ async def createProyecto(id: int = Form(...)):
     return True
 
 
-@ app.post("/cargar/Proyecto")
+@app.post("/cargar/Proyecto")
 async def createProyecto(id: int = Form(...)):
     global data
 

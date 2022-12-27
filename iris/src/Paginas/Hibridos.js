@@ -12,6 +12,7 @@ import Selector from "../Componentes/Editores/Selector";
 
 // Graficas
 import HeatMap from "../Graficas/HeatMap";
+import Line from "../Graficas/Line";
 
 // Estilos
 const Titulo = styled(Typography)({
@@ -74,26 +75,9 @@ export default function Hibridos() {
   // K-means
   const [tablaMetodo, setTablaMetodo] = useState([[], []]);
   const [visibleTablaMetodo, setVisibleTablaMetodo] = useState(false);
-
-  // Clasificación Árboles
-  const [variablesX, setVariablesX] = useState([]);
-
-  // Matriz de clasificación árboles
-  const [matriz, setMatriz] = useState([[], []]);
-  const [visibleMatriz, setVisibleMatriz] = useState(false);
-
-  // Importancia
-  const [tablaImportancia, setTablaImportancia] = useState([[], []]);
-  const [visibleTablaImportancia, setVisibleTablaImportancia] = useState(false);
-
-  // Variables de Clasificación de Árboles
-  const [variablesNuevaClasificacion] = useState(variablesX);
-  const [nuevaClasificacionLabel, setNuevaClasificacionLabel] = useState("");
-  const [nuevaClasificacionValue, setNuevaClasificacionValue] = useState("");
-  const [nuevaClasificacionLista, setNuevaClasificacionLista] = useState([]);
-  const [nuevaClasificacion, setNuevaClasificacion] = useState([]);
-  const [visibleNuevaClasificacion, setVisibleNuevaClasificacion] =
-    useState(false);
+  const [maximoClusters, setMaximoClusters] = useState(10);
+  const [dataSSE, setDataSSE] = useState([]);
+  const [visibleSSE, setVisibleSSE] = useState(false);
 
   // Clasificación Bosques
   const [variablesXB, setVariablesXB] = useState([]);
@@ -350,105 +334,24 @@ export default function Hibridos() {
       .catch((error) => console.log("error", error));
   }
 
-  // Clasificación Árboles
-
-  function clasificacionMatriz() {
+  function getSSE(){
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("algoritmo", "arbol");
+    formdata.append("maximo", maximoClusters);
 
     var requestOptions = {
       method: "POST",
       body: formdata,
     };
 
-    fetch("http://127.0.0.1:8000/Clasificacion/matriz", requestOptions)
+    fetch("http://127.0.0.1:8000/K-means/grafica", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
         if (result !== false) {
-          setMatriz(result);
-          setVisibleMatriz(true);
-        } else {
-          alert("Carga un proyecto");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function getImportancia() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("algoritmo", "arbol");
-    formdata.append("lista", variablesX);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch("http://127.0.0.1:8000/Clasificacion/importancia", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setTablaImportancia(result);
-          setVisibleTablaImportancia(true);
-        } else {
-          alert("Carga un proyecto");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function guardaValorClasificacion() {
-    // Actualzamos la lista
-    let lista = nuevaClasificacionLista;
-    let index = -1;
-    let tam = lista.length;
-
-    for (let i = 0; i < tam; i++) {
-      if (lista[i][0] === nuevaClasificacionLabel) {
-        index = i;
-        break;
-      }
-    }
-
-    if (index === -1) {
-      alert("Se registro el valor de: " + nuevaClasificacionLabel);
-      lista.push([nuevaClasificacionLabel, nuevaClasificacionValue]);
-    } else {
-      alert("Se actualizo el valor de: " + nuevaClasificacionLabel);
-      lista[index] = [nuevaClasificacionLabel, nuevaClasificacionValue];
-    }
-
-    setNuevaClasificacionLista(lista);
-  }
-
-  function getNuevaClasificacion() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("algoritmo", "arbol");
-    formdata.append("lista", nuevaClasificacionLista);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch(
-      "http://127.0.0.1:8000/Clasificacion/nuevaClasificacion",
-      requestOptions
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setNuevaClasificacion(result);
-          setVisibleNuevaClasificacion(true);
+          setDataSSE(result);
+          setVisibleSSE(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -849,67 +752,29 @@ export default function Hibridos() {
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Matriz de Clasificación</Bold>
-            <CodigoBoton ejecutar={clasificacionMatriz} visible={false} />
-          </Box>
-        </Box>
-        <Tabla
-          dataColumnas={matriz[0]}
-          dataFilas={matriz[1]}
-          visible={visibleMatriz}
-        />
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Importancia de las variables.</Bold>
-            <CodigoBoton ejecutar={getImportancia} visible={false} />
-          </Box>
-        </Box>
-        <Tabla
-          dataColumnas={tablaImportancia[0]}
-          dataFilas={tablaImportancia[1]}
-          visible={visibleTablaImportancia}
-        />
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Nuevas clasificaciones</Bold>
-            <Parrafo>
-              Para las variables de X previamente seleccionadas digite un valor
-              y pulse ejecutar para cada una de las variables.
-            </Parrafo>
+            <Bold>Grafica SSE</Bold>
+            <Parrafo>Defina el máximo de clusters y pulse ejecutar.</Parrafo>
             <Box sx={{ padding: 2 }}>
-              <Selector
-                label={"Variable"}
-                lista={variablesNuevaClasificacion}
-                elemento={nuevaClasificacionLabel}
-                setElemento={setNuevaClasificacionLabel}
+              <Comando
+                Label={"Número máximo de clusters"}
+                setComando={setMaximoClusters}
+                comando={maximoClusters}
+                type={"number"}
               />
-              <Box sx={{ padding: 2 }}>
-                <Comando
-                  Label={nuevaClasificacionLabel}
-                  setComando={setNuevaClasificacionValue}
-                  comando={nuevaClasificacionValue}
-                  type={"text"}
-                />
-              </Box>
             </Box>
-            <CodigoBoton ejecutar={guardaValorClasificacion} visible={false} />
-          </Box>
-        </Box>
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>
-              Pulse este botón una vez que haya terminado de asignar valores a
-              las variables para realizar la clasificación.
-            </Bold>
             <CodigoBoton
-              ejecutar={getNuevaClasificacion}
-              visible={visibleNuevaClasificacion}
-              texto={nuevaClasificacion}
+              ejecutar={getSSE}
+              visible={false}
             />
           </Box>
         </Box>
+
+        <Line
+          visible={visibleSSE}
+          data={dataSSE}
+          LegendBottom={"Cantidad de clusters *k*"}
+          LegendLeft={"SSE"}
+        />
 
         {/*Clasificación bosques*/}
         <Box sx={{ padding: 2 }}>
