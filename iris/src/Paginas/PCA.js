@@ -476,7 +476,12 @@ export default function EDA() {
           </Box>
         </Box>
 
-        <Line visible={visibleLine} data={dataLine} />
+        <Line
+          visible={visibleLine}
+          data={dataLine}
+          LegendBottom={"Número de componentes"}
+          LegendLeft={"Varianza acumulada"}
+        />
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>

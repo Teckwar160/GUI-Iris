@@ -28,8 +28,8 @@ const Line = (Props) => {
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 0,
-                  legend: "Número de componentes",
-                  legendOffset: 46,
+                  legend: Props.LegendBottom,
+                  legendOffset: 36,
                   legendPosition: "middle",
                 }}
                 axisLeft={{
@@ -37,7 +37,7 @@ const Line = (Props) => {
                   tickSize: 5,
                   tickPadding: 5,
                   tickRotation: 0,
-                  legend: "Varianza acumulada",
+                  legend: Props.LegendLeft,
                   legendOffset: -50,
                   legendPosition: "middle",
                 }}
