@@ -12,6 +12,7 @@ import Selector from "../Componentes/Editores/Selector";
 
 //Graficas
 import HeatMap from "../Graficas/HeatMap";
+import Line from "../Graficas/Line";
 
 //Estilos
 const Titulo = styled(Typography)({
@@ -64,6 +65,7 @@ export default function EDA() {
     useState("");
 
   const [dataLine, setDataLine] = useState([]);
+  const [visibleLine, setVisibleLine] = useState(false);
 
   // Paso 6
   const [dataCargas, setDataCargas] = useState([]);
@@ -163,6 +165,9 @@ export default function EDA() {
           if (result !== false) {
             setTablaMetodo([result[0], result[1]]);
             setVisibleTablaMetodo(true);
+
+            // Creamos la grafica
+            getGraficaVarianza();
           } else {
             alert("Carga un proyecto");
           }
@@ -216,6 +221,7 @@ export default function EDA() {
       .then((result) => {
         if (result !== false) {
           setDataLine(result);
+          setVisibleLine(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -464,10 +470,16 @@ export default function EDA() {
               Paso 5: Se decide el número de componentes principales.
             </Subtitulo>
             <Parrafo>
-              Se calcula el porcentaje de relevancia, es decir, entre el 75 y
+              Se calcula el porcentaje de relevancia, es decir, entre el 75% y
               90% de varianza total.
             </Parrafo>
+          </Box>
+        </Box>
 
+        <Line visible={visibleLine} data={dataLine} />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Box sx={{ padding: 2 }}>
               <Comando
                 Label={"Ingrese número de componentes"}

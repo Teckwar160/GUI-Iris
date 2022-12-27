@@ -553,19 +553,19 @@ async def pcaGraficaVarianza():
 
         # Creamos los elementos de la grafica
         dic = {"id":"varianza"}
-        data = []
+        dat = []
 
         for i in range(len(listaVarianza)):
             tmp={}
             tmp["x"] = i
             if(i != 0):
-                tmp["y"] = tmp["y"] = data[i-1]["y"] + listaVarianza[i]
+                tmp["y"] = tmp["y"] = dat[i-1]["y"] + listaVarianza[i]
             else:
                 tmp["y"] = listaVarianza[i]
 
-            data.append(tmp)
+            dat.append(tmp)
 
-        dic["data"] = data
+        dic["data"] = dat
 
         # Retornamos el diccionario
         return [dic]
