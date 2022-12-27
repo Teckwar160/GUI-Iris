@@ -35,6 +35,7 @@ from sklearn.metrics import accuracy_score
 # Para K-means
 from sklearn.cluster import KMeans
 from sklearn.metrics import pairwise_distances_argmin_min
+from kneed import KneeLocator
 
 
 # Variable global que contendra los conjuntos de datos
@@ -61,6 +62,9 @@ ClasificacionBA = None
 # Variables de clasificacion
 X_validation = None
 Y_validation = None
+
+# Variables de K-means
+SSE = None
 
 # API
 app = FastAPI()
@@ -1293,6 +1297,7 @@ async def grafica(maximo: int = Form(...)):
 
     # Variables
     global MEstandarizada
+    global SSE
 
 
     # Verificamos que este cargado un proyecto
@@ -1322,6 +1327,21 @@ async def grafica(maximo: int = Form(...)):
     else:
         return False
 
+@app.post("/K-means/KneeLocator")
+async def kneeLocator(maximo: int = Form(...), curve: str = Form(...), direction: str = Form(...)):
+    # Dataframe
+    global data
+
+    # variables
+    global SSE
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        kl = KneeLocator(range(2, maximo), SSE, curve=curve, direction=direction)
+        return str(kl.elbow)
+
+    else:
+        return False
 
 # Funciones de control
 

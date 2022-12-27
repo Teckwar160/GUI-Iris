@@ -79,6 +79,11 @@ export default function Hibridos() {
   const [dataSSE, setDataSSE] = useState([]);
   const [visibleSSE, setVisibleSSE] = useState(false);
 
+  const [curve, setCurve] = useState("");
+  const [direction, setDirection] = useState("");
+  const [kneeLocator, setKneeLocator] = useState("");
+  const [visibleKneeLocator, setVisibleKneeLocator] = useState(false);
+
   // Clasificación Bosques
   const [variablesXB, setVariablesXB] = useState([]);
   const [tablaXB, setTablaXB] = useState([]);
@@ -334,7 +339,7 @@ export default function Hibridos() {
       .catch((error) => console.log("error", error));
   }
 
-  function getSSE(){
+  function getSSE() {
     // Ingresamos los datos
     const formdata = new FormData();
     formdata.append("maximo", maximoClusters);
@@ -352,6 +357,33 @@ export default function Hibridos() {
         if (result !== false) {
           setDataSSE(result);
           setVisibleSSE(true);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function getKneeLocator() {
+    // Ingresamos los datos
+    const formdata = new FormData();
+    formdata.append("maximo", maximoClusters);
+    formdata.append("curve", curve);
+    formdata.append("direction", direction);
+
+    var requestOptions = {
+      method: "POST",
+      body: formdata,
+    };
+
+    fetch("http://127.0.0.1:8000/K-means/KneeLocator", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setKneeLocator(result);
+          setVisibleKneeLocator(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -762,10 +794,7 @@ export default function Hibridos() {
                 type={"number"}
               />
             </Box>
-            <CodigoBoton
-              ejecutar={getSSE}
-              visible={false}
-            />
+            <CodigoBoton ejecutar={getSSE} visible={false} />
           </Box>
         </Box>
 
@@ -775,6 +804,36 @@ export default function Hibridos() {
           LegendBottom={"Cantidad de clusters *k*"}
           LegendLeft={"SSE"}
         />
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Parrafo>
+              Selecciona la configuración de la grafica anterior. Posteriormente
+              pulsa ejecutar para encontrar el knee.
+            </Parrafo>
+            <Box sx={{ padding: 2 }}>
+              <Selector
+                label={"curve"}
+                lista={["convex", "concave"]}
+                elemento={curve}
+                setElemento={setCurve}
+              />
+            </Box>
+            <Box sx={{ padding: 2 }}>
+              <Selector
+                label={"direction"}
+                lista={["decreasing", "increasing"]}
+                elemento={direction}
+                setElemento={setDirection}
+              />
+            </Box>
+            <CodigoBoton
+              ejecutar={getKneeLocator}
+              texto={kneeLocator}
+              visible={visibleKneeLocator}
+            />
+          </Box>
+        </Box>
 
         {/*Clasificación bosques*/}
         <Box sx={{ padding: 2 }}>
