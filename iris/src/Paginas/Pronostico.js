@@ -86,6 +86,8 @@ export default function Pronostico() {
   const [nuevoPronosticoLabel, setNuevoPronosticoLabel] = useState("");
   const [nuevoPronsoticoValue, setNuevoPronosticoValue] = useState("");
   const [nuevoPronosticoLista, setNuevoPronosticoLista] = useState([]);
+  const [visibleNuevoPronosticoLista, setVisibleNuevoPronosticoLista] =
+    useState(false);
   const [nuevoPronostico, setNuevoPronostico] = useState([]);
   const [visibleNuevoPronostico, setVisibleNuevoPronostico] = useState(false);
 
@@ -120,6 +122,8 @@ export default function Pronostico() {
   const [nuevoPronosticoLabelB, setNuevoPronosticoLabelB] = useState("");
   const [nuevoPronsoticoValueB, setNuevoPronosticoValueB] = useState("");
   const [nuevoPronosticoListaB, setNuevoPronosticoListaB] = useState([]);
+  const [visibleNuevoPronosticoListaB, setVisibleNuevoPronosticoListaB] =
+    useState(false);
   const [nuevoPronosticoB, setNuevoPronosticoB] = useState([]);
   const [visibleNuevoPronosticoB, setVisibleNuevoPronosticoB] = useState(false);
 
@@ -402,8 +406,8 @@ export default function Pronostico() {
       alert("Se actualizo el valor de: " + nuevoPronosticoLabel);
       lista[index] = [nuevoPronosticoLabel, nuevoPronsoticoValue];
     }
-
     setNuevoPronosticoLista(lista);
+    setVisibleNuevoPronosticoLista(false);
   }
 
   function getNuevoPronostico() {
@@ -425,6 +429,7 @@ export default function Pronostico() {
         if (result !== false) {
           setNuevoPronostico(result);
           setVisibleNuevoPronostico(true);
+          setVisibleNuevoPronosticoLista(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -577,7 +582,7 @@ export default function Pronostico() {
       alert("Se actualizo el valor de: " + nuevoPronosticoLabelB);
       lista[index] = [nuevoPronosticoLabelB, nuevoPronsoticoValueB];
     }
-
+    setVisibleNuevoPronosticoListaB(false);
     setNuevoPronosticoListaB(lista);
   }
 
@@ -600,6 +605,7 @@ export default function Pronostico() {
         if (result !== false) {
           setNuevoPronosticoB(result);
           setVisibleNuevoPronosticoB(true);
+          setVisibleNuevoPronosticoListaB(true);
         }
       })
       .catch((error) => console.log("error", error));
@@ -882,12 +888,16 @@ export default function Pronostico() {
             <CodigoBoton ejecutar={guardaValorPronostico} visible={false} />
           </Box>
         </Box>
+
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Bold>
               Pulse este botón una vez que haya terminado de asignar valores a
               las variables para realizar el prónostico.
             </Bold>
+            <Parrafo>
+              La tabla inferior son los valores utilizados para este prónostico.
+            </Parrafo>
             <CodigoBoton
               ejecutar={getNuevoPronostico}
               visible={visibleNuevoPronostico}
@@ -895,6 +905,12 @@ export default function Pronostico() {
             />
           </Box>
         </Box>
+
+        <Tabla
+          dataColumnas={["Variable", "Valor"]}
+          dataFilas={nuevoPronosticoLista}
+          visible={visibleNuevoPronosticoLista}
+        />
 
         {/*Pronostico bosques*/}
         <Box sx={{ padding: 2 }}>
@@ -1058,6 +1074,9 @@ export default function Pronostico() {
               Pulse este botón una vez que haya terminado de asignar valores a
               las variables para realizar el prónostico.
             </Bold>
+            <Parrafo>
+              La tabla inferior son los valores utilizados para este prónostico.
+            </Parrafo>
             <CodigoBoton
               ejecutar={getNuevoPronosticoB}
               visible={visibleNuevoPronosticoB}
@@ -1065,6 +1084,11 @@ export default function Pronostico() {
             />
           </Box>
         </Box>
+        <Tabla
+          dataColumnas={["Variable", "Valor"]}
+          dataFilas={nuevoPronosticoListaB}
+          visible={visibleNuevoPronosticoListaB}
+        />
       </Grid>
     </Grid>
   );
