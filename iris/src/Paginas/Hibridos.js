@@ -287,7 +287,7 @@ export default function Hibridos() {
       method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/Clasificacion/trae/Variables", requestOptions)
+    fetch("http://127.0.0.1:8000/Pronostico/trae/Variables", requestOptions)
       .then((response) => {
         return response.json();
       })

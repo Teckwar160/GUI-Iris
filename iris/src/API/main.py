@@ -1273,27 +1273,17 @@ async def estandar():
     # Variables
     global dataDrop
     global MEstandarizada
-    global dataSinObjectNan
 
     # Verificamos que este cargado un proyecto
     if not data.empty:
 
-        # Limpiamos el conjunto de variables categoricas y datos Nan
-        dataTmp = dataDrop
-
-        for (key, value) in data.dtypes.items():
-            if (str(value) == 'object'):
-                dataTmp = dataTmp.drop(columns=[key])
-
-        dataSinObjectNan = dataTmp.dropna()
-
         Estandarizar = StandardScaler()
 
         # Estandarizamos
-        MEstandarizada = Estandarizar.fit_transform(dataSinObjectNan)
+        MEstandarizada = Estandarizar.fit_transform(dataDrop)
 
         # Creamos un dataframe temporal para mostrar
-        tmp = pd.DataFrame(MEstandarizada, columns=dataSinObjectNan.columns)
+        tmp = pd.DataFrame(MEstandarizada, columns=dataDrop.columns)
 
         # Creamos la tabla
         return creaTabla(tmp,True)
