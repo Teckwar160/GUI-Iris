@@ -122,6 +122,8 @@ export default function Hibridos() {
   const [nuevaClasificacionLabelB, setNuevaClasificacionLabelB] = useState("");
   const [nuevaClasificacionValueB, setNuevaClasificacionValueB] = useState("");
   const [nuevaClasificacionListaB, setNuevaClasificacionListaB] = useState([]);
+  const [visibleNuevaClasificacionListaB, setVisibleNuevaClasificacionListaB] =
+    useState(false);
   const [nuevaClasificacionB, setNuevaClasificacionB] = useState([]);
   const [visibleNuevaClasificacionB, setVisibleNuevaClasificacionB] =
     useState(false);
@@ -593,7 +595,7 @@ export default function Hibridos() {
       alert("Se actualizo el valor de: " + nuevaClasificacionLabelB);
       lista[index] = [nuevaClasificacionLabelB, nuevaClasificacionValueB];
     }
-
+    setVisibleNuevaClasificacionListaB(false);
     setNuevaClasificacionListaB(lista);
   }
 
@@ -619,6 +621,7 @@ export default function Hibridos() {
         if (result !== false) {
           setNuevaClasificacionB(result);
           setVisibleNuevaClasificacionB(true);
+          setVisibleNuevaClasificacionListaB(true);
         }
       })
       .catch((error) => console.log("error", error));
@@ -1097,6 +1100,10 @@ export default function Hibridos() {
               Pulse este botón una vez que haya terminado de asignar valores a
               las variables para realizar la clasificación.
             </Bold>
+            <Parrafo>
+              La tabla inferior son los valores utilizados para esta
+              clasificación.
+            </Parrafo>
             <CodigoBoton
               ejecutar={getNuevaClasificacionB}
               visible={visibleNuevaClasificacionB}
@@ -1104,6 +1111,12 @@ export default function Hibridos() {
             />
           </Box>
         </Box>
+
+        <Tabla
+          dataColumnas={["Variable", "Valor"]}
+          dataFilas={nuevaClasificacionListaB}
+          visible={visibleNuevaClasificacionListaB}
+        />
       </Grid>
     </Grid>
   );
