@@ -98,6 +98,7 @@ export default function Clasificacion() {
   const [nuevaClasificacionLabel, setNuevaClasificacionLabel] = useState("");
   const [nuevaClasificacionValue, setNuevaClasificacionValue] = useState("");
   const [nuevaClasificacionLista, setNuevaClasificacionLista] = useState([]);
+  const [visibleNuevaClasificacionLista, setVisibleNuevaClasificacionLista] = useState(false);
   const [nuevaClasificacion, setNuevaClasificacion] = useState([]);
   const [visibleNuevaClasificacion, setVisibleNuevaClasificacion] =
     useState(false);
@@ -136,6 +137,7 @@ export default function Clasificacion() {
   const [nuevaClasificacionLabelB, setNuevaClasificacionLabelB] = useState("");
   const [nuevaClasificacionValueB, setNuevaClasificacionValueB] = useState("");
   const [nuevaClasificacionListaB, setNuevaClasificacionListaB] = useState([]);
+  const [visibleNuevaClasificacionListaB, setVisibleNuevaClasificacionListaB] = useState(false);
   const [nuevaClasificacionB, setNuevaClasificacionB] = useState([]);
   const [visibleNuevaClasificacionB, setVisibleNuevaClasificacionB] =
     useState(false);
@@ -445,7 +447,7 @@ export default function Clasificacion() {
       alert("Se actualizo el valor de: " + nuevaClasificacionLabel);
       lista[index] = [nuevaClasificacionLabel, nuevaClasificacionValue];
     }
-
+    setVisibleNuevaClasificacionLista(false);
     setNuevaClasificacionLista(lista);
   }
 
@@ -471,6 +473,7 @@ export default function Clasificacion() {
         if (result !== false) {
           setNuevaClasificacion(result);
           setVisibleNuevaClasificacion(true);
+          setVisibleNuevaClasificacionLista(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -630,7 +633,7 @@ export default function Clasificacion() {
       alert("Se actualizo el valor de: " + nuevaClasificacionLabelB);
       lista[index] = [nuevaClasificacionLabelB, nuevaClasificacionValueB];
     }
-
+    setVisibleNuevaClasificacionListaB(false);
     setNuevaClasificacionListaB(lista);
   }
 
@@ -656,6 +659,7 @@ export default function Clasificacion() {
         if (result !== false) {
           setNuevaClasificacionB(result);
           setVisibleNuevaClasificacionB(true);
+          setVisibleNuevaClasificacionListaB(true);
         }
       })
       .catch((error) => console.log("error", error));
@@ -957,6 +961,10 @@ export default function Clasificacion() {
               Pulse este botón una vez que haya terminado de asignar valores a
               las variables para realizar la clasificación.
             </Bold>
+            <Parrafo>
+              La tabla inferior son los valores utilizados para esta
+              clasificación.
+            </Parrafo>
             <CodigoBoton
               ejecutar={getNuevaClasificacion}
               visible={visibleNuevaClasificacion}
@@ -964,6 +972,12 @@ export default function Clasificacion() {
             />
           </Box>
         </Box>
+
+        <Tabla
+          dataColumnas={["Variable", "Valor"]}
+          dataFilas={nuevaClasificacionLista}
+          visible={visibleNuevaClasificacionLista}
+        />
 
         {/*Clasificación bosques*/}
         <Box sx={{ padding: 2 }}>
@@ -1133,6 +1147,10 @@ export default function Clasificacion() {
               Pulse este botón una vez que haya terminado de asignar valores a
               las variables para realizar la clasificación.
             </Bold>
+            <Parrafo>
+              La tabla inferior son los valores utilizados para esta
+              clasificación.
+            </Parrafo>
             <CodigoBoton
               ejecutar={getNuevaClasificacionB}
               visible={visibleNuevaClasificacionB}
@@ -1140,6 +1158,12 @@ export default function Clasificacion() {
             />
           </Box>
         </Box>
+
+        <Tabla
+          dataColumnas={["Variable", "Valor"]}
+          dataFilas={nuevaClasificacionListaB}
+          visible={visibleNuevaClasificacionListaB}
+        />
       </Grid>
     </Grid>
   );
