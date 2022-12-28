@@ -97,6 +97,8 @@ export default function Hibridos() {
   const [visibleTablaYB, setVisibleTablaYB] = useState(false);
 
   // Configuración de Bosques
+  const [test_sizeB, setTest_sizeB] = useState("0.2");
+  const [random_state_divisionB, setRandom_state_divisionB] = useState("0");
   const [n_estimatorsB, setN_estimatorsB] = useState("100");
   const [max_depthB, setMax_depthB] = useState("None");
   const [min_samples_splitB, setMin_samples_splitB] = useState("2");
@@ -492,6 +494,8 @@ export default function Hibridos() {
     // Ingresamos los datos
     const formdata = new FormData();
     formdata.append("algoritmo", "bosque");
+    formdata.append("test_size", test_sizeB);
+    formdata.append("random_state_division", random_state_divisionB);
     formdata.append("n_estimators", n_estimatorsB);
     formdata.append("max_depth", max_depthB);
     formdata.append("min_samples_split", min_samples_splitB);
@@ -981,6 +985,18 @@ export default function Hibridos() {
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Bold>Entrenamiento de modelo.</Bold>
             <Box sx={{ padding: 2 }}>
+              <Comando
+                Label={"test_size"}
+                setComando={setTest_sizeB}
+                comando={test_sizeB}
+                type={"number"}
+              />
+              <Comando
+                Label={"random_state_division"}
+                setComando={setRandom_state_divisionB}
+                comando={random_state_divisionB}
+                type={"number"}
+              />
               <Comando
                 Label={"n_estimatorsn"}
                 setComando={setN_estimatorsB}

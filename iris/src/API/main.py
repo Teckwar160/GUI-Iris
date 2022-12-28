@@ -1000,8 +1000,9 @@ async def traeVariables():
         return False
 
 @app.post("/Clasificacion/Entrenamiento")
-async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...), max_depth: str = Form(...), \
-    min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
+async def entrenamiento(algoritmo: str = Form(...), test_size: str = Form(...), random_state_division: str = Form(...), \
+    n_estimators: str = Form(...), max_depth: str = Form(...), min_samples_split: str = Form(...), \
+    min_samples_leaf: str = Form(...), random_state: str = Form(...)):
     # Variables
     global data
     global X_validation
@@ -1027,7 +1028,7 @@ async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...
         if(algoritmo == "arbol"):
             # Divisón de datos
             X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, 
-                test_size = 0.2, random_state = 0, shuffle = True)
+                test_size = float(test_size), random_state = float(random_state_division), shuffle = True)
 
 
             ClasificacionAD = DecisionTreeClassifier(max_depth=max_depth, 
@@ -1425,6 +1426,8 @@ async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
         return creaTabla(tmp,True)
     else:
         return False
+
+
 # Funciones de control
 
 @app.post("/crear/Proyecto")
