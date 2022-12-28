@@ -858,7 +858,7 @@ async def nuevoPronostico(algoritmo: str = Form(...), lista: list = Form(...)):
 
         for i in range(0, len(lista)):
             if i % 2 == 0:
-                diccionario[lista[i]] = [int(lista[i+1])]
+                diccionario[lista[i]] = [float(lista[i+1])]
             else:
                 continue
 
@@ -1088,7 +1088,7 @@ async def nuevaClasificacion(algoritmo: str = Form(...), lista: list = Form(...)
 
         for i in range(0, len(lista)):
             if i % 2 == 0:
-                diccionario[lista[i]] = [int(lista[i+1])]
+                diccionario[lista[i]] = [float(lista[i+1])]
             else:
                 continue
 
@@ -1393,7 +1393,38 @@ async def etiquetas():
     else:
         return False
 
+@app.post("/Clasificacion/Multiple/Bosques/seleccion")
+async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
+    # Dataframe
+    global data
 
+    # Variables de bosques
+    global XB
+    global YB
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        # Convertimos en lista
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        if(seleccion == "x"):
+            # Guardamos la seleccion de X
+            XB = np.array(dataDrop[lista])
+
+            tmp = pd.DataFrame(XB)
+        else:
+            # Guardamos la seleccion de Y
+            YB = np.array(dataDrop[lista[0]])
+
+            tmp = pd.DataFrame(YB)       
+
+        # Creamos la tabla
+        return creaTabla(tmp,True)
+    else:
+        return False
 # Funciones de control
 
 @app.post("/crear/Proyecto")

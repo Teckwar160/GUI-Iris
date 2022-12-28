@@ -88,6 +88,7 @@ export default function Hibridos() {
   const [visibleEtiquetas, setVisibleEtiquetas] = useState(false);
 
   // Clasificación Bosques
+  const [variablesSeleccionB, setVariablesSeleccionB] = useState([]);
   const [variablesXB, setVariablesXB] = useState([]);
   const [tablaXB, setTablaXB] = useState([]);
   const [visibleTablaXB, setVisibleTablaXB] = useState(false);
@@ -407,6 +408,9 @@ export default function Hibridos() {
         if (result !== false) {
           setDataEtiquetas(result);
           setVisibleEtiquetas(true);
+
+          // Actualizamos las variables disponibles para despues de Bosques
+          traeVariablesSeleccionB();
         } else {
           alert("Carga un proyecto");
         }
@@ -415,6 +419,27 @@ export default function Hibridos() {
   }
 
   // Clasificación Bosques
+  function traeVariablesSeleccionB() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch(
+      "http://127.0.0.1:8000/Pronostico/trae/Variables/Seleccion",
+      requestOptions
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setVariablesSeleccionB(result);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
 
   function seleccionBosques(letra) {
     // Ingresamos los datos
@@ -433,7 +458,7 @@ export default function Hibridos() {
     };
 
     fetch(
-      "http://127.0.0.1:8000/Clasificacion/Bosques/seleccion",
+      "http://127.0.0.1:8000/Clasificacion/Multiple/Bosques/seleccion",
       requestOptions
     )
       .then((response) => {
@@ -899,10 +924,11 @@ export default function Hibridos() {
           visible={visibleEtiquetas}
         />
 
-        {/*Clasificación bosques*/}
+        {/*Modelo 2: Clasificación múltiple*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
-            <Subtitulo>Aplicación del algoritmo: Bosques aleatorios</Subtitulo>
+            <Subtitulo>Modelo 2: Clasificación múltiple</Subtitulo>
+            <Parrafo>Algoritmo: Bosques aleatorios.</Parrafo>
           </Box>
         </Box>
 
@@ -911,7 +937,7 @@ export default function Hibridos() {
             <Bold>Selecciona las variables predictoras (X).</Bold>
             <Box sx={{ padding: 2 }}>
               <Visualizador
-                lista={variables}
+                lista={variablesSeleccionB}
                 listaSeleccionada={variablesXB}
                 actualizaSeleccion={setVariablesXB}
               />
@@ -935,7 +961,7 @@ export default function Hibridos() {
             </Parrafo>
             <Box sx={{ padding: 2 }}>
               <Visualizador
-                lista={variables}
+                lista={variablesSeleccionB}
                 listaSeleccionada={variableYB}
                 actualizaSeleccion={setVariableYB}
               />
