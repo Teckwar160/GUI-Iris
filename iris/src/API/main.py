@@ -771,8 +771,10 @@ async def traeVariablesSeleccion():
         return False
 
 @app.post("/Pronostico/Entrenamiento")
-async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...), max_depth: str = Form(...), \
-    min_samples_split: str = Form(...), min_samples_leaf: str = Form(...), random_state: str = Form(...)):
+async def entrenamiento(algoritmo: str = Form(...), test_size: str = Form(...), random_state_division: str = Form(...), \
+    n_estimators: str = Form(...), max_depth: str = Form(...), min_samples_split: str = Form(...), \
+    min_samples_leaf: str = Form(...), random_state: str = Form(...)):
+    
     # Variables
     global data
 
@@ -796,7 +798,7 @@ async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...
         if(algoritmo == "arbol"):
             # Divisón de datos
             X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
-                X, Y, test_size=0.2, random_state=0, shuffle=True)
+                X, Y, test_size=float(test_size), random_state=int(random_state_division), shuffle=True)
 
             PronosticoAD = DecisionTreeRegressor(
             max_depth=max_depth, min_samples_split=int(min_samples_split), 
@@ -813,7 +815,7 @@ async def entrenamiento(algoritmo: str = Form(...), n_estimators: str = Form(...
         else:
             # Divisón de datos
             X_train, X_test, Y_train, Y_test = model_selection.train_test_split(
-                XB, YB, test_size=0.2, random_state=0, shuffle=True)
+                XB, YB, test_size=float(test_size), random_state=int(random_state_division), shuffle=True)
 
             PronosticoBA = RandomForestRegressor(n_estimators=int(n_estimators),
             max_depth=max_depth, min_samples_split=int(min_samples_split), 
@@ -1028,7 +1030,7 @@ async def entrenamiento(algoritmo: str = Form(...), test_size: str = Form(...), 
         if(algoritmo == "arbol"):
             # Divisón de datos
             X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, 
-                test_size = float(test_size), random_state = float(random_state_division), shuffle = True)
+                test_size = float(test_size), random_state = int(random_state_division), shuffle = True)
 
 
             ClasificacionAD = DecisionTreeClassifier(max_depth=max_depth, 
@@ -1046,7 +1048,7 @@ async def entrenamiento(algoritmo: str = Form(...), test_size: str = Form(...), 
         else:
             # Divisón de datos
             X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(XB, YB, 
-                test_size = 0.2, random_state = 0, shuffle = True)
+                test_size = float(test_size), random_state = int(random_state_division), shuffle = True)
 
 
             ClasificacionBA = RandomForestClassifier(n_estimators=int(n_estimators),

@@ -67,6 +67,8 @@ export default function Pronostico() {
   const [visibleTablaY, setVisibleTablaY] = useState(false);
 
   // Configuración de Árboles
+  const [test_size, setTest_size] = useState("0.2");
+  const [random_state_division, setRandom_state_division] = useState("0");
   const [max_depth, setMax_depth] = useState("None");
   const [min_samples_split, setMin_samples_split] = useState("2");
   const [min_samples_leaf, setMin_samples_leaf] = useState("1");
@@ -97,6 +99,8 @@ export default function Pronostico() {
   const [visibleTablaYB, setVisibleTablaYB] = useState(false);
 
   // Configuración de Bosques
+  const [test_sizeB, setTest_sizeB] = useState("0.2");
+  const [random_state_divisionB, setRandom_state_divisionB] = useState("0");
   const [n_estimatorsB, setN_estimatorsB] = useState("100");
   const [max_depthB, setMax_depthB] = useState("None");
   const [min_samples_splitB, setMin_samples_splitB] = useState("2");
@@ -106,9 +110,10 @@ export default function Pronostico() {
   const [visiblePronosticoMedidasB, setVisiblePronosticoMedidasB] =
     useState(false);
 
-    // Importancia de bosques
-    const [tablaImportanciaB, setTablaImportanciaB] = useState([[], []]);
-    const [visibleTablaImportanciaB, setVisibleTablaImportanciaB] = useState(false);
+  // Importancia de bosques
+  const [tablaImportanciaB, setTablaImportanciaB] = useState([[], []]);
+  const [visibleTablaImportanciaB, setVisibleTablaImportanciaB] =
+    useState(false);
 
   // Variables de Pronóstico de Árboles
   const [variablesNuevoPronosticoB] = useState(variablesXB);
@@ -323,6 +328,8 @@ export default function Pronostico() {
     // Ingresamos los datos
     const formdata = new FormData();
     formdata.append("algoritmo", "arbol");
+    formdata.append("test_size", test_size);
+    formdata.append("random_state_division", random_state_division);
     formdata.append("n_estimators", 0);
     formdata.append("max_depth", max_depth);
     formdata.append("min_samples_split", min_samples_split);
@@ -496,6 +503,8 @@ export default function Pronostico() {
     // Ingresamos los datos
     const formdata = new FormData();
     formdata.append("algoritmo", "bosque");
+    formdata.append("test_size", test_sizeB);
+    formdata.append("random_state_division", random_state_divisionB);
     formdata.append("n_estimators", n_estimatorsB);
     formdata.append("max_depth", max_depthB);
     formdata.append("min_samples_split", min_samples_splitB);
@@ -780,6 +789,18 @@ export default function Pronostico() {
             <Bold>Entrenamiento de modelo.</Bold>
             <Box sx={{ padding: 2 }}>
               <Comando
+                Label={"test_size"}
+                setComando={setTest_size}
+                comando={test_size}
+                type={"number"}
+              />
+              <Comando
+                Label={"random_state_division"}
+                setComando={setRandom_state_division}
+                comando={random_state_division}
+                type={"number"}
+              />
+              <Comando
                 Label={"max_depth"}
                 setComando={setMax_depth}
                 comando={max_depth}
@@ -931,6 +952,18 @@ export default function Pronostico() {
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Bold>Entrenamiento de modelo.</Bold>
             <Box sx={{ padding: 2 }}>
+              <Comando
+                Label={"test_size"}
+                setComando={setTest_sizeB}
+                comando={test_sizeB}
+                type={"number"}
+              />
+              <Comando
+                Label={"random_state_division"}
+                setComando={setRandom_state_divisionB}
+                comando={random_state_divisionB}
+                type={"number"}
+              />
               <Comando
                 Label={"n_estimators"}
                 setComando={setN_estimatorsB}
