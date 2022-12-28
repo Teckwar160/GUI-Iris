@@ -18,7 +18,7 @@ export default function Visualizador(Props) {
       <FormGroup row>
         {Props.lista.map((elemento, index) => (
           <FormControlLabel
-            control={<Checkbox onChange={handleChange} value={elemento} />}
+            control={<Checkbox onChange={handleChange} value={elemento} color={"secondary"}/>}
             label={elemento}
           />
         ))}

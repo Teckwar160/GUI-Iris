@@ -65,6 +65,7 @@ Y_validation = None
 
 # Variables de K-means
 SSE = None
+Knee = None
 
 # API
 app = FastAPI()
@@ -143,6 +144,18 @@ def creaTabla(dataframe,completa):
     # Retornamos los elementos
     return [columnas, filas]
 
+# Función encargada de obtener las filas y columnas con formato para series
+def creaTablaSeries(serie,columna1,columna2):
+    c = serie.index.tolist()
+    f = serie.values.tolist()
+
+    columnas = [columna1,columna2]
+    filas = []
+
+    for i in range(len(c)):
+        filas.append([c[i],f[i]])
+
+    return [columnas,filas]
 
 @app.get("/vistaPrevia")
 async def vistaPrevia():
@@ -1099,13 +1112,7 @@ async def size(variable: str = Form(...)):
         # Creamos la tabla
         df = data.groupby(variable).size()
 
-        # Obtenemos las columnas y filas
-        columnas = df.index.tolist()
-
-        filas = [df.values.tolist()]
-
-        return [columnas,filas]
-
+        return creaTablaSeries(df,variable,"Cuenta")
     else:
         return False
 
@@ -1334,14 +1341,58 @@ async def kneeLocator(maximo: int = Form(...), curve: str = Form(...), direction
 
     # variables
     global SSE
+    global Knee
 
     # Verificamos que este cargado un proyecto
     if not data.empty:
         kl = KneeLocator(range(2, maximo), SSE, curve=curve, direction=direction)
-        return str(kl.elbow)
+        Knee = kl.elbow
+        return str(Knee)
 
     else:
         return False
+
+@app.get("/K-means/Etiquetas")
+async def etiquetas():
+    # Dataframe
+    global data
+
+    # variables
+    global Knee
+    global MEstandarizada
+    global dataDrop
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        #Se crean las etiquetas de los elementos en los clusters
+        MParticional = KMeans(n_clusters=Knee, random_state=0).fit(MEstandarizada)
+        MParticional.predict(MEstandarizada)
+        MParticional.labels_
+        dataDrop['clusterP'] = MParticional.labels_
+
+        # Creamos la tabla con las etiquetas
+        listaEtiquetas = creaTabla(dataDrop,True)
+
+        # Contamos el número de elementos por cluster
+        cuenta = dataDrop.groupby(['clusterP'])['clusterP'].count()
+
+        # Creamos la tabla de la serie
+
+        listaCuenta = creaTablaSeries(cuenta,"clusterP","Cuenta")
+
+        # Obtención de los centroides
+        CentroidesP = dataDrop.groupby('clusterP').mean()
+
+        # Tabla de centroides
+
+        listaCentroide = creaTabla(CentroidesP,False)
+
+        listaCentroide[0][0] = "clusterP"
+
+        return listaEtiquetas + listaCuenta + listaCentroide
+    else:
+        return False
+
 
 # Funciones de control
 

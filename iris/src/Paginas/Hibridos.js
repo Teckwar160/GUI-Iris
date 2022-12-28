@@ -84,6 +84,9 @@ export default function Hibridos() {
   const [kneeLocator, setKneeLocator] = useState("");
   const [visibleKneeLocator, setVisibleKneeLocator] = useState(false);
 
+  const [dataEtiquetas, setDataEtiquetas] = useState([[], []]);
+  const [visibleEtiquetas, setVisibleEtiquetas] = useState(false);
+
   // Clasificación Bosques
   const [variablesXB, setVariablesXB] = useState([]);
   const [tablaXB, setTablaXB] = useState([]);
@@ -384,6 +387,26 @@ export default function Hibridos() {
         if (result !== false) {
           setKneeLocator(result);
           setVisibleKneeLocator(true);
+        } else {
+          alert("Carga un proyecto");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  function etiquetas() {
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch("http://127.0.0.1:8000/K-means/Etiquetas", requestOptions)
+      .then((response) => {
+        return response.json();
+      })
+      .then((result) => {
+        if (result !== false) {
+          setDataEtiquetas(result);
+          setVisibleEtiquetas(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -834,6 +857,47 @@ export default function Hibridos() {
             />
           </Box>
         </Box>
+
+        <Box sx={{ padding: 2 }}>
+          <Box sx={{ p: 2, border: "5px dashed plum" }}>
+            <Subtitulo>Creación de etiquetas de clusters</Subtitulo>
+            <CodigoBoton ejecutar={etiquetas} codigo={""} visible={false} />
+          </Box>
+        </Box>
+
+        <Tabla
+          dataColumnas={dataEtiquetas[0]}
+          dataFilas={dataEtiquetas[1]}
+          visible={visibleEtiquetas}
+        />
+
+        {visibleEtiquetas ? (
+          <Box sx={{ padding: 2 }}>
+            <Box sx={{ p: 2, border: "5px dashed plum" }}>
+              <Subtitulo>Cantidad de elementos en los clusters.</Subtitulo>
+            </Box>
+          </Box>
+        ) : null}
+
+        <Tabla
+          dataColumnas={dataEtiquetas[2]}
+          dataFilas={dataEtiquetas[3]}
+          visible={visibleEtiquetas}
+        />
+
+        {visibleEtiquetas ? (
+          <Box sx={{ padding: 2 }}>
+            <Box sx={{ p: 2, border: "5px dashed plum" }}>
+              <Subtitulo>Centroides.</Subtitulo>
+            </Box>
+          </Box>
+        ) : null}
+
+        <Tabla
+          dataColumnas={dataEtiquetas[4]}
+          dataFilas={dataEtiquetas[5]}
+          visible={visibleEtiquetas}
+        />
 
         {/*Clasificación bosques*/}
         <Box sx={{ padding: 2 }}>
