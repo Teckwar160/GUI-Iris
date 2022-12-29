@@ -304,7 +304,7 @@ export default function SVM() {
   }
 
   function entrenamiento() {
-    if (kernel != "") {
+    if (kernel !== "") {
       // Ingresamos los datos
       const formdata = new FormData();
       formdata.append("kernel", kernel);
