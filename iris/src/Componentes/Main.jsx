@@ -11,6 +11,7 @@ import PCA from "../Paginas/PCA";
 import Pronostico from "../Paginas/Pronostico";
 import Clasificacion from "../Paginas/Clasificacion";
 import Hibridos from "../Paginas/Hibridos";
+import SVM from "../Paginas/SVM";
 
 export default function Main() {
   return (
@@ -24,6 +25,7 @@ export default function Main() {
           <Route exact path="/Pronostico" element={<Pronostico />} />
           <Route exact path="/Clasificacion" element={<Clasificacion />} />
           <Route exact path="/Hibridos" element={<Hibridos />} />
+          <Route exact path="/SVM" element={<SVM />} />
         </Routes>
       </Router>
       <Footer />
