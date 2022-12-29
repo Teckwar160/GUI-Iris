@@ -12,6 +12,9 @@ import Barra from "../Graficas/Barra";
 import Caja from "../Graficas/Caja";
 import HeatMap from "../Graficas/HeatMap";
 
+// Alertas
+import Swal from "sweetalert2";
+
 //Estilos
 const Titulo = styled(Typography)({
   color: "black",
@@ -87,7 +90,12 @@ export default function EDA() {
           setDataVistaPrevia([result[0], result[1]]);
           setVisibleVistaPrevia(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -108,7 +116,12 @@ export default function EDA() {
           setForma([result[0], result[1]]);
           setVisibleForma(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -128,7 +141,12 @@ export default function EDA() {
           setTiposDatos([result[0], result[1]]);
           setVisibleTiposDatos(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -149,7 +167,12 @@ export default function EDA() {
           setDatosFaltantesNull([result[0], result[1]]);
           setVisibleFaltantesNull(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -169,7 +192,12 @@ export default function EDA() {
         if (result !== false) {
           setDataHistograma(result);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -189,7 +217,12 @@ export default function EDA() {
           setDataDescribe(result);
           setVisibleDescribe(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -208,7 +241,12 @@ export default function EDA() {
         if (result !== false) {
           setDataBox(result);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -228,7 +266,12 @@ export default function EDA() {
           setDataDescribeObject(result);
           setVisibleDescribeObject(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -247,7 +290,12 @@ export default function EDA() {
         if (result !== false) {
           setDataHistogramaObject(result);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -268,7 +316,12 @@ export default function EDA() {
           setDataCorrelacion(result);
           setVisibleDataCorrelacion(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -288,7 +341,12 @@ export default function EDA() {
           setDataCorrelacionMapa(result);
           setVisibleDataCorrelacionMapa(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -503,7 +561,10 @@ export default function EDA() {
       <Grid item xs={12} sm={12} md={12}>
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Parrafo>Histograma para variables categóricas. (Unicamente variables con menos de 10 elementos diferentes.)</Parrafo>
+            <Parrafo>
+              Histograma para variables categóricas. (Unicamente variables con
+              menos de 10 elementos diferentes.)
+            </Parrafo>
 
             <CodigoBoton ejecutar={getDataHistogramasObject} visible={false} />
           </Box>
