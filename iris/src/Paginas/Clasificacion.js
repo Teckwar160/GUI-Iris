@@ -13,6 +13,9 @@ import Selector from "../Componentes/Editores/Selector";
 // Graficas
 import HeatMap from "../Graficas/HeatMap";
 
+// Alertas
+import Swal from "sweetalert2";
+
 // Estilos
 const Titulo = styled(Typography)({
   color: "black",
@@ -98,7 +101,8 @@ export default function Clasificacion() {
   const [nuevaClasificacionLabel, setNuevaClasificacionLabel] = useState("");
   const [nuevaClasificacionValue, setNuevaClasificacionValue] = useState("");
   const [nuevaClasificacionLista, setNuevaClasificacionLista] = useState([]);
-  const [visibleNuevaClasificacionLista, setVisibleNuevaClasificacionLista] = useState(false);
+  const [visibleNuevaClasificacionLista, setVisibleNuevaClasificacionLista] =
+    useState(false);
   const [nuevaClasificacion, setNuevaClasificacion] = useState([]);
   const [visibleNuevaClasificacion, setVisibleNuevaClasificacion] =
     useState(false);
@@ -137,7 +141,8 @@ export default function Clasificacion() {
   const [nuevaClasificacionLabelB, setNuevaClasificacionLabelB] = useState("");
   const [nuevaClasificacionValueB, setNuevaClasificacionValueB] = useState("");
   const [nuevaClasificacionListaB, setNuevaClasificacionListaB] = useState([]);
-  const [visibleNuevaClasificacionListaB, setVisibleNuevaClasificacionListaB] = useState(false);
+  const [visibleNuevaClasificacionListaB, setVisibleNuevaClasificacionListaB] =
+    useState(false);
   const [nuevaClasificacionB, setNuevaClasificacionB] = useState([]);
   const [visibleNuevaClasificacionB, setVisibleNuevaClasificacionB] =
     useState(false);
@@ -162,7 +167,12 @@ export default function Clasificacion() {
           setDataVistaPrevia([result[0], result[1]]);
           setVisibleVistaPrevia(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -183,7 +193,12 @@ export default function Clasificacion() {
           setDatosFaltantesNull([result[0], result[1]]);
           setVisibleFaltantesNull(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -203,7 +218,12 @@ export default function Clasificacion() {
           setDataDescribe(result);
           setVisibleDescribe(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -223,7 +243,12 @@ export default function Clasificacion() {
           setDataDescribeObject(result);
           setVisibleDescribeObject(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -252,7 +277,12 @@ export default function Clasificacion() {
         })
         .catch((error) => console.log("error", error));
     } else {
-      alert("Selecciona una variable");
+      Swal.fire({
+        title: "Advertencia",
+        text: "Selecciona una variable",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     }
   }
 
@@ -271,7 +301,12 @@ export default function Clasificacion() {
           setDataCorrelacionMapa(result);
           setVisibleDataCorrelacionMapa(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -330,7 +365,12 @@ export default function Clasificacion() {
             setVisibleTablaY(true);
           }
         } else {
-          alert("Selecciona alguna variable.");
+          Swal.fire({
+            title: "Advertecnia",
+            text: "Selecciona alguna variable",
+            icon: "warning",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -370,7 +410,12 @@ export default function Clasificacion() {
           setClasificacionMedidas(result);
           setVisibleClasificacionMedidas(true);
         } else {
-          alert("Favor de revisar si realizo todos los pasos anteriores.");
+          Swal.fire({
+            title: "Error",
+            text: "Favor de revisar si realizo todos los pasos anteriores",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -395,7 +440,12 @@ export default function Clasificacion() {
           setMatriz(result);
           setVisibleMatriz(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -421,7 +471,12 @@ export default function Clasificacion() {
           setTablaImportancia(result);
           setVisibleTablaImportancia(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -440,15 +495,34 @@ export default function Clasificacion() {
       }
     }
 
-    if (index === -1) {
-      alert("Se registro el valor de: " + nuevaClasificacionLabel);
-      lista.push([nuevaClasificacionLabel, nuevaClasificacionValue]);
+    if (nuevaClasificacionLabel !== "") {
+      if (index === -1) {
+        Swal.fire({
+          title: "Guardado",
+          text: "Se registro el valor de " + nuevaClasificacionLabel,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista.push([nuevaClasificacionLabel, nuevaClasificacionValue]);
+      } else {
+        Swal.fire({
+          title: "Actualizado",
+          text: "Se actualizo el valor de: " + nuevaClasificacionLabel,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista[index] = [nuevaClasificacionLabel, nuevaClasificacionValue];
+      }
+      setVisibleNuevaClasificacionLista(false);
+      setNuevaClasificacionLista(lista);
     } else {
-      alert("Se actualizo el valor de: " + nuevaClasificacionLabel);
-      lista[index] = [nuevaClasificacionLabel, nuevaClasificacionValue];
+      Swal.fire({
+        title: "Advertencia",
+        text: "Selecciona una variable",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     }
-    setVisibleNuevaClasificacionLista(false);
-    setNuevaClasificacionLista(lista);
   }
 
   function getNuevaClasificacion() {
@@ -475,7 +549,12 @@ export default function Clasificacion() {
           setVisibleNuevaClasificacion(true);
           setVisibleNuevaClasificacionLista(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -516,7 +595,12 @@ export default function Clasificacion() {
             setVisibleTablaYB(true);
           }
         } else {
-          alert("Selecciona alguna variable.");
+          Swal.fire({
+            title: "Advertencia",
+            text: "Selecciona alguna variable",
+            icon: "warning",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -556,7 +640,12 @@ export default function Clasificacion() {
           setClasificacionMedidasB(result);
           setVisibleClasificacionMedidasB(true);
         } else {
-          alert("Favor de revisar si realizo todos los pasos anteriores.");
+          Swal.fire({
+            title: "Error",
+            text: "Favor de revisar si realizo todos los pasos anteriores",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -581,7 +670,12 @@ export default function Clasificacion() {
           setMatrizB(result);
           setVisibleMatrizB(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -607,7 +701,12 @@ export default function Clasificacion() {
           setTablaImportanciaB(result);
           setVisibleTablaImportanciaB(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -626,15 +725,34 @@ export default function Clasificacion() {
       }
     }
 
-    if (index === -1) {
-      alert("Se registro el valor de: " + nuevaClasificacionLabelB);
-      lista.push([nuevaClasificacionLabelB, nuevaClasificacionValueB]);
+    if (nuevaClasificacionLabelB !== "") {
+      if (index === -1) {
+        Swal.fire({
+          title: "Guardado",
+          text: "Se registro el valor de " + nuevaClasificacionLabelB,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista.push([nuevaClasificacionLabelB, nuevaClasificacionValueB]);
+      } else {
+        Swal.fire({
+          title: "Actualizado",
+          text: "Se actualizo el valor de " + nuevaClasificacionLabelB,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista[index] = [nuevaClasificacionLabelB, nuevaClasificacionValueB];
+      }
+      setVisibleNuevaClasificacionListaB(false);
+      setNuevaClasificacionListaB(lista);
     } else {
-      alert("Se actualizo el valor de: " + nuevaClasificacionLabelB);
-      lista[index] = [nuevaClasificacionLabelB, nuevaClasificacionValueB];
+      Swal.fire({
+        title: "Advertencia",
+        text: "Selecciona una variable",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     }
-    setVisibleNuevaClasificacionListaB(false);
-    setNuevaClasificacionListaB(lista);
   }
 
   function getNuevaClasificacionB() {
@@ -660,6 +778,13 @@ export default function Clasificacion() {
           setNuevaClasificacionB(result);
           setVisibleNuevaClasificacionB(true);
           setVisibleNuevaClasificacionListaB(true);
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
