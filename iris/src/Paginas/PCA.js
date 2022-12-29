@@ -14,6 +14,9 @@ import Selector from "../Componentes/Editores/Selector";
 import HeatMap from "../Graficas/HeatMap";
 import Line from "../Graficas/Line";
 
+// Alertas
+import Swal from "sweetalert2";
+
 //Estilos
 const Titulo = styled(Typography)({
   color: "black",
@@ -96,7 +99,12 @@ export default function EDA() {
           setDataVistaPrevia([result[0], result[1]]);
           setVisibleVistaPrevia(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -117,7 +125,12 @@ export default function EDA() {
           setDataCorrelacion(result);
           setVisibleDataCorrelacion(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -137,7 +150,12 @@ export default function EDA() {
           setDataCorrelacionMapa(result);
           setVisibleDataCorrelacionMapa(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -146,7 +164,12 @@ export default function EDA() {
   // Paso 2
   function estandarizacion() {
     if (metodo === "") {
-      alert("Selecciona un método.");
+      Swal.fire({
+        title: "Advertencia",
+        text: "Selecciona un método",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     } else {
       // Ingresamos los datos
       const formdata = new FormData();
@@ -169,7 +192,12 @@ export default function EDA() {
             // Creamos la grafica
             getGraficaVarianza();
           } else {
-            alert("Carga un proyecto");
+            Swal.fire({
+              title: "Error",
+              text: "Carga un proyecto",
+              icon: "error",
+              confirmButtonText: "Aceptar",
+            });
           }
         })
         .catch((error) => console.log("error", error));
@@ -201,7 +229,12 @@ export default function EDA() {
           setDataComponentes([result[0], result[1]]);
           setVisibleDataComponentes(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -223,7 +256,12 @@ export default function EDA() {
           setDataLine(result);
           setVisibleLine(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -231,7 +269,12 @@ export default function EDA() {
 
   function getVarianza() {
     if (numeroDeComponentesVarianza === "") {
-      alert("Favor de ingresar el comando");
+      Swal.fire({
+        title: "Advertencia",
+        text: "Favor de ingresar el número de componentes",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     } else {
       // Ingresamos los datos
       const formdata = new FormData();
@@ -251,7 +294,12 @@ export default function EDA() {
             setDataVarianza([result[0], result[1], result[2]]);
             setVisibleDataVarianza(true);
           } else {
-            alert("Carga un proyecto");
+            Swal.fire({
+              title: "Error",
+              text: "Carga un proyecto",
+              icon: "error",
+              confirmButtonText: "Aceptar",
+            });
           }
         })
         .catch((error) => console.log("error", error));
@@ -260,28 +308,42 @@ export default function EDA() {
 
   // Paso 6
   function getCargas() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("numero", numeroDeComponentesVarianza);
+    if (numeroDeComponentesVarianza === "") {
+      Swal.fire({
+        title: "Advertencia",
+        text: "Primero ejecute el paso anterior",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+    } else {
+      // Ingresamos los datos
+      const formdata = new FormData();
+      formdata.append("numero", numeroDeComponentesVarianza);
 
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+      };
 
-    fetch("http://127.0.0.1:8000/PCA/Paso6", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setDataCargas([result[0], result[1], result[2], result[3]]);
-          setVisibleDataCargas(true);
-        } else {
-          alert("Carga un proyecto");
-        }
-      })
-      .catch((error) => console.log("error", error));
+      fetch("http://127.0.0.1:8000/PCA/Paso6", requestOptions)
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          if (result !== false) {
+            setDataCargas([result[0], result[1], result[2], result[3]]);
+            setVisibleDataCargas(true);
+          } else {
+            Swal.fire({
+              title: "Error",
+              text: "Carga un proyecto",
+              icon: "error",
+              confirmButtonText: "Aceptar",
+            });
+          }
+        })
+        .catch((error) => console.log("error", error));
+    }
   }
 
   function traeVariables() {
@@ -320,7 +382,12 @@ export default function EDA() {
           setTablaDrop([result[0], result[1]]);
           setVisibleTablaDrop(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
