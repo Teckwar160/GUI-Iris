@@ -13,6 +13,9 @@ import Selector from "../Componentes/Editores/Selector";
 // Graficas
 import HeatMap from "../Graficas/HeatMap";
 
+// Alertas
+import Swal from "sweetalert2";
+
 // Estilos
 const Titulo = styled(Typography)({
   color: "black",
@@ -121,7 +124,12 @@ export default function SVM() {
           setDataVistaPrevia([result[0], result[1]]);
           setVisibleVistaPrevia(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -142,7 +150,12 @@ export default function SVM() {
           setDatosFaltantesNull([result[0], result[1]]);
           setVisibleFaltantesNull(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -162,7 +175,12 @@ export default function SVM() {
           setDataDescribe(result);
           setVisibleDescribe(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -182,7 +200,12 @@ export default function SVM() {
           setDataDescribeObject(result);
           setVisibleDescribeObject(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -211,7 +234,12 @@ export default function SVM() {
         })
         .catch((error) => console.log("error", error));
     } else {
-      alert("Selecciona una variable");
+      Swal.fire({
+        title: "Advertencia",
+        text: "Selecciona una variable",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     }
   }
 
@@ -230,7 +258,12 @@ export default function SVM() {
           setDataCorrelacionMapa(result);
           setVisibleDataCorrelacionMapa(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -289,7 +322,12 @@ export default function SVM() {
             setVisibleTablaY(true);
           }
         } else {
-          alert("Selecciona alguna variable.");
+          Swal.fire({
+            title: "Advertencia",
+            text: "Selecciona alguna variable",
+            icon: "warning",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -326,12 +364,22 @@ export default function SVM() {
             setMedidas(result);
             setVisibleMedidas(true);
           } else {
-            alert("Favor de revisar si realizo todos los pasos anteriores.");
+            Swal.fire({
+              title: "Error",
+              text: "Favor de revisar si realizo todos los pasos anteriores",
+              icon: "error",
+              confirmButtonText: "Aceptar",
+            });
           }
         })
         .catch((error) => console.log("error", error));
     } else {
-      alert("Favor de escoger un kernel.");
+      Swal.fire({
+        title: "Advertencia",
+        text: "Favor de escoger un kernel",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     }
   }
 
@@ -349,7 +397,12 @@ export default function SVM() {
           setMatriz(result);
           setVisibleMatriz(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -369,7 +422,12 @@ export default function SVM() {
           setTablaVectores(result);
           setVisibleTablaVectores(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -388,15 +446,34 @@ export default function SVM() {
       }
     }
 
-    if (index === -1) {
-      alert("Se registro el valor de: " + nuevaClasificacionLabel);
-      lista.push([nuevaClasificacionLabel, nuevaClasificacionValue]);
+    if (nuevaClasificacionLabel !== "") {
+      if (index === -1) {
+        Swal.fire({
+          title: "Guardado",
+          text: "Se registro el valor de " + nuevaClasificacionLabel,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista.push([nuevaClasificacionLabel, nuevaClasificacionValue]);
+      } else {
+        Swal.fire({
+          title: "Actualizado",
+          text: "Se actualizo el valor de: " + nuevaClasificacionLabel,
+          icon: "error",
+          confirmButtonText: "Aceptar",
+        });
+        lista[index] = [nuevaClasificacionLabel, nuevaClasificacionValue];
+      }
+      setVisibleNuevaClasificacionLista(false);
+      setNuevaClasificacionLista(lista);
     } else {
-      alert("Se actualizo el valor de: " + nuevaClasificacionLabel);
-      lista[index] = [nuevaClasificacionLabel, nuevaClasificacionValue];
+      Swal.fire({
+        title: "Advertencia",
+        text: "Selecciona una variable",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     }
-    setVisibleNuevaClasificacionLista(false);
-    setNuevaClasificacionLista(lista);
   }
 
   function getNuevaClasificacion() {
@@ -419,7 +496,12 @@ export default function SVM() {
           setVisibleNuevaClasificacion(true);
           setVisibleNuevaClasificacionLista(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
