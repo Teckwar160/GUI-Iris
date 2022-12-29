@@ -74,72 +74,31 @@ export default function SVM() {
   const [tablaY, setTablaY] = useState([]);
   const [visibleTablaY, setVisibleTablaY] = useState(false);
 
-  // Configuración de Árboles
+  // Configuración de entrenamiento
+  const [kernel, setKernel] = useState("");
   const [test_size, setTest_size] = useState("0.2");
-  const [random_state_division, setRandom_state_division] = useState("0");
-  const [max_depth, setMax_depth] = useState("None");
-  const [min_samples_split, setMin_samples_split] = useState("2");
-  const [min_samples_leaf, setMin_samples_leaf] = useState("1");
   const [random_state, setRandom_state] = useState("0");
-  const [clasificacionMedidas, setClasificacionMedidas] = useState([]);
-  const [visibleClasificacionMedidas, setVisibleClasificacionMedidas] =
-    useState(false);
+  const [degree, setDegree] = useState("0");
+  const [medidas, setMedidas] = useState([]);
+  const [visibleMedidas, setVisibleMedidas] = useState(false);
 
   // Matriz de clasificación árboles
   const [matriz, setMatriz] = useState([[], []]);
   const [visibleMatriz, setVisibleMatriz] = useState(false);
 
-  // Importancia
-  const [tablaImportancia, setTablaImportancia] = useState([[], []]);
-  const [visibleTablaImportancia, setVisibleTablaImportancia] = useState(false);
+  // Tabla de vectores
+  const [tablaVectores, setTablaVectores] = useState([[], []]);
+  const [visibleTablaVectores, setVisibleTablaVectores] = useState(false);
 
-  // Variables de Clasificación de Árboles
+  // Variables de Clasificación
   const [variablesNuevaClasificacion] = useState(variablesX);
   const [nuevaClasificacionLabel, setNuevaClasificacionLabel] = useState("");
   const [nuevaClasificacionValue, setNuevaClasificacionValue] = useState("");
   const [nuevaClasificacionLista, setNuevaClasificacionLista] = useState([]);
-  const [visibleNuevaClasificacionLista, setVisibleNuevaClasificacionLista] = useState(false);
+  const [visibleNuevaClasificacionLista, setVisibleNuevaClasificacionLista] =
+    useState(false);
   const [nuevaClasificacion, setNuevaClasificacion] = useState([]);
   const [visibleNuevaClasificacion, setVisibleNuevaClasificacion] =
-    useState(false);
-
-  // Clasificación Bosques
-  const [variablesXB, setVariablesXB] = useState([]);
-  const [tablaXB, setTablaXB] = useState([]);
-  const [visibleTablaXB, setVisibleTablaXB] = useState(false);
-  const [variableYB, setVariableYB] = useState([]);
-  const [tablaYB, setTablaYB] = useState([]);
-  const [visibleTablaYB, setVisibleTablaYB] = useState(false);
-
-  // Configuración de Bosques
-  const [test_sizeB, setTest_sizeB] = useState("0.2");
-  const [random_state_divisionB, setRandom_state_divisionB] = useState("0");
-  const [n_estimatorsB, setN_estimatorsB] = useState("100");
-  const [max_depthB, setMax_depthB] = useState("None");
-  const [min_samples_splitB, setMin_samples_splitB] = useState("2");
-  const [min_samples_leafB, setMin_samples_leafB] = useState("1");
-  const [random_stateB, setRandom_stateB] = useState("0");
-  const [clasificacionMedidasB, setClasificacionMedidasB] = useState([]);
-  const [visibleClasificacionMedidasB, setVisibleClasificacionMedidasB] =
-    useState(false);
-
-  // Matriz de clasificación bosques
-  const [matrizB, setMatrizB] = useState([[], []]);
-  const [visibleMatrizB, setVisibleMatrizB] = useState(false);
-
-  // Importancia de bosques
-  const [tablaImportanciaB, setTablaImportanciaB] = useState([[], []]);
-  const [visibleTablaImportanciaB, setVisibleTablaImportanciaB] =
-    useState(false);
-
-  // Variables de Clasificación de Árboles
-  const [variablesNuevaClasificacionB] = useState(variablesXB);
-  const [nuevaClasificacionLabelB, setNuevaClasificacionLabelB] = useState("");
-  const [nuevaClasificacionValueB, setNuevaClasificacionValueB] = useState("");
-  const [nuevaClasificacionListaB, setNuevaClasificacionListaB] = useState([]);
-  const [visibleNuevaClasificacionListaB, setVisibleNuevaClasificacionListaB] = useState(false);
-  const [nuevaClasificacionB, setNuevaClasificacionB] = useState([]);
-  const [visibleNuevaClasificacionB, setVisibleNuevaClasificacionB] =
     useState(false);
 
   useEffect(() => {
@@ -295,9 +254,9 @@ export default function SVM() {
       .catch((error) => console.log("error", error));
   }
 
-  // Clasificación Árboles
+  // SVM
 
-  function seleccionArboles(letra) {
+  function seleccionSVM(letra) {
     // Ingresamos los datos
     const formdata = new FormData();
     if (letra === "x") {
@@ -337,56 +296,51 @@ export default function SVM() {
   }
 
   function seleccionaX() {
-    seleccionArboles("x");
+    seleccionSVM("x");
   }
 
   function seleccionaY() {
-    seleccionArboles("y");
+    seleccionSVM("y");
   }
 
-  function clasificacionEntrenamiento() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("algoritmo", "arbol");
-    formdata.append("test_size", test_size);
-    formdata.append("random_state_division", random_state_division);
-    formdata.append("n_estimators", 0);
-    formdata.append("max_depth", max_depth);
-    formdata.append("min_samples_split", min_samples_split);
-    formdata.append("min_samples_leaf", min_samples_leaf);
-    formdata.append("random_state", random_state);
+  function entrenamiento() {
+    if (kernel != "") {
+      // Ingresamos los datos
+      const formdata = new FormData();
+      formdata.append("kernel", kernel);
+      formdata.append("test_size", test_size);
+      formdata.append("random_state", random_state);
+      formdata.append("degree", degree);
 
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+      };
 
-    fetch("http://127.0.0.1:8000/Clasificacion/Entrenamiento", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setClasificacionMedidas(result);
-          setVisibleClasificacionMedidas(true);
-        } else {
-          alert("Favor de revisar si realizo todos los pasos anteriores.");
-        }
-      })
-      .catch((error) => console.log("error", error));
+      fetch("http://127.0.0.1:8000/SVM/Entrenamiento", requestOptions)
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          if (result !== false) {
+            setMedidas(result);
+            setVisibleMedidas(true);
+          } else {
+            alert("Favor de revisar si realizo todos los pasos anteriores.");
+          }
+        })
+        .catch((error) => console.log("error", error));
+    } else {
+      alert("Favor de escoger un kernel.");
+    }
   }
 
-  function clasificacionMatriz() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("algoritmo", "arbol");
-
+  function getMatriz() {
     var requestOptions = {
-      method: "POST",
-      body: formdata,
+      method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/Clasificacion/matriz", requestOptions)
+    fetch("http://127.0.0.1:8000/SVM/matriz", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -401,25 +355,19 @@ export default function SVM() {
       .catch((error) => console.log("error", error));
   }
 
-  function getImportancia() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("algoritmo", "arbol");
-    formdata.append("lista", variablesX);
-
+  function getVectores() {
     var requestOptions = {
-      method: "POST",
-      body: formdata,
+      method: "GET",
     };
 
-    fetch("http://127.0.0.1:8000/Clasificacion/importancia", requestOptions)
+    fetch("http://127.0.0.1:8000/SVM/vectoresSoporte", requestOptions)
       .then((response) => {
         return response.json();
       })
       .then((result) => {
         if (result !== false) {
-          setTablaImportancia(result);
-          setVisibleTablaImportancia(true);
+          setTablaVectores(result);
+          setVisibleTablaVectores(true);
         } else {
           alert("Carga un proyecto");
         }
@@ -454,7 +402,6 @@ export default function SVM() {
   function getNuevaClasificacion() {
     // Ingresamos los datos
     const formdata = new FormData();
-    formdata.append("algoritmo", "arbol");
     formdata.append("lista", nuevaClasificacionLista);
 
     var requestOptions = {
@@ -462,10 +409,7 @@ export default function SVM() {
       body: formdata,
     };
 
-    fetch(
-      "http://127.0.0.1:8000/Clasificacion/nuevaClasificacion",
-      requestOptions
-    )
+    fetch("http://127.0.0.1:8000/SVM/nuevaClasificacion", requestOptions)
       .then((response) => {
         return response.json();
       })
@@ -476,190 +420,6 @@ export default function SVM() {
           setVisibleNuevaClasificacionLista(true);
         } else {
           alert("Carga un proyecto");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  // Clasificación Bosques
-
-  function seleccionBosques(letra) {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    if (letra === "x") {
-      formdata.append("lista", variablesXB);
-    } else {
-      formdata.append("lista", variableYB);
-    }
-
-    formdata.append("seleccion", letra);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch(
-      "http://127.0.0.1:8000/Clasificacion/Bosques/seleccion",
-      requestOptions
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          if (letra === "x") {
-            setTablaXB([result[0], result[1]]);
-            setVisibleTablaXB(true);
-          } else {
-            setTablaYB([result[0], result[1]]);
-            setVisibleTablaYB(true);
-          }
-        } else {
-          alert("Selecciona alguna variable.");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function seleccionaXB() {
-    seleccionBosques("x");
-  }
-
-  function seleccionaYB() {
-    seleccionBosques("y");
-  }
-
-  function clasificacionEntrenamientoB() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("algoritmo", "bosque");
-    formdata.append("test_size", test_sizeB);
-    formdata.append("random_state_division", random_state_divisionB);
-    formdata.append("n_estimators", n_estimatorsB);
-    formdata.append("max_depth", max_depthB);
-    formdata.append("min_samples_split", min_samples_splitB);
-    formdata.append("min_samples_leaf", min_samples_leafB);
-    formdata.append("random_state", random_stateB);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch("http://127.0.0.1:8000/Clasificacion/Entrenamiento", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setClasificacionMedidasB(result);
-          setVisibleClasificacionMedidasB(true);
-        } else {
-          alert("Favor de revisar si realizo todos los pasos anteriores.");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function clasificacionMatrizB() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("algoritmo", "bosque");
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch("http://127.0.0.1:8000/Clasificacion/matriz", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setMatrizB(result);
-          setVisibleMatrizB(true);
-        } else {
-          alert("Carga un proyecto");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function getImportanciaB() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("algoritmo", "bosque");
-    formdata.append("lista", variablesXB);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch("http://127.0.0.1:8000/Clasificacion/importancia", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setTablaImportanciaB(result);
-          setVisibleTablaImportanciaB(true);
-        } else {
-          alert("Carga un proyecto");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  function guardaValorClasificacionB() {
-    // Actualzamos la lista
-    let lista = nuevaClasificacionListaB;
-    let index = -1;
-    let tam = lista.length;
-
-    for (let i = 0; i < tam; i++) {
-      if (lista[i][0] === nuevaClasificacionLabelB) {
-        index = i;
-        break;
-      }
-    }
-
-    if (index === -1) {
-      alert("Se registro el valor de: " + nuevaClasificacionLabelB);
-      lista.push([nuevaClasificacionLabelB, nuevaClasificacionValueB]);
-    } else {
-      alert("Se actualizo el valor de: " + nuevaClasificacionLabelB);
-      lista[index] = [nuevaClasificacionLabelB, nuevaClasificacionValueB];
-    }
-    setVisibleNuevaClasificacionListaB(false);
-    setNuevaClasificacionListaB(lista);
-  }
-
-  function getNuevaClasificacionB() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("algoritmo", "bosque");
-    formdata.append("lista", nuevaClasificacionListaB);
-
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
-
-    fetch(
-      "http://127.0.0.1:8000/Clasificacion/nuevaClasificacion",
-      requestOptions
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setNuevaClasificacionB(result);
-          setVisibleNuevaClasificacionB(true);
-          setVisibleNuevaClasificacionListaB(true);
         }
       })
       .catch((error) => console.log("error", error));
@@ -683,7 +443,7 @@ export default function SVM() {
       >
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
-            <Titulo textAlign={"center"}>Clasificación</Titulo>
+            <Titulo textAlign={"center"}>Clasificación con SVM</Titulo>
 
             <Subtitulo>Propósito</Subtitulo>
 
@@ -801,7 +561,7 @@ export default function SVM() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
             <Subtitulo>
-              Aplicación del algoritmo: Clasificación Árboles
+              Aplicación del algoritmo: Máquina de soporte vactorial (SVM)
             </Subtitulo>
           </Box>
         </Box>
@@ -854,6 +614,17 @@ export default function SVM() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Bold>Entrenamiento de modelo.</Bold>
+            <Parrafo>
+              Degree unicamente se utilizara con el kernel de "poly".
+            </Parrafo>
+            <Box sx={{ padding: 2 }}>
+              <Selector
+                label={"Kernel"}
+                lista={["linear", "poly", "rbf", "sigmoid"]}
+                elemento={kernel}
+                setElemento={setKernel}
+              />
+            </Box>
             <Box sx={{ padding: 2 }}>
               <Comando
                 Label={"test_size"}
@@ -862,44 +633,27 @@ export default function SVM() {
                 type={"number"}
               />
               <Comando
-                Label={"random_state_division"}
-                setComando={setRandom_state_division}
-                comando={random_state_division}
-                type={"number"}
-              />
-              <Comando
-                Label={"max_depth"}
-                setComando={setMax_depth}
-                comando={max_depth}
-                type={"number"}
-              />
-              <Comando
-                Label={"min_samples_split"}
-                setComando={setMin_samples_split}
-                comando={min_samples_split}
-                type={"number"}
-              />
-              <Comando
-                Label={"min_samples_leaf"}
-                setComando={setMin_samples_leaf}
-                comando={min_samples_leaf}
-                type={"number"}
-              />
-              <Comando
                 Label={"random_state"}
                 setComando={setRandom_state}
                 comando={random_state}
                 type={"number"}
               />
+              <Comando
+                Label={"degree"}
+                setComando={setDegree}
+                comando={degree}
+                type={"number"}
+              />
             </Box>
             <CodigoBoton
-              ejecutar={clasificacionEntrenamiento}
-              visible={visibleClasificacionMedidas}
+              ejecutar={entrenamiento}
+              visible={visibleMedidas}
               texto={
-                "Criterio: " +
-                clasificacionMedidas[0] +
-                "\nExactitud: " +
-                clasificacionMedidas[1]
+                "Exactitud: " +
+                medidas[0] +
+                "\nNúmero de vectores de soporte: [" +
+                medidas[1] +
+                "]"
               }
             />
           </Box>
@@ -908,7 +662,7 @@ export default function SVM() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
             <Bold>Matriz de Clasificación</Bold>
-            <CodigoBoton ejecutar={clasificacionMatriz} visible={false} />
+            <CodigoBoton ejecutar={getMatriz} visible={false} />
           </Box>
         </Box>
         <Tabla
@@ -919,14 +673,14 @@ export default function SVM() {
 
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Importancia de las variables.</Bold>
-            <CodigoBoton ejecutar={getImportancia} visible={false} />
+            <Bold>Vectores de soporte</Bold>
+            <CodigoBoton ejecutar={getVectores} visible={false} />
           </Box>
         </Box>
         <Tabla
-          dataColumnas={tablaImportancia[0]}
-          dataFilas={tablaImportancia[1]}
-          visible={visibleTablaImportancia}
+          dataColumnas={tablaVectores[0]}
+          dataFilas={tablaVectores[1]}
+          visible={visibleTablaVectores}
         />
 
         <Box sx={{ padding: 2 }}>
@@ -977,192 +731,6 @@ export default function SVM() {
           dataColumnas={["Variable", "Valor"]}
           dataFilas={nuevaClasificacionLista}
           visible={visibleNuevaClasificacionLista}
-        />
-
-        {/*Clasificación bosques*/}
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed purple" }}>
-            <Subtitulo>Aplicación del algoritmo: Bosques aleatorios</Subtitulo>
-          </Box>
-        </Box>
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Selecciona las variables predictoras (X).</Bold>
-            <Box sx={{ padding: 2 }}>
-              <Visualizador
-                lista={variables}
-                listaSeleccionada={variablesXB}
-                actualizaSeleccion={setVariablesXB}
-              />
-            </Box>
-            <CodigoBoton ejecutar={seleccionaXB} visible={false} />
-          </Box>
-        </Box>
-
-        <Tabla
-          dataColumnas={tablaXB[0]}
-          dataFilas={tablaXB[1]}
-          visible={visibleTablaXB}
-        />
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Selecciona la variable clase (Y).</Bold>
-            <Parrafo>
-              Si selecciona más de un elemento unicamente se tomara el primero
-              en ser seleccionado.
-            </Parrafo>
-            <Box sx={{ padding: 2 }}>
-              <Visualizador
-                lista={variables}
-                listaSeleccionada={variableYB}
-                actualizaSeleccion={setVariableYB}
-              />
-            </Box>
-
-            <CodigoBoton ejecutar={seleccionaYB} visible={false} />
-          </Box>
-        </Box>
-
-        <Tabla
-          dataColumnas={tablaYB[0]}
-          dataFilas={tablaYB[1]}
-          visible={visibleTablaYB}
-        />
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Entrenamiento de modelo.</Bold>
-            <Box sx={{ padding: 2 }}>
-              <Comando
-                Label={"test_size"}
-                setComando={setTest_sizeB}
-                comando={test_sizeB}
-                type={"number"}
-              />
-              <Comando
-                Label={"random_state_division"}
-                setComando={setRandom_state_divisionB}
-                comando={random_state_divisionB}
-                type={"number"}
-              />
-              <Comando
-                Label={"n_estimators"}
-                setComando={setN_estimatorsB}
-                comando={n_estimatorsB}
-                type={"number"}
-              />
-              <Comando
-                Label={"max_depth"}
-                setComando={setMax_depthB}
-                comando={max_depthB}
-                type={"number"}
-              />
-              <Comando
-                Label={"min_samples_split"}
-                setComando={setMin_samples_splitB}
-                comando={min_samples_splitB}
-                type={"number"}
-              />
-              <Comando
-                Label={"min_samples_leaf"}
-                setComando={setMin_samples_leafB}
-                comando={min_samples_leafB}
-                type={"number"}
-              />
-              <Comando
-                Label={"random_state"}
-                setComando={setRandom_stateB}
-                comando={random_stateB}
-                type={"number"}
-              />
-            </Box>
-            <CodigoBoton
-              ejecutar={clasificacionEntrenamientoB}
-              visible={visibleClasificacionMedidasB}
-              texto={
-                "Criterio: " +
-                clasificacionMedidasB[0] +
-                "\nExactitud: " +
-                clasificacionMedidasB[1]
-              }
-            />
-          </Box>
-        </Box>
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Matriz de Clasificación</Bold>
-            <CodigoBoton ejecutar={clasificacionMatrizB} visible={false} />
-          </Box>
-        </Box>
-        <Tabla
-          dataColumnas={matrizB[0]}
-          dataFilas={matrizB[1]}
-          visible={visibleMatrizB}
-        />
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Importancia de las variables.</Bold>
-            <CodigoBoton ejecutar={getImportanciaB} visible={false} />
-          </Box>
-        </Box>
-        <Tabla
-          dataColumnas={tablaImportanciaB[0]}
-          dataFilas={tablaImportanciaB[1]}
-          visible={visibleTablaImportanciaB}
-        />
-
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>Nuevas clasificaciones.</Bold>
-            <Parrafo>
-              Para las variables de X previamente seleccionadas digite un valor
-              y pulse ejecutar para cada una de las variables.
-            </Parrafo>
-            <Box sx={{ padding: 2 }}>
-              <Selector
-                label={"Variable"}
-                lista={variablesNuevaClasificacionB}
-                elemento={nuevaClasificacionLabelB}
-                setElemento={setNuevaClasificacionLabelB}
-              />
-              <Box sx={{ padding: 2 }}>
-                <Comando
-                  Label={nuevaClasificacionLabelB}
-                  setComando={setNuevaClasificacionValueB}
-                  comando={nuevaClasificacionValueB}
-                  type={"text"}
-                />
-              </Box>
-            </Box>
-            <CodigoBoton ejecutar={guardaValorClasificacionB} visible={false} />
-          </Box>
-        </Box>
-        <Box sx={{ padding: 2 }}>
-          <Box sx={{ p: 2, border: "5px dashed plum" }}>
-            <Bold>
-              Pulse este botón una vez que haya terminado de asignar valores a
-              las variables para realizar la clasificación.
-            </Bold>
-            <Parrafo>
-              La tabla inferior son los valores utilizados para esta
-              clasificación.
-            </Parrafo>
-            <CodigoBoton
-              ejecutar={getNuevaClasificacionB}
-              visible={visibleNuevaClasificacionB}
-              texto={nuevaClasificacionB}
-            />
-          </Box>
-        </Box>
-
-        <Tabla
-          dataColumnas={["Variable", "Valor"]}
-          dataFilas={nuevaClasificacionListaB}
-          visible={visibleNuevaClasificacionListaB}
         />
       </Grid>
     </Grid>

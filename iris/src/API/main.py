@@ -37,6 +37,11 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import pairwise_distances_argmin_min
 from kneed import KneeLocator
 
+# Para SVM
+from sklearn import model_selection
+from sklearn.svm import SVC                         
+from sklearn.metrics import accuracy_score
+
 
 # Variable global que contendra los conjuntos de datos
 data = pd.DataFrame()
@@ -66,6 +71,9 @@ Y_validation = None
 # Variables de K-means
 SSE = None
 Knee = None
+
+# Variables para SVM
+ModeloSVM = None
 
 # API
 app = FastAPI()
@@ -1020,6 +1028,7 @@ async def entrenamiento(algoritmo: str = Form(...), test_size: str = Form(...), 
     global XB
     global YB
 
+    # Verificamos que este cargado un proyecto
     if not data.empty:
 
         if max_depth == "None":
@@ -1039,7 +1048,7 @@ async def entrenamiento(algoritmo: str = Form(...), test_size: str = Form(...), 
                                                     random_state=int(random_state))
             ClasificacionAD.fit(X_train, Y_train)
 
-            # Se genera el pronóstico
+            # Se genera la clasificación
             Y_Clasificacion = ClasificacionAD.predict(X_validation)
 
             # Criterio
@@ -1419,6 +1428,121 @@ async def bosquesSeleccion(lista: list = Form(...), seleccion: str = Form(...)):
     else:
         return False
 
+
+# SVM
+@app.post("/SVM/Entrenamiento")
+async def entrenamiento(kernel: str = Form(...), test_size: str = Form(...), random_state: str = Form(...), \
+    degree: str = Form(...)):
+    # Variables
+    global data
+    global X_validation
+    global Y_validation
+
+    # Variables de SVM
+    global ModeloSVM
+    global X
+    global Y
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+
+        # Divisón de datos
+        X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, 
+            test_size = float(test_size), random_state = int(random_state), shuffle = True)
+
+        # Se crea el modelo
+        if kernel == "linear" or kernel == "rbf" or "sigmoid":
+            ModeloSVM = SVC(kernel=kernel)
+        elif kernel == "poly":
+            ModeloSVM = SVC(kernel=kernel,degree=int(degree))
+        
+        ModeloSVM.fit(X_train, Y_train)
+
+        # Medidas
+        return [ModeloSVM.score(X_validation, Y_validation),ModeloSVM.n_support_.tolist()]
+
+    else:
+        return False
+
+@app.get("/SVM/matriz")
+async def matriz():
+    # Dataframe
+    global data
+
+    # Variables
+    global X_validation
+    global Y_validation
+    global ModeloSVM
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+
+        Clasificaciones = ModeloSVM.predict(X_validation)
+        matriz = pd.crosstab(Y_validation.ravel(), 
+            Clasificaciones, rownames=['Real'], colnames=['Clasificación']) 
+
+
+        # Obtenemos las columnas y filas
+        columnas = matriz.columns.values.tolist()
+        filas = matriz.values.tolist()
+
+        # Agregamos la etiquetas
+        for i in range(len(columnas)):
+            filas[i].insert(0,columnas[i])
+
+        # Agregamos una columna vacia para las etiquetas
+        if columnas[0] != "":
+            columnas.insert(0, "")
+
+        return[columnas,filas]
+
+    else:
+        return False
+
+@app.get("/SVM/vectoresSoporte")
+async def matriz():
+    # Dataframe
+    global data
+
+    # Variables
+    global ModeloSVM
+
+    # Verificamos que este cargado un proyecto
+    if not data.empty:
+        vectores = ModeloSVM.support_vectors_
+        return creaTabla(pd.DataFrame(vectores),True)
+
+    else:
+        return False
+
+@app.post("/SVM/nuevaClasificacion")
+async def nuevaClasificacion(lista: list = Form(...)):
+    # Dataframe
+    global data
+
+    # Modelo
+    global ModeloSVM
+
+    if not data.empty:
+        if lista != [""]:
+            lista = lista[0].split(',')
+        else:
+            return False
+
+        diccionario = {}
+
+        for i in range(0, len(lista)):
+            if i % 2 == 0:
+                diccionario[lista[i]] = [float(lista[i+1])]
+            else:
+                continue
+
+        clasificacion = pd.DataFrame(diccionario)
+
+        return (ModeloSVM.predict(clasificacion).tolist())[0]
+
+    else:
+        return False
 
 # Funciones de control
 
