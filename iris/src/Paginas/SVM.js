@@ -459,7 +459,7 @@ export default function SVM() {
         Swal.fire({
           title: "Actualizado",
           text: "Se actualizo el valor de: " + nuevaClasificacionLabel,
-          icon: "error",
+          icon: "success",
           confirmButtonText: "Aceptar",
         });
         lista[index] = [nuevaClasificacionLabel, nuevaClasificacionValue];
