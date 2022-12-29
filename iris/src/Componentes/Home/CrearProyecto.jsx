@@ -21,6 +21,9 @@ import InputIcon from "@mui/icons-material/Input";
 //Colores
 import { purple } from "@mui/material/colors";
 
+// Alertas
+import Swal from "sweetalert2";
+
 //Estilos
 const Boton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(purple[500]),
@@ -58,7 +61,11 @@ export default function CrearProyecto(Props) {
     let allowedExtensions = /(.csv)$/i;
 
     if (!allowedExtensions.exec(filePath)) {
-      alert("Unicamente se permiten archivos de tipo .csv.");
+      Swal.fire({
+        text: "Unicamente se permiten archivos con extensión 'csv'",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     } else {
       setFile(e.target.files[0]);
     }
@@ -75,7 +82,11 @@ export default function CrearProyecto(Props) {
   function envia() {
     // Verificamos que tengamos los compos completos
     if (!file || nombreProyecto === "" || descripcionProyecto === "") {
-      alert("Falta rellenar alguno de los campos");
+      Swal.fire({
+        text: "Falta rellenar alguno de los campos",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
       return;
     } else {
       // Ingresamos los datos
@@ -101,7 +112,11 @@ export default function CrearProyecto(Props) {
         })
         .then((result) => {
           // Indicamos que todo salio bien
-          alert("Se cargo el archivo");
+          Swal.fire({
+            text: "Proyecto creado correctamente",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
 
           // Actualizamos la lista de proyectos
           Props.actualizaProyectos();
@@ -114,7 +129,9 @@ export default function CrearProyecto(Props) {
       <div align="center">
         <Box sx={{ padding: 2 }}>
           <FormControl sx={{ padding: 2 }}>
-            <InputLabel color={"secondary"} sx={{color: "black"}}>Nombre del proyecto</InputLabel>
+            <InputLabel color={"secondary"} sx={{ color: "black" }}>
+              Nombre del proyecto
+            </InputLabel>
             <Input
               id="Nombre del proyecto"
               type="text"
@@ -130,7 +147,9 @@ export default function CrearProyecto(Props) {
           </FormControl>
 
           <FormControl sx={{ padding: 2 }}>
-            <InputLabel color={"secondary"} sx={{color: "black"}}>Descripción del proyecto</InputLabel>
+            <InputLabel color={"secondary"} sx={{ color: "black" }}>
+              Descripción del proyecto
+            </InputLabel>
             <Input
               id="Descripcion del proyecto"
               type="text"

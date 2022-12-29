@@ -11,6 +11,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 //Colores
 import { purple } from "@mui/material/colors";
 
+// Alertas
+import Swal from "sweetalert2";
+
 //Estilos
 const Boton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(purple[500]),
@@ -31,7 +34,11 @@ export default function EliminarProyecto(Props) {
 
   function eliminarProyecto() {
     if (idProyecto === null) {
-      alert("Selecciona un proyecto");
+      Swal.fire({
+        text: "Selecciona un proyecto",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
     } else {
       // Ingresamos los datos
       const formdata = new FormData();
@@ -49,7 +56,11 @@ export default function EliminarProyecto(Props) {
         })
         .then((result) => {
           // Indicamos que todo salio bien
-          alert("Se elimino correctamente el proyecto");
+          Swal.fire({
+            text: "Se elimino correctamente el proyecto",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
 
           // Actualizamos la lista de proyectos
           Props.actualizaProyectos();

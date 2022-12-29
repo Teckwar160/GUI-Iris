@@ -20,6 +20,9 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 //Colores
 import { purple } from "@mui/material/colors";
 
+// Alertas
+import Swal from "sweetalert2";
+
 //Estilos
 const Boton = styled(Button)(({ theme }) => ({
   color: theme.palette.getContrastText(purple[500]),
@@ -55,7 +58,11 @@ export default function EditarProyecto(Props) {
       nombreProyecto === "" ||
       descripcionProyecto === ""
     ) {
-      alert("Falta rellenar alguno de los campos");
+      Swal.fire({
+        text: "Falta rellenar alguno de los campos",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
       return;
     } else {
       // Ingresamos los datos
@@ -81,7 +88,11 @@ export default function EditarProyecto(Props) {
         })
         .then((result) => {
           // Indicamos que todo salio bien
-          alert("Se actualizo correctamente el proyecto");
+          Swal.fire({
+            text: "Se actualizo correctamente el proyecto",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
 
           // Actualizamos la lista de proyectos
           Props.actualizaProyectos();
