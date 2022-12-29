@@ -685,25 +685,34 @@ export default function Hibridos() {
       }
     }
 
-    if (index === -1) {
-      Swal.fire({
-        title: "Guardado",
-        text: "Se registro el valor de " + nuevaClasificacionLabelB,
-        icon: "success",
-        confirmButtonText: "Aceptar",
-      });
-      lista.push([nuevaClasificacionLabelB, nuevaClasificacionValueB]);
+    if (nuevaClasificacionLabelB !== "") {
+      if (index === -1) {
+        Swal.fire({
+          title: "Guardado",
+          text: "Se registro el valor de " + nuevaClasificacionLabelB,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista.push([nuevaClasificacionLabelB, nuevaClasificacionValueB]);
+      } else {
+        Swal.fire({
+          title: "Actualizado",
+          text: "Se actualizo el valor de " + nuevaClasificacionLabelB,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista[index] = [nuevaClasificacionLabelB, nuevaClasificacionValueB];
+      }
+      setVisibleNuevaClasificacionListaB(false);
+      setNuevaClasificacionListaB(lista);
     } else {
       Swal.fire({
-        title: "Actualizado",
-        text: "Se actualizo el valor de " + nuevaClasificacionLabelB,
-        icon: "success",
+        title: "Advertencia",
+        text: "Selecciona una variable",
+        icon: "warning",
         confirmButtonText: "Aceptar",
       });
-      lista[index] = [nuevaClasificacionLabelB, nuevaClasificacionValueB];
     }
-    setVisibleNuevaClasificacionListaB(false);
-    setNuevaClasificacionListaB(lista);
   }
 
   function getNuevaClasificacionB() {
@@ -729,6 +738,13 @@ export default function Hibridos() {
           setNuevaClasificacionB(result);
           setVisibleNuevaClasificacionB(true);
           setVisibleNuevaClasificacionListaB(true);
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
