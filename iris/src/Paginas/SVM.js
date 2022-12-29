@@ -458,7 +458,7 @@ export default function SVM() {
       } else {
         Swal.fire({
           title: "Actualizado",
-          text: "Se actualizo el valor de: " + nuevaClasificacionLabel,
+          text: "Se actualizo el valor de " + nuevaClasificacionLabel,
           icon: "success",
           confirmButtonText: "Aceptar",
         });
