@@ -10,6 +10,9 @@ import Visualizador from "../Componentes/Editores/Visualizador";
 import Comando from "../Componentes/Editores/Comando";
 import Selector from "../Componentes/Editores/Selector";
 
+// Alertas
+import Swal from "sweetalert2";
+
 //Estilos
 const Titulo = styled(Typography)({
   color: "black",
@@ -147,7 +150,12 @@ export default function Pronostico() {
           setDataVistaPrevia([result[0], result[1]]);
           setVisibleVistaPrevia(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -168,7 +176,12 @@ export default function Pronostico() {
           setDatosFaltantesNull([result[0], result[1]]);
           setVisibleFaltantesNull(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -188,7 +201,12 @@ export default function Pronostico() {
           setDataDescribe(result);
           setVisibleDescribe(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -208,7 +226,12 @@ export default function Pronostico() {
           setDataDescribeObject(result);
           setVisibleDescribeObject(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -257,7 +280,12 @@ export default function Pronostico() {
           // Actualizamos las variables disponibles para despues de Bosques
           traeVariablesSeleccionB();
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -314,7 +342,12 @@ export default function Pronostico() {
             setVisibleTablaY(true);
           }
         } else {
-          alert("Selecciona alguna variable.");
+          Swal.fire({
+            title: "Advertencia",
+            text: "Selecciona alguna variable",
+            icon: "warning",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -354,7 +387,12 @@ export default function Pronostico() {
           setPronosticoMedidas(result);
           setVisiblePronosticoMedidas(true);
         } else {
-          alert("Favor de revisar si realizo todos los pasos anteriores.");
+          Swal.fire({
+            title: "Error",
+            text: "Favor de revisar si realizo todos los pasos anteriores",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -380,7 +418,12 @@ export default function Pronostico() {
           setTablaImportancia(result);
           setVisibleTablaImportancia(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -399,15 +442,34 @@ export default function Pronostico() {
       }
     }
 
-    if (index === -1) {
-      alert("Se registro el valor de: " + nuevoPronosticoLabel);
-      lista.push([nuevoPronosticoLabel, nuevoPronsoticoValue]);
+    if (nuevoPronosticoLabel !== "") {
+      if (index === -1) {
+        Swal.fire({
+          title: "Guardado",
+          text: "Se registro el valor de " + nuevoPronosticoLabel,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista.push([nuevoPronosticoLabel, nuevoPronsoticoValue]);
+      } else {
+        Swal.fire({
+          title: "Actualizado",
+          text: "Se actualizo el valor de " + nuevoPronosticoLabel,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista[index] = [nuevoPronosticoLabel, nuevoPronsoticoValue];
+      }
+      setNuevoPronosticoLista(lista);
+      setVisibleNuevoPronosticoLista(false);
     } else {
-      alert("Se actualizo el valor de: " + nuevoPronosticoLabel);
-      lista[index] = [nuevoPronosticoLabel, nuevoPronsoticoValue];
+      Swal.fire({
+        title: "Advertencia",
+        text: "Selecciona una variable",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     }
-    setNuevoPronosticoLista(lista);
-    setVisibleNuevoPronosticoLista(false);
   }
 
   function getNuevoPronostico() {
@@ -431,7 +493,12 @@ export default function Pronostico() {
           setVisibleNuevoPronostico(true);
           setVisibleNuevoPronosticoLista(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -454,7 +521,12 @@ export default function Pronostico() {
         if (result !== false) {
           setVariablesSeleccionB(result);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -490,7 +562,12 @@ export default function Pronostico() {
             setVisibleTablaYB(true);
           }
         } else {
-          alert("Selecciona alguna variable.");
+          Swal.fire({
+            title: "Advertencia",
+            text: "Selecciona alguna variable",
+            icon: "warning",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -530,7 +607,12 @@ export default function Pronostico() {
           setPronosticoMedidasB(result);
           setVisiblePronosticoMedidasB(true);
         } else {
-          alert("Favor de revisar si realizo todos los pasos anteriores.");
+          Swal.fire({
+            title: "Error",
+            text: "Favor de revisar si realizo todos los pasos anteriores",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -556,7 +638,12 @@ export default function Pronostico() {
           setTablaImportanciaB(result);
           setVisibleTablaImportanciaB(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -575,15 +662,34 @@ export default function Pronostico() {
       }
     }
 
-    if (index === -1) {
-      alert("Se registro el valor de: " + nuevoPronosticoLabelB);
-      lista.push([nuevoPronosticoLabelB, nuevoPronsoticoValueB]);
+    if (nuevoPronosticoLabelB !== "") {
+      if (index === -1) {
+        Swal.fire({
+          title: "Guardado",
+          text: "Se registro el valor de " + nuevoPronosticoLabelB,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista.push([nuevoPronosticoLabelB, nuevoPronsoticoValueB]);
+      } else {
+        Swal.fire({
+          title: "Actualizado",
+          text: "Se actualizo el valor de " + nuevoPronosticoLabelB,
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        });
+        lista[index] = [nuevoPronosticoLabelB, nuevoPronsoticoValueB];
+      }
+      setVisibleNuevoPronosticoListaB(false);
+      setNuevoPronosticoListaB(lista);
     } else {
-      alert("Se actualizo el valor de: " + nuevoPronosticoLabelB);
-      lista[index] = [nuevoPronosticoLabelB, nuevoPronsoticoValueB];
+      Swal.fire({
+        title: "Advertencia",
+        text: "Selecciona una variable",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     }
-    setVisibleNuevoPronosticoListaB(false);
-    setNuevoPronosticoListaB(lista);
   }
 
   function getNuevoPronosticoB() {
@@ -606,6 +712,13 @@ export default function Pronostico() {
           setNuevoPronosticoB(result);
           setVisibleNuevoPronosticoB(true);
           setVisibleNuevoPronosticoListaB(true);
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
