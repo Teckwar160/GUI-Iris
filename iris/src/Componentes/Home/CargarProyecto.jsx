@@ -2,14 +2,17 @@ import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Typography, Button, Box, FormControl } from "@mui/material";
 
-//Componentes
+// Componentes
 import SelectorDeProyecto from "./SelectorDeProyecto";
 
-//Iconos
+// Iconos
 import InputIcon from "@mui/icons-material/Input";
 
-//Colores
+// Colores
 import { purple } from "@mui/material/colors";
+
+// Alertas
+import Swal from "sweetalert2";
 
 //Estilos
 const Boton = styled(Button)(({ theme }) => ({
@@ -49,7 +52,11 @@ export default function CargarProyecto(Props) {
         })
         .then((result) => {
           // Indicamos que todo salio bien
-          alert("Se cargo correctamente el proyecto");
+          Swal.fire({
+            text: "Se cargo correctamente el proyecto",
+            icon: "success",
+            confirmButtonText: "Aceptar",
+          });
 
           // Actualizamos la lista de proyectos
           Props.actualizaProyectos();
@@ -72,7 +79,7 @@ export default function CargarProyecto(Props) {
               </FormControl>
               <FormControl variant="standard" sx={{ padding: 2 }}>
                 <Boton sx={{ mr: 1, ml: 1 }} onClick={cargarProyecto}>
-                  <InputIcon/>
+                  <InputIcon />
                   <TextoBoton>Cargar proyecto</TextoBoton>
                 </Boton>
               </FormControl>
