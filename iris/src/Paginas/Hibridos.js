@@ -14,6 +14,9 @@ import Selector from "../Componentes/Editores/Selector";
 import HeatMap from "../Graficas/HeatMap";
 import Line from "../Graficas/Line";
 
+// Alertas
+import Swal from "sweetalert2";
+
 // Estilos
 const Titulo = styled(Typography)({
   color: "black",
@@ -148,7 +151,12 @@ export default function Hibridos() {
           setDataVistaPrevia([result[0], result[1]]);
           setVisibleVistaPrevia(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -169,7 +177,12 @@ export default function Hibridos() {
           setDatosFaltantesNull([result[0], result[1]]);
           setVisibleFaltantesNull(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -189,7 +202,12 @@ export default function Hibridos() {
           setDataDescribe(result);
           setVisibleDescribe(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -209,7 +227,12 @@ export default function Hibridos() {
           setDataDescribeObject(result);
           setVisibleDescribeObject(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -238,7 +261,12 @@ export default function Hibridos() {
         })
         .catch((error) => console.log("error", error));
     } else {
-      alert("Selecciona una variable");
+      Swal.fire({
+        title: "Advertencia",
+        text: "Selecciona una variable",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
     }
   }
 
@@ -257,7 +285,12 @@ export default function Hibridos() {
           setDataCorrelacion(result);
           setVisibleDataCorrelacion(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -277,7 +310,12 @@ export default function Hibridos() {
           setDataCorrelacionMapa(result);
           setVisibleDataCorrelacionMapa(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -320,7 +358,12 @@ export default function Hibridos() {
           setTablaDrop([result[0], result[1]]);
           setVisibleTablaDrop(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -341,7 +384,12 @@ export default function Hibridos() {
           setTablaMetodo([result[0], result[1]]);
           setVisibleTablaMetodo(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -366,37 +414,56 @@ export default function Hibridos() {
           setDataSSE(result);
           setVisibleSSE(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
   }
 
   function getKneeLocator() {
-    // Ingresamos los datos
-    const formdata = new FormData();
-    formdata.append("maximo", maximoClusters);
-    formdata.append("curve", curve);
-    formdata.append("direction", direction);
+    if (curve !== "" && direction !== "") {
+      // Ingresamos los datos
+      const formdata = new FormData();
+      formdata.append("maximo", maximoClusters);
+      formdata.append("curve", curve);
+      formdata.append("direction", direction);
 
-    var requestOptions = {
-      method: "POST",
-      body: formdata,
-    };
+      var requestOptions = {
+        method: "POST",
+        body: formdata,
+      };
 
-    fetch("http://127.0.0.1:8000/K-means/KneeLocator", requestOptions)
-      .then((response) => {
-        return response.json();
-      })
-      .then((result) => {
-        if (result !== false) {
-          setKneeLocator(result);
-          setVisibleKneeLocator(true);
-        } else {
-          alert("Carga un proyecto");
-        }
-      })
-      .catch((error) => console.log("error", error));
+      fetch("http://127.0.0.1:8000/K-means/KneeLocator", requestOptions)
+        .then((response) => {
+          return response.json();
+        })
+        .then((result) => {
+          if (result !== false) {
+            setKneeLocator(result);
+            setVisibleKneeLocator(true);
+          } else {
+            Swal.fire({
+              title: "Error",
+              text: "Carga un proyecto",
+              icon: "error",
+              confirmButtonText: "Aceptar",
+            });
+          }
+        })
+        .catch((error) => console.log("error", error));
+    } else {
+      Swal.fire({
+        title: "Advertencia",
+        text: "Selecciona los elementos requeridos",
+        icon: "warning",
+        confirmButtonText: "Aceptar",
+      });
+    }
   }
 
   function etiquetas() {
@@ -416,7 +483,12 @@ export default function Hibridos() {
           // Actualizamos las variables disponibles para despues de Bosques
           traeVariablesSeleccionB();
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -439,7 +511,12 @@ export default function Hibridos() {
         if (result !== false) {
           setVariablesSeleccionB(result);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -478,7 +555,12 @@ export default function Hibridos() {
             setVisibleTablaYB(true);
           }
         } else {
-          alert("Selecciona alguna variable.");
+          Swal.fire({
+            title: "Advertencia",
+            text: "Selecciona alguna variable",
+            icon: "warning",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -518,7 +600,12 @@ export default function Hibridos() {
           setClasificacionMedidasB(result);
           setVisibleClasificacionMedidasB(true);
         } else {
-          alert("Favor de revisar si realizo todos los pasos anteriores.");
+          Swal.fire({
+            title: "Error",
+            text: "Favor de revisar si realizo todos los pasos anteriores",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -543,7 +630,12 @@ export default function Hibridos() {
           setMatrizB(result);
           setVisibleMatrizB(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -569,7 +661,12 @@ export default function Hibridos() {
           setTablaImportanciaB(result);
           setVisibleTablaImportanciaB(true);
         } else {
-          alert("Carga un proyecto");
+          Swal.fire({
+            title: "Error",
+            text: "Carga un proyecto",
+            icon: "error",
+            confirmButtonText: "Aceptar",
+          });
         }
       })
       .catch((error) => console.log("error", error));
@@ -589,10 +686,20 @@ export default function Hibridos() {
     }
 
     if (index === -1) {
-      alert("Se registro el valor de: " + nuevaClasificacionLabelB);
+      Swal.fire({
+        title: "Guardado",
+        text: "Se registro el valor de " + nuevaClasificacionLabelB,
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
       lista.push([nuevaClasificacionLabelB, nuevaClasificacionValueB]);
     } else {
-      alert("Se actualizo el valor de: " + nuevaClasificacionLabelB);
+      Swal.fire({
+        title: "Actualizado",
+        text: "Se actualizo el valor de " + nuevaClasificacionLabelB,
+        icon: "success",
+        confirmButtonText: "Aceptar",
+      });
       lista[index] = [nuevaClasificacionLabelB, nuevaClasificacionValueB];
     }
     setVisibleNuevaClasificacionListaB(false);
