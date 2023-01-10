@@ -938,7 +938,7 @@ export default function Hibridos() {
         {/*Modelo 1: Segmentación particiona*/}
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
-            <Subtitulo>Modelo 1: Segmentación particiona</Subtitulo>
+            <Subtitulo>Modelo 1: Segmentación particional</Subtitulo>
           </Box>
         </Box>
 

@@ -643,7 +643,7 @@ export default function SVM() {
         <Box sx={{ padding: 2 }}>
           <Box sx={{ p: 2, border: "5px dashed purple" }}>
             <Subtitulo>
-              Aplicación del algoritmo: Máquina de soporte vactorial (SVM)
+              Aplicación del algoritmo: Máquina de soporte vectorial (SVM)
             </Subtitulo>
           </Box>
         </Box>
